@@ -1,0 +1,277 @@
+﻿@model ML_ASP.Models.ViewModel.SubmissionVM
+
+@{
+    Layout = "_AMasterPage_3";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trainee Dashboard</title>
+
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Section -->
+        <aside>
+            <div class="sidebar">
+                <a asp-controller="FileManagement" asp-action="FileManagement" class="active">
+                    <span class="material-symbols-outlined">
+                        topic
+                    </span>
+                    <h2>Files</h2>
+                </a>
+                <a asp-controller="Dashboard" asp-action="Dashboard">
+                    <span class="material-symbols-outlined">
+                        analytics
+                    </span>
+                    <h2>Prediction</h2>
+                </a>
+                @* <a href="#">
+                    <span class="material-symbols-outlined">
+                        mail
+                    </span>
+                    <h2>Mails</h2>
+                    <span class="message-count">3</span>
+                </a> *@
+                <a href="#">
+                    <span class="material-symbols-outlined">
+                        logout
+                    </span>
+                    <h2></h2>
+                </a>
+            </div>
+        </aside>
+        <!-- End of Sidebar Section -->
+        <!-- Main Content -->
+        <main style="width: 700px;">
+            <div class="profile">
+                <h1 class="header">Workloads</h1>
+                <div class="box-container">
+                    @foreach (var i in Model.WorkloadList) //
+                    {
+                        <div class="box">
+                            <h3> @i.Name </h3>
+                            <p> Description: @i.Description</p>
+                            <p> Time Remaining: @i.DueDate.ToString("MMMM dd, yyyy")</p>
+                            <p> Course: @i.Course</p>
+                            @{var isFirstIteration = true;}
+                            @foreach (var submission in Model.CurrentUserSubmissionList) //before; me and god knows what is happening here, now its god only, idk wtf is happening now.
+                            {
+                                @if (isFirstIteration == true)
+                                {
+                                    @* "any" is too look for the list in that condition, its likke getall in unit dbcontext *@
+                                    if (i.ModelId == submission.WorkloadId && submission.IsSubmitted)
+                                    {
+                                        <p>Submitted</p>
+                                        isFirstIteration = false;
+                                    }
+                                    if(i.ModelId == submission.WorkloadId && !submission.IsSubmitted)
+                                    {
+                                        <div class="prediction" style="margin-bottom: 20px;">
+                                            <form method="post" enctype="multipart/form-data" asp-controller="FileManagement" asp-action="FileManagement">
+                                                <input type="file" name="postedFiles" multiple />
+                                                <input type="hidden" name="modelId" value="@i.ModelId" />
+                                                <input type="hidden" name="dueDate" value="@i.DueDate" />
+                                                <input type="submit" value="Upload" /> <br />
+                                            </form>
+                                        </div>
+                                        isFirstIteration = false;
+                                    }
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            
+
+            <table id="tblData" class="display">
+                <thead>
+                    <tr>
+                        <th class="p-4">Name</th>
+                        <th class="p-4">Approval Status</th>
+                        <th class="p-4">File Name</th>
+                        <th class="p-4">Date and Time</th>
+                        <th class="p-4">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </main>
+        <!-- End of Main Content -->
+        <!-- Right Section -->
+        <div class="right-section">
+            <div class="nav">
+
+                <div class="profile">
+                    <div class="info">
+
+                        <h1>Welcome, @ViewBag.AccountName</h1>
+
+
+                        <h1>Welcome!</h1>
+                        <p>No submissions found.</p>
+
+                        <small class="text-muted">Trainee</small>
+                    </div>
+                    <div class="profile-photo">
+                        <img src="images/profile-1.jpg">
+                    </div>
+                </div>
+
+            </div>
+            <!-- End of Nav -->
+
+            <div class="reminders">
+                <div class="header">
+                    <h2>Reminders</h2>
+                    <span class="material-icons-sharp">
+                        notifications_none
+                    </span>
+                </div>
+                @foreach (var i in Model.ReminderList) // if theres an error here that means your not passing the ReminderList obj
+                {
+                    <div class="notification" id="reminder-@i.Id">
+                        <div class="icon">
+                            <span class="@i.IconClass">
+                                <!-- changes for icon -->
+                                @i.IconType
+                            </span>
+                        </div>
+                        <div class="content">
+                            <div class="info">
+                                <h3>@i.Name</h3>
+                                <small class="text_muted">
+                                    @i.ReminderDateTime
+                                </small>
+                            </div>
+                            <span class="material-icons-sharp">
+                                more_vert
+                            </span>
+                        </div>
+                    </div>
+
+                }
+
+                <div class="notification add-reminder" onclick="showInputPopup()">
+                    <div>
+                        <span class="material-icons-sharp">
+                            add
+                        </span>
+                        <h3>Add Reminder</h3>
+                    </div>
+                </div>
+
+                <!-- Reminder element -->
+                <div id="reminder-1" style="display: none;">Reminder: Don't forget to do something!</div>
+                <!-- <div class="notification deactive"> for indication if reminders have more functionality-->
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+@section Scripts {
+    @{
+        //careful passing duplicate querys, look first at shared layout
+        <script src="~/js/fileManagement/submissiont.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    }
+    <script>
+
+        function showInputPopup() {
+            Swal.fire({
+                title: 'Add Reminder',
+                html:
+                    '<div class="icon">' +
+                    '<input type="radio" name="material-icons-sharp" id="radio1" class="radio">' +
+                    '<label for="radio1" class="material-icons-sharp" style="font-size:50px;margin-right: 25px;">groups</label>' +
+
+                    '<input type="radio" name="material-icons-sharp" id="radio2" class="radio">' +
+                    '<label for="radio2" class="material-icons-sharp" style="font-size:50px;margin-right: 25px;">task</label>' +
+
+                    '<input type="radio" name="material-icons-sharp" class="radio">' +
+                    '<label for="radio3" class="material-icons-sharp" style="font-size:50px;">devices</label>' +
+                    '</div>' +
+                    '<input id="swal-input2" type="datetime-local" class="swal2-input" placeholder="Select Date and Time">' +
+                    '<input id="swal-input1" class="swal2-input" placeholder="Name of reminder">',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                preConfirm: () => {
+                    const iconType = Swal.getPopup().querySelector('input[name="material-icons-sharp"]:checked + label').textContent.trim();
+                    const nameOfReminder = Swal.getPopup().querySelector('#swal-input1').value;
+                    const iconClass = Swal.getPopup().querySelector('input[name="material-icons-sharp"]:checked + label').getAttribute('class');
+                    const dateTime = Swal.getPopup().querySelector('#swal-input2').value;
+                    // perform validation or additional processing here
+                    return { nameOfReminder: nameOfReminder, iconType: iconType, iconClass: iconClass, dateTime: dateTime };
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // data to the controller using AJAX
+                    sendDataToController(result.value);
+                    location.reload();
+                }
+            });
+        }
+
+        function sendDataToController(data) {
+            $.ajax({
+                url: '/Dashboard/AddReminder',
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function (response) {
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+    <script>
+        flatpickr("input[type=datetime-local]", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y (h:S K)",
+            minDate: "today",
+            minTime: "8:00",
+            maxTime: "17:00",
+            parseDate: (datestr, format) => {
+                return moment(datestr, format, true).toDate();
+            },
+        });
+    </script>
+    <script>
+        var lowestReminderDuration = @Model.ReminderList.Min(i => i.ReminderDuration);
+
+        // Set a timeout to display an alarm notification after a delay
+        setTimeout(function () {
+            // Find the reminder element by its ID
+            var reminderElement = document.getElementById("reminder-1");
+
+            // Check if the element exists (in case it has been removed before the timeout)
+            if (reminderElement) {
+                // Display the notification
+                reminderElement.style.display = "block"; // Or any other method to show the notification
+                playNotificationSound();
+            }
+        }, lowestReminderDuration);
+    </script>
+}

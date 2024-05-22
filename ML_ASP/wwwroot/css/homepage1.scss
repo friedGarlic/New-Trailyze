@@ -1,0 +1,103 @@
+﻿@mixin features-heading() {
+    font-size: 4rem;
+    padding-top: 5rem;
+    margin: 2rem 0;
+    color: #fff;
+    text-align: center;
+    position: relative;
+
+    &::after{
+        content: '';
+        position: absolute;
+        bottom: -1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        height: .3rem;
+        width: 60%;
+        border-radius: 5rem;
+        background: #333;
+    }
+}
+
+
+#features {
+    display: grid;
+    place-items: center;
+    min-height: 90vh;
+    margin-bottom: 180px;
+
+    .features-heading {
+        @include features-heading();
+        color: crimson;
+    }
+
+    .box-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+
+        .box {
+            height: 25rem;
+            width: 30rem;
+            border-radius: .5rem;
+            box-shadow: 0 0 .3rem #333;
+            margin: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column;
+            cursor: pointer;
+            overflow: hidden;
+
+            img {
+                width: 180px;
+                height: 180px;
+                transform: translateY(6rem);
+            }
+
+            .up{
+                transform: translateY(8rem);
+            }
+
+            p {
+                font-size: 1.3rem;
+                text-align: center;
+                color: #fff;
+                opacity: 0;
+                transform: translateY(12rem);
+                padding: 0 .4rem;
+            }
+
+            h3 {
+                font-size: 3.3rem;
+                text-align: center;
+                color: #fff;
+                opacity: 0;
+                transform: translateY(12rem);
+                padding: 0 .4rem;
+            }
+
+            &:hover h3 {
+                opacity: 1;
+                transform: translateY(-2rem);
+            }
+
+            &:hover p {
+                opacity: 1;
+                transform: translateY(-1rem);
+            }
+
+            &:hover img {
+                width: 180px;
+                height: 180px;
+                transform: translateY(-2rem);
+            }
+
+            &:hover {
+                background: #333;
+            }
+        }
+    }
+}

@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Account_Model> SignInManager
+@inject UserManager<Account_Model> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item" style="position: relative; top:20px; right: 20px;">
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            <img class="userImage" src="@ViewData["ImageUrl"]" alt="User Image">
+        </a>
+    </li>
+    
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+            @* to align side by side "d-flex align-items-center" *@
+        <a class="nav-link text-dark d-flex align-items-center" id="register" asp-area="Identity" asp-page="/Account/Register"> 
+            <span class="material-symbols-outlined me-2">
+                how_to_reg
+            </span>
+            Register
+        </a>
+    </li>
+
+    <li>
+    <hr class="vertical-line">
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link text-dark d-flex align-items-center" id="login" asp-area="Identity" asp-page="/Account/Login">
+            <span class="material-symbols-outlined" style="margin-right: 10px;">
+                login
+            </span>
+            Login
+        </a>
+    </li>
+}
+</ul>
+
+
+<style>
+    .vertical-line {
+        display: none;
+        height: 40px;
+        width: 0;
+        border: 1px solid black;
+        margin: 0;
+        margin-left:1rem;
+        margin-right:1rem;
+        transform: rotate(180deg);
+    }
+
+    @@media (min-width: 768px) {
+        .vertical-line {
+            display: block; /* Show the vertical line on desktop */
+        }
+    }
+</style>

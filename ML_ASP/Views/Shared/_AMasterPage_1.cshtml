@@ -1,0 +1,127 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ML_ASP.Utility
+
+@inject SignInManager<Account_Model> SignInManager
+@inject UserManager<Account_Model> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ML_ASP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: antiquewhite">
+            <a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                <img style="margin-left: 2rem; width: 9rem; height:auto" class="logo" src="~/assets/dashboard/logo-no-background.png" />
+                    </li>
+                </ul>
+            </a>
+
+            <hr class="vertical-line">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            if (await UserManager.IsInRoleAsync(currentUser, SD.Role_Admin))
+                            {
+                                <a class="nav-link text-dark" asp-action="Admin" asp-controller="Admin">
+                                    <span class="material-symbols-outlined">
+                                        dashboard
+                                    </span>
+                                    Admin Dashboard
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-dark" asp-action="Index" asp-controller="RequirementFile">
+                                    <span class="material-symbols-outlined">
+                                        dashboard
+                                    </span>
+                                    Requirement Form
+                                </a>
+                            }
+                            if (await UserManager.IsInRoleAsync(currentUser, SD.Role_User))
+                            {
+                                <a class="nav-link text-dark" asp-action="Dashboard" asp-controller="Dashboard">
+                                    <span class="material-symbols-outlined">
+                                        dashboard
+                                    </span>
+                                    Trainee Dashboard
+                                </a>
+                            }
+                            
+
+                        }
+                    else
+                    {
+                        <a class="nav-link text-dark d-flex align-items-center" asp-action="Index" asp-controller="Home">
+                            <span class="material-symbols-outlined me-2">
+                                home
+                            </span>
+                            Home
+                        </a>
+                    }
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <partial name="_LoginPartial" />
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <partial name="_Notification" />
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+<style>
+    .vertical-line {
+        display: none;
+        height: 40px;
+        width: 0;
+        border: 1px solid black;
+        margin: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        transform: rotate(180deg);
+    }
+
+    @@media (min-width: 768px) {
+        .vertical-line {
+            display: block; /* Show the vertical line on desktop */
+        }
+    }
+</style>

@@ -1,0 +1,272 @@
+﻿@model ML_ASP.Models.ViewModel.SubmissionVM
+@{
+	Layout = "_AMasterpage_2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+	<!-- popup modal -->
+	
+	<!-- My CSS -->
+	<link rel="stylesheet" href="~/css/adminStyle.css">
+	<title>AdminHub</title>
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-smile'></i>
+			<span class="text">AdminHub</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a asp-controller="Admin" asp-action="Admin">
+					<i class='bx bxs-dashboard'></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li class="active">
+				<a asp-controller="Admin" asp-action="Analytics">
+					<i class='bx bxs-doughnut-chart'></i>
+					<span class="text">Analytics</span>
+				</a>
+			</li>
+			<li>
+				<a asp-controller="TimeLog" asp-action="TimeLog">
+					<i class='bx bxs-spreadsheet'></i>
+					<span class="text">Time Log</span>
+				</a>
+			</li>
+			<li>
+				<a asp-controller="Admin" asp-action="RequirementFile">
+					<i class='bx bxs-file-pdf'></i>
+					<span class="text">Requirement Files</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<!--<li>
+				<a href="#" class="logout">
+					<i class='bx bxs-log-out-circle'></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>-->
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu'></i>
+			<a href="#" class="nav-link">Categories</a>
+
+			<form asp-controller="Admin" asp-action="ProfileFilter" method="GET" id="searchForm">
+				<div class="form-input">
+					<input type="search" name="searchName" id="searchInput" placeholder="Search..." value="@Model.SearchQuery">
+					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+				</div>
+			</form>
+
+		</nav>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left">
+					<h1>Analytics</h1>
+					<ul class="breadcrumb">
+						<li>
+							<a href="#">Analytics</a>
+						</li>
+						<li><i class='bx bx-chevron-right'></i></li>
+						<li>
+							<a class="active" href="#">Home</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- USER PROFILE SETTINGS START -->
+			<div class="profile">
+			<h1 class="heading"> USER PROFILES </h1>
+			<h3 class="title"> Changes and Updates </h3>
+				<div class="box-container">
+					@foreach (var models in Model.AccountList.Where(m =>
+										(string.IsNullOrEmpty(Model.SearchQuery) ||
+										m.FullName.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
+										(m.Course != null && m.Course.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase))
+										)))
+					{
+						<div class="box">
+							<img src="@models.ImageUrl" />
+							<h3> @models.FullName </h3>
+							<p> Description: This is for descript of individual user.</p>
+							<p> Time Remaining: @models.HoursRemaining</p>
+							<p> Weekly Report: @models.WeeklyReportRemaining</p>
+							<p> Overall Performance: Excellent</p>
+
+							<button type="button" class="btn btn-primary" onclick="showInputPopup('@models.Id', '@models.HoursRemaining', '@models.WeeklyReportRemaining', '@models.Course')">Edit Profile</button>
+							<button type="button" class="btn btn-primary" onclick="showChatPopup('@models.Id')" style="margin-top: 10px;"> Analyze Performance</button>
+						</div>
+					}
+				</div>
+			</div>
+			<!-- USER PROFILE SETTINGS END -->
+			
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+	</body>
+</html>
+@section Scripts{
+	@{
+		<script src="~/js/adminScript.js"></script>
+	}
+	<script>
+		var gradeList;
+		async function showChatPopup(id) {
+			try {
+				const data = await retrieveGradeList(id);
+
+				await sendToController(data)
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		}
+
+		function retrieveGradeList(id) {
+			return new Promise((resolve, reject) => {
+				$.ajax({
+					url: '/Admin/RetrieveGradeList',
+					type: 'GET',
+					dataType: 'json',
+					data: { id: id }, // Properly send the id as data
+					success: function (response) {
+						resolve(response); // Resolve the promise with the received data
+					},
+					error: function (xhr, status, error) {
+						reject(error); // Reject the promise if an error occurs
+					}
+				});
+			});
+		}
+
+
+		function sendToController(data) {
+			var teststring = data.data;
+			const chartData = {
+				series: [{ name: 'Grade', data: teststring}],
+				chart: {
+					height: 350,
+					type: 'area',
+					toolbar: {
+						show: false
+					}
+				},
+				xaxis: {
+					categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+					axisBorder: { show: false },
+					labels: { style: { colors: '#a7a7a7', fontFamily: 'system-ui' } }
+				}
+			};
+			$.ajax({
+				url: '/Admin/SendToApi',
+				type: 'GET',
+				dataType: 'json',
+				success: function (response) {
+					// Display the response using SweetAlert
+					let timerInterval;
+					Swal.fire({
+						title: "Analysis!",
+						html: "Analyzing data from user in <b></b> milliseconds.",
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: () => {
+							Swal.showLoading();
+							const timer = Swal.getPopup().querySelector("b");
+							timerInterval = setInterval(() => {
+								timer.textContent = `${Swal.getTimerLeft()}`;
+							}, 100);
+						}
+					}).then((result) => {
+						Swal.fire({
+							title: 'Output Result',
+							html: `<div id="chart" class="charts">
+										<h2> Performance Progress</h2>
+										<p> By Week</p>
+										<div class="pulse"></div>
+										<div class="chart-area"></div>
+									</div>
+									<div>
+										<p> `+ response.data + `<p>
+									</div>`,
+							didOpen: () => { //--------------------- THIS IS the syntax that made the script of apexchart works
+								const chartContainer = document.getElementById('chart');
+								const chart = new ApexCharts(chartContainer, chartData);
+								chart.render();
+							}
+						});
+					});
+				}
+			});
+		}
+
+
+	</script>
+	<script>
+		function showInputPopup(id, hoursRemaining, weeklyReportRemaining, course) {
+			Swal.fire({
+				title: 'Edit Profile',
+				html:
+					'<input id="swal-input1" class="swal2-input" placeholder="Number of Hours (Current: ' + hoursRemaining + ')">' +
+					'<input id="swal-input2" class="swal2-input" placeholder="Weekly Report (Current: ' + weeklyReportRemaining + ')">' +
+					'<input id="swal-input3" class="swal2-input" placeholder="Course (Current: ' + course + ')">',
+				showCancelButton: true,
+				confirmButtonText: 'Submit',
+				cancelButtonText: 'Cancel',
+				preConfirm: () => {
+					const numberOfHours = Swal.getPopup().querySelector('#swal-input1').value;
+					const weeklyReport = Swal.getPopup().querySelector('#swal-input2').value;
+					const _course = Swal.getPopup().querySelector('#swal-input2').value;
+					// perform validation or additional processing here
+					return { id: id, numberOfHours: numberOfHours, weeklyReport: weeklyReport, _course: _course};
+				},
+				allowOutsideClick: () => !Swal.isLoading()
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// data to the controller using AJAX
+					sendDataToController(result.value);
+					location.reload();
+				}
+			});
+		}
+
+		function sendDataToController(data) {
+			$.ajax({
+				url: '/Admin/EditProfile',
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				success: function (response) {
+					console.log("SUCCESS");
+				},
+				error: function (error) {
+					console.error(error);
+				}
+			});
+		}
+	</script>
+}

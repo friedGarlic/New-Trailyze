@@ -1,0 +1,445 @@
+﻿* {
+    font-family: Graphik,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    transition: all .2s linear;
+    text-decoration: none;
+}
+
+html{
+    font-size: 62.6%;
+}
+
+body{
+    overflow-x: hidden;
+}
+
+.button {
+    min-width: max-content;
+    text-align: center;
+    border-radius: 4px;
+    margin: 1rem 0;
+    outline: none;
+    position: relative;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #282C33;
+    color: #FFFFFF;
+    background-color: #282C33;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: inherit;
+    line-height: 1;
+    padding: 12px 24px;
+    display: inline-block;
+}
+
+.button a:link, .button a:visited{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.button a:hover {
+    color: #000000;
+}
+
+.button:hover {
+    color: #000000;
+    background-color: #9babc7;
+}
+
+.slider {
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+}
+
+.slides{
+    width: 800%;
+    height: 500px;
+    display: flex;
+}
+
+.slides input{
+    display: none;
+}
+
+.slide{
+    width: 20%;
+    transition: 2s;
+}
+
+.slide img{
+    width: 1400px;
+    height: 800px;
+}
+
+.slide .content{
+    position: relative;
+    display: flex;
+    top: -350px;
+    left: 50px;
+    width: 300px;
+    color: #282C33;
+    transform: translate(0, 0);
+    align-items: center;
+    justify-content: center;
+}
+
+.slide .content h1{
+    font-family: system-ui;
+    font-size: 40px;
+    font-weight: bold;
+    opacity: 0;
+    margin: 20px;
+    animation: showcontent 1s ease-in-out 1 forwards;
+}
+
+.slide .content button {
+    padding: 10px 20px 10px;
+    border: none;
+    opacity: 0;
+    animation: showcontent 1s ease-in-out 0.6s 1 forwards;
+}
+
+.navigation-manual {
+    width: 1300px;
+    top: 573px;
+    margin-top: -40px;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+}
+
+.manual-btn{
+    border: 2px solid #000000;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.manual-btn:not(:last-child){
+    margin-right: 40px;
+}
+
+.manual-btn:hover{
+    background: #000000;
+}
+
+#radio1:checked ~ .first{
+    margin-left: 0;
+}
+
+#radio2:checked ~ .first{
+    margin-left: -20%;
+}
+
+#radio3:checked ~ .first {
+    margin-left: -40%;
+}
+
+#radio4:checked ~ .first {
+    margin-left: -60%;
+}
+
+
+/*slide content*/
+/*slide content*/
+
+.statement {
+    position: absolute;
+    background: #FFF3D9;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    left: 0;
+    transform: translate(0, 0);
+    z-index: 3;
+}
+
+.statement h3{
+    color: #282C33;
+    font-size: 60px;
+    font-weight: 600;
+}
+
+p {
+    color: #282C33;
+    font-size: 20px;
+    font-weight: 100;
+    line-height: 20px;
+}
+
+@keyframes showcontent {
+    from {
+        opacity: 0;
+        transform: translate(0, 100px);
+        filter: blur(33px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+        filter: blur(0);
+    }
+}
+
+.navigate-auto {
+    width: 1300px;
+    top: 573px;
+    margin-top: -40px;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+}
+
+.navigate-auto div {
+    border: 2px solid #000000;
+    padding: 5px;
+    border-radius: 10px;
+    transition: 1s;
+}
+
+.navigate-auto div:not(:last-child) {
+    margin-right: 40px;
+}
+
+#radio1:checked ~ .navigate-auto .auto-btn1 {
+    background: #000000;
+}
+
+#radio2:checked ~ .navigate-auto .auto-btn2 {
+    background: #000000;
+}
+
+#radio3:checked ~ .navigate-auto .auto-btn3 {
+    background: #000000;
+}
+
+#radio4:checked ~ .navigate-auto .auto-btn4 {
+    background: #000000;
+}
+
+.statement .wave {
+    position: absolute;
+    bottom: -9rem;
+    left: 0;
+    height: 11rem;
+    width: 100%;
+    background: url(../assets/dashboard/wave2.png);
+    background-size: 100rem 11rem;
+    background-repeat: repeat-x;
+    animation: waves 40s linear infinite;
+}
+
+.wave2{
+    animation-direction: reverse;
+    opacity: .2;
+}
+
+.wave3 {
+    animation-duration: 4s;
+    opacity: .5;
+}
+
+@keyframes waves{
+    0%{
+        background-position-x: 0;
+    }
+
+    100%{
+        background-position-x: 100rem;
+    }
+}
+
+/* ------------- INFO GRAPHICS SECTION ABOUT AND SERVUCES ----------- */
+/* (1920x1080) Full HD Display */
+@media screen and (min-width: 1920px) {
+
+}
+
+.heading{
+    margin: 2rem;
+    padding-top: 6rem;
+    display: inline-block;
+    font-size: 3.5rem;
+    position: relative;
+    left: -150px;
+}
+.heading::before, .heading::after {
+    content: '';
+    position: absolute;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-top: .4rem solid #333;
+    border-left: .4rem solid #333;
+}
+
+.heading::before{
+    top: 5.8rem; left: -2rem;
+}
+
+.heading::after{
+    bottom: -.5rem; right: -2rem;
+    transform: rotate(180deg);
+}
+
+.about{
+    right: 70px;
+    top: 400px;
+    min-height: 100vh;
+    width: 100vw;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.about .row{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4rem;
+}
+
+.about .row .content{
+    position: relative;
+    top: 80px;
+    text-align:left;
+}
+
+.about .row .image img{
+    position: relative;
+    bottom: 250px;
+    left: 350px;
+    width: 40vw;
+}
+
+.about .row .content h3 {
+    color: crimson;
+    font-size: 3.5rem;
+}
+
+.about .row .content p {
+    font-size: 2.0rem;
+}
+
+
+.services {
+    position: relative;
+    top: 50px;
+    width: auto;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.services .row{
+    margin: 2rem 0;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.services .row .image img{
+    position: relative;
+    width: 40vw;
+    height: 40vh;
+    right: 450px;
+}
+
+.services .row .content{
+    position: relative;
+    text-align: left;
+    left: 450px;
+    bottom: 220px;
+    padding:0 3rem;
+}
+
+.services .row .content h3{
+    color: crimson;
+    font-size: 4rem;
+}
+
+.services .row .content p{
+    font-size: 2.0rem;
+    padding: 1rem 0;
+}
+
+/* ------------- INFO GRAPHICS SECTION ABOUT AND SERVUCES ----------- */
+.contact {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: #333;
+    display: inline-block;
+}
+
+.contact .tae{
+    padding: 10px;
+    color: crimson;
+    margin-top: 6px;
+    text-align-last: center;
+}
+
+.contact .row{
+    display: flex;
+    justify-content: flex-end;
+    padding: 5rem 0;
+    width: 100%;
+}
+
+.contact .row .contact-image img{
+    width: 50rem;
+    height:auto;
+    /*width: 50vw;
+    height: 70vh;*/
+}
+
+.contact .row .form-container{
+    width: 50%;
+    padding-right: 6rem;
+    position: absolute;
+    background-color: antiquewhite;
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+.contact .row .form-container input, textarea{
+    height: 4rem;
+    width: 100%;
+    background: #fff;
+    border: none;
+    border-radius: 5rem;
+    padding: 0 1rem;
+    margin: 1rem 0;
+    font-size: 1.7rem;
+    transition: .2s linear;
+}
+
+.contact .row .form-container input:focus, textarea:focus {
+    border: .2rem solid crimson;
+}
+.contact .row .form-container textarea {
+    height: 20rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    resize: none;
+}
+
+.contact .row .form-container .form-button:hover{
+    background-color: forestgreen;
+}
+
+#about {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    #about{
+        display: block;
+    }
+}

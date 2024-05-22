@@ -1,0 +1,90 @@
+﻿@model ML_ASP.Models.ViewModel.RequirementVM
+
+@{
+    Layout = "_AMasterPage_2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Pop-Up Design</title>
+    <link rel="stylesheet" href="~/css/CustomPopup.css">
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step2Submit">
+    <div class="main-content">
+        <p>Document Requirements</p>
+
+        <p>Remember: Take the template and talk to the employer for agreement in Training. The file is required to be submitted and checked by the admin to register the account fully. Attached the document on buttom bellow.</p>
+        <div class="document-item">
+            <p>Contract Agreement</p>
+            @if (Model.FileName2 == null)
+            {
+                <button class="green-button" id="addDocumentButton">+ Add Document</button>
+            }
+            else
+            {
+                @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                <button class="green-button" id="addDocumentButton">+ Add Document</button>
+
+                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName2" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+            }
+            <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-CONTRACT-AGREEMENT@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+        </div>
+    </div>
+
+        @*     For document Contract Aggreement     *@
+        <div id="popup" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title2">Title:</label>
+                <input type="text" name="title2" id="title2" placeholder="Provide document title, e.g., 'Risks on site'">
+
+                <label for="description2">Document Description:</label>
+                <textarea id="description2" name="description2" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton2" name="postedFiles1" />
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="step" value="laststep" />
+        <a class="btn btn-secondary" style="text-decoration:none;" asp-action="Step4" asp-controller="RequirementFile"> Previous </a>
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
+@section Scripts{
+    @{
+        <script src="~/js/Popup/CustomPopup.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    }
+    <script>
+        function infoPopup() {
+            Swal.fire({
+                title: "Instruction",
+                text: `Files that are submitted on steps will be a sent as pending permission to admin, 
+                        Further information for acceptance will be sent in Mail you provided in registration.`,
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Understood!"
+            });
+        } 
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            infoPopup();
+        });
+    </script>
+}

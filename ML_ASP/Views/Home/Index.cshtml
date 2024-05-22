@@ -1,0 +1,201 @@
+﻿@{
+    Layout = "_AMasterPage_1";
+}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="~/css/homepage.css" />
+    <link rel="stylesheet" href="~/css/homepage1.css" />
+
+</head>
+    <body>
+        <div class="slider">
+            <div class="slides">
+                <!-- radio buttons-->
+                <input type="radio" name="radio-btn" id="radio1" />
+                <input type="radio" name="radio-btn" id="radio2" />
+                <input type="radio" name="radio-btn" id="radio3" />
+                <!-- radio buttons-->
+
+                <!--slides imags-->
+                <div class="slide first">
+                <img src="~/assets/brand/UMISO.jpg" />
+                    <div class="content">
+                        <h1>UMISO</h1>
+                    <form style="display: inline" action="https://www.bing.com/maps?osid=2b3643d8-0e65-41bb-9e62-008bb130e33e&cp=15.320103~119.983718&lvl=16.87061&pi=0&v=2&sV=2&form=S00027" method="get">
+                    </form>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="~/assets/brand/toyota.jpg" />
+                    <div class="content">
+                    <h1 style ="color: crimson; opacity: 0.5;">Toyota</h1>
+                    <form style="display: inline" action="https://www.bing.com/search?q=Toyota+branch+in+olongapo+google+map&PC=U316&FORM=CHROMN" method="get">
+                    </form>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="~/assets/brand/PSA.jpg" />
+                    <div class="content">
+                    <h1 style="color: blue; opacity: 0.5;">PSA Olongapo</h1>
+                    <form style="display: inline" action="https://www.bing.com/search?q=PSA+olongapo+googlemap&PC=U316&FORM=CHROMN" method="get">
+                    </form>
+                    </div>
+                </div>
+                <!-- slides end-->
+
+                <!--auto navigate-->
+                <div class="navigate-auto">
+                    <div class="auto-btn1"></div>
+                    <div class="auto-btn2"></div>
+                    <div class="auto-btn3"></div>
+                </div>
+                <!-- auto navigate end-->
+        </div>
+
+        <div class="navigation-manual">
+            <label for="radio1" class="manual-btn"></label>
+            <label for="radio2" class="manual-btn"></label>
+            <label for="radio3" class="manual-btn"></label>
+        </div>
+    </div>
+    <!-- SLIDER ENDS _------------->
+
+    <div class="statement">
+        <h3 class="size">Welcome to <spanc class="typing-text"></spanc></h3>
+        <p>
+            Discover a new way to analyze your performance. Trailyze is your go-to destination
+            for monitoring, reminding, storing, predicting. <br />Your all-in-one solution for elevating trainee 
+            performance monitoring and prediction.Let's embark on a journey of enhanced training 
+            experiences and informed 
+            decision-making.
+            Whether you're a student looking to improve
+            ones performance, ride the wave of platform, we've got you covered.
+        </p>
+        <a class="button" id="register" asp-area="Identity" asp-page="/Account/Register"> Sign Up for Free</a>
+        
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+    </div>
+    <!-- ---------- HOME SLIDER & WAVE ENDS ---------- -->
+
+    <section class="about" id="about">
+        <h1 class="heading"> About Us</h1>
+
+        <div class="row">
+
+            <div class="content">
+                <h3>Elevating Performance Monitoring for Trainees</h3>
+                <p>Trailyze is not just a platform; 
+                    <br />it's your dedicated partner in optimizing training and development programs. 
+                    <br />Designed with precision, Trailyze takes performance monitoring to a whole new level, 
+                    <br />providing insights that are not just informative but predictive.</p>
+            </div>
+
+            <div class="image">
+                <img src="~/assets/dashboard/Charts-bro.svg" alt="" />
+            </div>
+
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <h1 class="heading"> UI & UX</h1>
+
+        <div class="row">
+
+            <div class="image">
+                <img src="~/assets/dashboard/Softwareintegration-bro.svg" alt="" />
+            </div>
+
+            <div class="content">
+                <h3>Elevate Your Training Experience</h3>
+                <p>
+                    Trailyze boasts a clean, modern design that puts everything  
+                    <br />you need right at your fingertips. The dashboard is not just informative; 
+                    <br />it's visually stunning,
+                    <br />providing a clear snapshot of your trainee's progress and achievements.
+                </p>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- -----INFO GRAPHIC ENDS----- -->
+    <section id="features">
+    <h1 class="features-heading">Our Features</h1>
+
+    <div class="box-container">
+        <div class="box">
+            <img class="up" src="~/assets/dashboard/analyzing.png" />
+                <h3>
+                    Performance Metric
+                </h3>
+                <p>Trailyze isn't just about monitoring; it's about deep-dive performance analysis. 
+                    Our robust analytics engine provides real-time insights into trainee progress, 
+                    strengths, and areas for improvement. Visualize trends, track achievements, and 
+                    make informed decisions to enhance individual and group performance.</p>
+        </div>
+        <div class="box">
+            <img src="~/assets/dashboard/envelope.png" />
+            <h3>
+                Mail
+            </h3>
+                <p>Stay in the loop with Trailyze's email monitoring feature. 
+                    Seamlessly integrate your email accounts to centralize communication related to training activities. 
+                    Keep track of important discussions, feedback, and updates right from the platform.</p>
+        </div>
+        <div class="box">
+            <img src="~/assets/dashboard/folder.png" />
+                <h3>
+                    File Management
+                </h3>
+                <p>Trailyze simplifies file management, 
+                    ensuring all your training materials are organized and easily accessible. 
+                    Upload, organize, and share files effortlessly. 
+                    Whether it's training documents, presentations, or multimedia resources, 
+                    everything is just a click away.</p>
+        </div>
+    </div>
+    </section>
+    <!-- ---- FEATURES END! ---- -->
+
+    <section class="contact" id="contact">
+        <h1 class="tae">Contact Us</h1>
+        <h3 class="tae">Let's have a conversation.</h3>
+        <div class="row">
+            <div class="contact-image">
+                <img src="~/assets/dashboard/Contact-us-amico.png" />
+            </div>
+
+            <div class="form-container">
+                <form action="@Url.Action("SendEmail", "Home")" method="post">
+                    <input type="text" name="fullName" placeholder="Full name">
+                    <input type="email" name="email" placeholder="Email">
+                    <textarea name="message" id="" cols="30" rows="10" placeholder="Message"></textarea>
+
+                    <input class="form-button" type="submit" value="Submit Message">
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ---- scripts ---- -->
+    <script src="~/js/slider.js"></script>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script>
+        var typed = new Typed('.typing-text', {
+            strings: ['Trailyze', 'Train', 'Analyze'],
+            typeSpeed: 240,
+            loop: true
+        });
+    </script>
+    <!-- ---- scripts ---- -->
+
+    </body>
+</html>

@@ -1,0 +1,64 @@
+﻿@model ML_ASP.Models.ViewModel.RequirementVM
+
+@{
+    Layout = "_AMasterPage_2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Pop-Up Design</title>
+    <link rel="stylesheet" href="~/css/CustomPopup.css">
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step3Submit">
+        <div class="main-content">
+            <p>Document Requirements</p>
+
+            <div class="document-item">
+                <p>Parents Concent</p>
+                @if (Model.FileName3 == null)
+                {
+                    <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+                }
+                else
+                {
+                    @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                    <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName3" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                }
+                <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=PARENTAL-CONSENT-2@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+            </div>
+        </div>
+
+        @*     For document Contract Aggreement     *@
+        <div id="popup3" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn3">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title3">Title:</label>
+                <input type="text" name="title3" id="title3" placeholder="Provide document title, e.g., 'Document for OJT'">
+
+                <label for="description3">Document Description:</label>
+                <textarea id="description3" name="description3" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton3" name="postedFiles2" />
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-secondary" style="text-decoration:none;" asp-action="Step3" asp-controller="RequirementFile"> Previous </a>
+        <button type="submit"> Next </button> <br /> <br />
+    </form>
+
+    <script src="~/js/Popup/CustomPopup.js"></script>
+</body>
+</html>

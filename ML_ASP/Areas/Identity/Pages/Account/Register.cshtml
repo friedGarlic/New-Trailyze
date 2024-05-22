@@ -1,0 +1,305 @@
+﻿@page
+@model RegisterModel
+@{
+    Layout = "_AMasterPage_2";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a class="logo-container" asp-controller="Home" asp-action="Index">
+    <img style="width:12rem;height:auto;" class="logo" src="~/assets/dashboard/logo-no-background.png" />
+</a>
+<body>
+    <div class="background">
+    </div>
+</body>
+<div class="login-container row" style="margin-top: 6rem; text-align: center;">
+    <h1 style="text-align: center;">Create a new account.</h1>
+    <hr />
+
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+        <div class="row">
+    <div class="col-md-4 mx-md-auto ml-sm-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-2 py-1">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Password" id="passwordInput" class="form-control" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger" id="password-error"></span>
+                <ul id="passwordErrors">
+                    <li id="lengthError" style="display: none; Color: Red;">Password must be at least 8 and at most 16 characters long.</li>
+                    <li id="specialCharError" style="display: none; Color: Red;">Password must contain at least 1 special character.</li>
+                    <li id="numericCharError" style="display: none; Color: Red;">Password must contain at least 1 numerical character.</li>
+                    <li id="lowercaseCharError" style="display: none; Color: Red;">Password must contain at least 1 lowercase letter.</li>
+                </ul>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.ConfirmPassword" class="form-control" aria-required="true" placeholder="password" />
+                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input asp-for="Input.FullName" class="form-control" aria-required="true" placeholder="password" />
+                <label asp-for="Input.FullName">FullName</label>
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Age" class="form-control" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Age">Age</label>
+                <span asp-validation-for="Input.Age" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-2">
+                <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" placeholder="password" />
+                <label asp-for="Input.PhoneNumber">Phone Number</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            @if (Model.IsAdminRegistration)
+            {
+                <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
+                    <option disabled selected>--Select Role--</option> 
+                </select>
+            }
+            @if (ModelState.Any())
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+    </div>
+        @if (!Model.IsAdminRegistration)
+            {
+                <div class="col-md-1">
+                    <hr class="vertical-line">
+                    <p class="m-0">And</p>
+                    <hr class="vertical-line">
+                </div>
+                <div class="col-md-4 mx-md-auto ml-sm-5" style="margin-top: 4rem;">
+                    <div class="upload-container text-center ">
+                        <label> Proof of Enrollment </label>
+                        <div class="prediction" style="margin-bottom: 20px;">
+                            <input type="file" asp-for="Input.Enrollment" multiple />
+                            <span asp-validation-for="Input.Enrollment" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="upload-container text-center">
+                        <label> Proof of Certificate of Medical </label>
+                        <div class="prediction" style="margin-bottom: 20px;">
+                            <input type="file" asp-for="Input.Medical" multiple />
+                            <span asp-validation-for="Input.Medical" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="upload-container text-center">
+                        <p>Already have an account?
+                            <a style="text-decoration:none;" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    <button style="margin-top: 1rem;" id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+    @* ------------------ *@
+    @* <div class="col-md-5"> DISABLED THE EXTERNEAL SERVICES FOR NOW
+        <section>
+            <h3>Use another service to register.</h3>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div> *@
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordErrors = document.getElementById('passwordErrors');
+        const lengthError = document.getElementById('lengthError');
+        const specialCharError = document.getElementById('specialCharError');
+        const numericCharError = document.getElementById('numericCharError');
+        const lowercaseCharError = document.getElementById('lowercaseCharError');
+
+        passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+
+            lengthError.style.display = password.length < 8 || password.length > 16 ? 'block' : 'none';
+            specialCharError.style.display = /[^\w\s]/.test(password) ? 'none' : 'block';
+            numericCharError.style.display = /\d/.test(password) ? 'none' : 'block';
+            lowercaseCharError.style.display = /[a-z]/.test(password) ? 'none' : 'block';
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Check if admin registration
+        var isAdminRegistration = @Html.Raw(Json.Serialize(Model.IsAdminRegistration));
+
+        if (!isAdminRegistration) {
+            // Apply validation rules for non-admins
+            $("#registerForm").validate({
+                rules: {
+                    "Input.Enrollment": {
+                        required: true
+                    },
+                    "Input.Medical": {
+                        required: true
+                    }
+                },
+                messages: {
+                    "Input.Enrollment": {
+                        required: "Proof of Enrollment is required"
+                    },
+                    "Input.Medical": {
+                        required: "Proof of Certificate of Medical is required"
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+@section Scripts {
+    @{<partial name="_ValidationScriptsPartial" />}
+    
+}
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<style>
+    :root {
+        --poppins: 'Poppins', sans-serif;
+        --lato: 'Lato', sans-serif;
+        --light: #F9F9F9;
+        --blue: #3C91E6;
+        --light-blue: #CFE8FF;
+        --grey: #eee;
+        --dark-grey: #AAAAAA;
+        --dark: #342E37;
+        --red: #DB504A;
+        --yellow: #FFCE26;
+        --light-yellow: #FFF2C6;
+        --orange: #FD7238;
+        --light-orange: #FFE0D3;
+        --color-primary: #6C9BCF;
+        --color-danger: #FF0060;
+        --color-success: #1B9C85;
+        --color-warning: #F7D060;
+        --color-white: #fff;
+        --color-info-dark: #7d8da1;
+        --color-dark: #363949;
+        --color-light: rgba(132, 139, 200, 0.18);
+        --color-dark-variant: #677483;
+        --color-background: #f6f6f9;
+        --card-border-radius: 2rem;
+        --border-radius-1: 0.4rem;
+        --border-radius-2: 1.2rem;
+        --card-padding: 1.8rem;
+        --padding-1: 1.2rem;
+        --box-shadow: 0 2rem 3rem var(--color-light);
+    }
+
+    body {
+        background-image: url('/assets/bgReg.jpg');
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .logo-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 10px;
+        animation: transitionIn 1s;
+    }
+
+    .prediction {
+        background-color: var(--color-white);
+        border: 2px dashed var(--color-primary);
+        color: var(--color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        height: 50px;
+        border-radius: 15px;
+    }
+
+    .vertical-line {
+        display: none;
+        height: 200px;
+        width: 0;
+        border: 1px solid black;
+        margin: 0;
+        margin-left: 2rem;
+        transform: rotate(180deg);
+    }
+
+    @@media (min-width: 768px) {
+        .vertical-line {
+            display: block; /* Show the vertical line on desktop */
+        }
+    }
+
+    .login-container {
+        background-color: antiquewhite;
+        width: 100%;
+        max-width: auto;
+        margin: 0 auto;
+        box-sizing: border-box;
+        border: 1px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: left;
+        animation: transitionIn 1s;
+    }
+
+    @@keyframes transitionIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

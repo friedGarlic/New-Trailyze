@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="~/css/styleDashboard.css">
+    <link rel="stylesheet" href="~/css/CustomPopupDashboard.css" />
     <title>Responsive Dashboard Design #1 | AsmrProg</title>
 </head>
 
@@ -228,6 +229,51 @@
             </div>
             <!-- End of Nav -->
 
+            <!-- STart of Request overtime-->
+            <div class="reminders">
+                <div class="header">
+                    <h2>Overtime Requests</h2>
+                </div>
+                @foreach (var i in Model.ReminderList) // if theres an error here that means your not passing the ReminderList obj
+                {
+                    <div class="notification" id="reminder-@i.Id">
+                        <div class="icon">
+                            <span class="@i.IconClass">
+                                <!-- changes for icon -->
+                                @i.IconType
+                            </span>
+                        </div>
+                        <div class="content">
+                            <div class="info">
+                                <h3>@i.Name</h3>
+                                <small class="text_muted">
+                                    @i.ReminderDateTime
+                                </small>
+                            </div>
+                            <span class="material-icons-sharp">
+                                more_vert
+
+                                <form method="post" asp-controller="Dashboard" asp-action="DeleteReminder" asp-route-id="@i.Id">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </span>
+                        </div>
+                    </div>
+
+                }
+
+                <div id="addDocumentButton" class="notification add-reminder">
+                    <div>
+                        <span class="material-icons-sharp">
+                            add
+                        </span>
+                        <h3>Request Overtime</h3>
+                    </div>
+                </div>
+            </div>
+            <!-- END of Request overtime-->
+
+            <!-- Start of Reminders -->
             <div class="reminders">
                 <div class="header">
                     <h2>Reminders</h2>
@@ -271,10 +317,14 @@
                 <div id="reminder-1" style="display: none;">Reminder: Don't forget to do something!</div>
                 
             </div>
+            <!--END OF Reminder element -->
+
         </div>
     </div>
+    <partial name="_CustomPopup" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/js/Popup/CustomPopup.js"></script>
     <script>
         let countdownInterval;
 
@@ -296,6 +346,12 @@
             let rs = parseInt("@ViewBag.RemainingSeconds");
             let rm = parseInt("@ViewBag.RemainingMinutes");
             let rh = parseInt("@ViewBag.RemainingHours");
+
+
+            //let approvedOvertime = @ViewBag.ApprovedOvertimeHours; // Get approved overtime hours
+            // if (approvedOvertime) {
+            //     totalInitialSecondsRemaining += approvedOvertime * 3600;
+            // }
 
             let totalInitialSeconds = (hc * 3600) + (mc * 60) + sc;
             let totalInitialSecondsRemaining = (rh * 3600) + (rm * 60) + rs;
@@ -370,6 +426,7 @@
                 if (result.isConfirmed) {
                     // data to the controller using AJAX
                     sendDataToController(result.value);
+                    location.reload();
                     window.location = '/Dashboard/Dashboard';
                 }
             });

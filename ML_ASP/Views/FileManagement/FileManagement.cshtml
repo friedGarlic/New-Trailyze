@@ -225,7 +225,7 @@
                 if (result.isConfirmed) {
                     // data to the controller using AJAX
                     sendDataToController(result.value);
-                    location.reload();
+                    window.location = '/FileManagement/FileManagement';
                 }
             });
         }

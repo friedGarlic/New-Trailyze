@@ -370,7 +370,7 @@
                 if (result.isConfirmed) {
                     // data to the controller using AJAX
                     sendDataToController(result.value);
-                    location.reload();
+                    window.location = '/Dashboard/Dashboard';
                 }
             });
         }
@@ -480,7 +480,7 @@
                 if (result.isConfirmed) {
                     // Manually trigger the form submission
                     document.getElementById('approvalForm').submit();
-                    location.reload();
+                    window.location = '/Dashboard/Dashboard';
                 }
             });
         }

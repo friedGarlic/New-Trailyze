@@ -380,12 +380,6 @@ namespace ML_ASP.Controllers
 		[Authorize]
 		public async Task<IActionResult> ChangeRegistrationRole(Account_Model account)
 		{
-			//         await _userManager.RemoveFromRoleAsync(account, SD.Role_Unregistered);
-
-			//await _userManager.AddToRoleAsync(account, SD.Role_User);
-
-			//         return View(nameof(Index));
-
 			var user = await _userManager.FindByIdAsync(account.Id);
 			if (user == null)
 			{

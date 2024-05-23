@@ -72,14 +72,99 @@ namespace ML_ASP.Controllers
 
 			return View(submissionVM);
 		}
-
+        public IActionResult RequirementFile()
+		{
+			return View();
+		}
 
         [Authorize(Roles = SD.Role_Admin)]
-        public IActionResult RequirementFile()
+		[HttpPost]
+        public IActionResult RequirementFileUpdate(List<string> id, List<string> registrationPermission, List<string> originalApprovalStatus,
+            List<int> fileId, List<string> fileApprovalStatus, List<string> fileUserId, List<string> originalFileApprovalStatus)
         {
+            string newApprovalStatus = "";
+
+            for (int i = 0; i < id.Count; i++)
+            {
+                if (originalApprovalStatus[i] != registrationPermission[i])
+                {
+                    newApprovalStatus = registrationPermission[i];
+
+                    try
+					{
+						var getAcc = _unit.Account.GetFirstOrDefault(u => u.Id == id[i]);
+
+						// Synchronously call the method to change the role
+						ChangeRegistrationRole(getAcc).Wait(); // Blocking call, not recommended like i did, this
+															   // synchronous blocking calls, as they can lead to deadlocks if not used carefully, especially in ASP.NET Core applications
+
+						_unit.Account.UpdateRegistrationStatus(id[i], newApprovalStatus);
+
+						//----for notification
+
+						Notification_Model notif = new Notification_Model();
+                        notif.Title = "Pending Status";
+                        notif.Description = "Your Pending status for registration is changed to:" + newApprovalStatus;
+                        notif.NotifUserId = id[i];
+
+                        _unit.Notification.Add(notif);
+
+                        // save changes in batch/ like dishes in restaurant
+                        _unit.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ex.Message;
+                        Console.WriteLine("Exception Message: " + message);
+                    }
+                }
+            }
 
 
-            return View();
+			for (int i = 0; i < fileId.Count; i++)
+			{
+				if (originalFileApprovalStatus[i] != fileApprovalStatus[i])
+				{
+					int changedId = fileId[i]; //the id row owner that needs change on column Approval Status
+					newApprovalStatus = fileApprovalStatus[i];
+
+					try
+					{
+						_unit.RequirementFile.UpdateStatus(changedId, newApprovalStatus);
+
+						//----for notification
+						string fileName = _unit.RequirementFile.GetFirstOrDefault(u => u.Id == fileId[i]).FileName;
+
+						Notification_Model notif = new Notification_Model();
+						notif.Title = "Pending Status";
+						notif.Description = "Your Pending status file requirement: " + fileName + " is changed to:" + newApprovalStatus;
+						notif.NotifUserId = fileUserId[i];
+
+						_unit.Notification.Add(notif);
+
+						// save changes in batch/ like dishes in restaurant
+						_unit.Save();
+					}
+					catch (Exception ex)
+					{
+						string message = ex.Message;
+						Console.WriteLine("Exception Message: " + message);
+					}
+				}
+			}
+
+			// save any remaining changes after the loop completes
+			try
+            {
+                _unit.Save();
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                Console.WriteLine("Exception Message: " + message);
+            }
+
+            return View(nameof(RequirementFile));
         }
 
         //---------------------ANALYTIC FEATURES METHODS AND GETTERS------------------------------------
@@ -295,11 +380,37 @@ namespace ML_ASP.Controllers
 		[Authorize]
 		public async Task<IActionResult> ChangeRegistrationRole(Account_Model account)
 		{
-            await _userManager.RemoveFromRoleAsync(account, SD.Role_Unregistered);
+			//         await _userManager.RemoveFromRoleAsync(account, SD.Role_Unregistered);
 
-			await _userManager.AddToRoleAsync(account, SD.Role_User);
+			//await _userManager.AddToRoleAsync(account, SD.Role_User);
 
-            return View(nameof(Index));
+			//         return View(nameof(Index));
+
+			var user = await _userManager.FindByIdAsync(account.Id);
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			// Remove from all roles
+			var roles = await _userManager.GetRolesAsync(user);
+			var result = await _userManager.RemoveFromRolesAsync(user, roles);
+
+			if (!result.Succeeded)
+			{
+				ModelState.AddModelError("", "Failed to remove user roles");
+				return View(nameof(Index));
+			}
+
+			// Add to the new role
+			result = await _userManager.AddToRoleAsync(user, SD.Role_User);
+			if (!result.Succeeded)
+			{
+				ModelState.AddModelError("", "Failed to add user to the new role");
+				return View(nameof(Index));
+			}
+
+			return RedirectToAction(nameof(Index));
 		}
 		//------------------------------ENDPOINT REGIONS ------------------------------//
 		#region API CALLS
@@ -315,11 +426,12 @@ namespace ML_ASP.Controllers
 		{
 			var accountList = _unit.Account.GetAll().ToList();
 			var getAllReqFile = _unit.RequirementFile.GetAll().ToList();
+
 			foreach (var account in accountList)
 			{
 				// Filter the requirement files for the current account
 				var accountRequirementFiles = getAllReqFile
-					.Where(r => r.UserId == account.Id)  // Assuming AccountId is the foreign key
+					.Where(r => r.UserId == account.Id) 
 					.ToList();
 
 				// Populate the Requirements property of the current account with the filtered requirement files

@@ -1,7 +1,7 @@
 ﻿var dataTable;
 
 $(document).ready(function () {
-	loadDataTable();
+    loadDataTable();
 });
 
 function loadDataTable() {
@@ -32,8 +32,7 @@ function loadDataTable() {
                     selectHtml += '</select>';
                     var hiddenInputApproval = '<input type="hidden" name="originalApprovalStatus" value = "' + row.registrationPermission + '" />';
                     var hiddenInputHtml = '<input type="hidden" name="id" value="' + row.id + '">'; // to pass in controller
-                    var hiddentInputUserId = '<input type="hidden" name="userId" value="' + row.id + '">';
-                    return selectHtml + hiddenInputHtml + hiddentInputUserId + hiddenInputApproval;
+                    return selectHtml + hiddenInputHtml  + hiddenInputApproval;
                 }
             },
         ],
@@ -57,19 +56,6 @@ function loadDataTable() {
     });
 }
 
-// Function to format the details row content
-//function format(data) {
-//    var table = '<table class="table table-bordered table-hover">';
-
-//    table += '<thead><tr><th>File Name</th><th>Approval Status</th></tr></thead><tbody>';
-
-//    data.requirements.forEach(function (requirement) {
-//        table += '<tr><td>' + requirement.fileName + '</td><td>' + requirement.approvalStatus + '</td></tr>';
-//    });
-//    table += '</tbody></table>';
-//    return table;
-//}
-
 function format(data) {
     var table = '<table class="table table-bordered table-hover">';
     table += '<thead><tr><th>File Name</th><th>Approval Status</th><th>Action</th></tr></thead><tbody>';
@@ -77,16 +63,22 @@ function format(data) {
     data.requirements.forEach(function (requirement) {
         //select html section--
         var approvalOptions = ["Pending", "Declined", "Revised", "Approved"];
-        var selectHtml = '<select name="approvalStatus">';
+        var selectHtml = '<select name="fileApprovalStatus">';
         for (var i = 0; i < approvalOptions.length; i++) {
             var isSelected = requirement.approvalStatus === approvalOptions[i] ? 'selected="selected"' : '';
             selectHtml += '<option value="' + approvalOptions[i] + '" ' + isSelected + '>' + approvalOptions[i] + '</option>';
         }
         selectHtml += '</select>';
+        var hiddenInputApproval = '<input type="hidden" name="originalFileApprovalStatus" value = "' + requirement.approvalStatus + '" />';
+        var hiddenInputId = '<input type="hidden" name="fileId" value="' + requirement.id + '">'; // to pass in controller
+        var hiddenInputUserId = '<input type="hidden" name="fileUserId" value="' + requirement.userId + '">';
         //select html section----ENDS
 
-        table += '<tr>  <td>' + requirement.fileName + '</td><td>' + selectHtml + '</td> <td><button class="btn btn-primary btn-sm group-btn view-pdf" data-id="' + requirement.fileId + '""> VIEW </button></td> </tr>';
-
+        table += '<tr>' +
+            '<td>' + requirement.fileName + '</td>' +
+            '<td>' + selectHtml + hiddenInputApproval + hiddenInputId + hiddenInputUserId + '</td>' +
+            '<td><button class="btn btn-primary btn-sm group-btn view-pdf" data-id="' + requirement.fileId + '">VIEW</button></td>' +
+            '</tr>';
     });
 
     $(document).on('click', '.view-pdf', function () {
@@ -97,5 +89,3 @@ function format(data) {
     table += '</tbody></table>';
     return table;
 }
-
-        //TODO now just fix the approval status and registration Permission for every account and every filename

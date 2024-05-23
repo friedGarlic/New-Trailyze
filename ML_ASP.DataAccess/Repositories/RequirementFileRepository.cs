@@ -16,6 +16,15 @@ namespace ML_ASP.DataAccess.Repositories
         {
             _dbContext = dbContext;
         }
-        
+
+        public void UpdateStatus(int id, string newUpdateStatus)
+        {
+            var objFromDb = _dbContext.RequirementFile.FirstOrDefault(u => u.Id == id);
+            if (objFromDb != null)
+            {
+                objFromDb.ApprovalStatus = newUpdateStatus;
+            }
+
+		}
     }
 }

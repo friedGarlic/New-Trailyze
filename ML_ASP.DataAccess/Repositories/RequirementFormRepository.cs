@@ -18,13 +18,13 @@ namespace ML_ASP.DataAccess.Repositories
             _dbContext = dbContext;
         }
 
-        public void UpdateFormState(RequirementForm_Model formModel, int formNumber)
+        public void UpdateFormState(RequirementFile_Model formModel, int formNumber)
         {
             var objFromDb = _dbContext.RequirementForm.FirstOrDefault(u => u.UserId == formModel.UserId && u.FormNumber == formNumber);
             if(objFromDb != null)
             {
                 objFromDb.FileName = formModel.FileName;
-                objFromDb.IsSubmitted = formModel.IsSubmitted;
+                objFromDb.FileId = formModel.FileId;
             }
 
         }

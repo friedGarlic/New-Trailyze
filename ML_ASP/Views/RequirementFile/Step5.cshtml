@@ -20,7 +20,7 @@
         <p>Remember: Take the template and talk to the employer for agreement in Training. The file is required to be submitted and checked by the admin to register the account fully. Attached the document on buttom bellow.</p>
         <div class="document-item">
             <p>Contract Agreement</p>
-            @if (Model.FileName2 == null)
+            @if (Model.FileName5 == null)
             {
                 <button class="green-button" id="addDocumentButton">+ Add Document</button>
             }
@@ -29,7 +29,7 @@
                 @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
                 <button class="green-button" id="addDocumentButton">+ Add Document</button>
 
-                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName2" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName5" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
 
             }
             <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-CONTRACT-AGREEMENT@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>

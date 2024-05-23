@@ -67,10 +67,11 @@ namespace ML_ASP.Controllers
             string uploadFolderName = "RequirementFiles";
             var uploads = Path.Combine(projectPath, uploadFolderName);
 
-            var userForm = _unit.RequirementForm.GetFirstOrDefault(u => u.UserId == userId);
             var userModel = _unit.Account.GetFirstOrDefault(x => x.Id == userId);
+            var userForm = _unit.RequirementForm.GetFirstOrDefault(x => x.UserId == userId);
             var getAllForm = _unit.RequirementForm.GetAll(x => x.UserId == userId);
 
+            RequirementFile_Model userFile = new();
             string fileName2 = "";
             //-----------------------------------POSTED FILE 1
             if (postedFiles1 != null && postedFiles1.Length > 0)
@@ -88,38 +89,36 @@ namespace ML_ASP.Controllers
                     postedFiles1.CopyTo(fileStream);
                 }
 
-                TempData["fileName2"] = fileName2;
-                TempData["userId2"] = userId;
-                TempData["newfileId2"] = newFileId2;
-                TempData["title2"] = title2;
-                TempData["description2"] = description2;
-                TempData["userName2"] = userModel.FullName;
+                userFile.FileName = fileName2;
+                userFile.UserId = userId;
+                userFile.FileId = newFileId2;
+                userFile.Title = title2;
+                userFile.Description = description2;
+                userFile.UserName = userModel.FullName;
 
-                TempData["UF_filename2"] = fileName2;
-                TempData["UF_isSubmitted2"] = true;
-                TempData["UF_newFileId2"] = newFileId2;
+                //----flagging the form
+                
+                if (step == "laststep")
+                {
+                    _unit.RequirementForm.UpdateFormState(userFile, 5);
+                }
+                else
+                {
+                    _unit.RequirementForm.UpdateFormState(userFile, 2);
+                }
+
+                _unit.RequirementFile.Add(userFile);
             }
-            string form1FileName = "";
-            string form1FileName2 = "";
-            string form1FileName3 = "";
 
             //needs foreach loop
+            GetRequirementVM();
 
-            foreach (var i in getAllForm)
+            if (postedFiles1 != null)
             {
-                if (i.FormNumber == 2)
-                {
-                    form1FileName2 = userForm.FileId;
-                }
+                _unit.Save();
             }
 
-            requirementVM = new RequirementVM
-            {
-                FileName2 = form1FileName,
-                IsSubmittedFile2 = true,
-            };
-            
-            if(step == "laststep")
+            if (step == "laststep")
             {
                 return RedirectToAction("index", "Home");
             }
@@ -139,9 +138,10 @@ namespace ML_ASP.Controllers
 
             var userId = claim.Value;
             var userModel = _unit.Account.GetFirstOrDefault(x => x.Id == userId);
-            var userForm = _unit.RequirementForm.GetFirstOrDefault(u => u.UserId == userId);
+            var userForm = _unit.RequirementForm.GetFirstOrDefault(x => x.UserId == userId);
             var getAllForm = _unit.RequirementForm.GetAll(x => x.UserId == userId);
 
+            RequirementFile_Model userFile = new();
             string fileName3 = "";
 
             //-----------------------------------POSTED FILE 2
@@ -158,34 +158,33 @@ namespace ML_ASP.Controllers
                     postedFiles2.CopyTo(fileStream);
                 }
 
-                TempData["fileName3"] = fileName3;
-                TempData["userId3"] = userId;
-                TempData["newFileId3"] = newFileId3;
-                TempData["title3"] = title3;
-                TempData["description3"] = description3;
-                TempData["userName3"] = userModel.FullName;
+                userFile.FileName = fileName3;
+                userFile.UserId = userId;
+                userFile.FileId = newFileId3;
+                userFile.Title = title3;
+                userFile.Description = description3;
+                userFile.UserName = userModel.FullName;
 
-                TempData["UF_fileName3"] = fileName3;
-                TempData["UF_isSubmitted3"] = true;
-                TempData["UF_newFileId3"] = newFileId3;
+                if (step3 == "step3")
+                {
+                    _unit.RequirementForm.UpdateFormState(userFile, 3);
+                }
+                else
+                {
+                    _unit.RequirementForm.UpdateFormState(userFile, 4);
+                }
+                _unit.RequirementFile.Add(userFile);
             }
-            string form1FileName3 = "";
 
             //needs foreach loop
 
             //2views share this controoler becareful on passing in viewmodel
-            foreach (var i in getAllForm)
+            GetRequirementVM();
+
+            if (postedFiles2 != null)
             {
-                if (i.FormNumber == 3)
-                {
-                    form1FileName3 = userForm.FileId;
-                }
+                _unit.Save();
             }
-            requirementVM = new RequirementVM
-            {
-                FileName3 = form1FileName3,
-                IsSubmittedFile3 = true,
-            };
 
             if (step3 == "step3")
             {
@@ -213,6 +212,7 @@ namespace ML_ASP.Controllers
             var getAllForm = _unit.RequirementForm.GetAll(x => x.UserId == userId);
 
             AccountInfo_Model accountInfo = new();
+            RequirementFile_Model userFile = new();
             string fileName = "";
 
             //--------------------------------------------------------------------------POSTED FILE 0
@@ -236,18 +236,17 @@ namespace ML_ASP.Controllers
                     postedFiles0.CopyTo(fileStream);
                 }
 
-                TempData["fileName"] = fileName;
-                TempData["userId"] = userId;
-                TempData["newFileId"] = newFileId;
-                TempData["title"] = title;
-                TempData["description"] = description;
-                TempData["userName"] = userModel.FullName;
+                //----requirement file
+                userFile.FileName = fileName;
+                userFile.UserId = userId;
+                userFile.FileId = newFileId;
+                userFile.Title = title;
+                userFile.Description = description;
+                userFile.UserName = userModel.FullName;
 
                 //----flagging the form
-
-                TempData["UF_fileName"] = fileName;
-                TempData["UF_isSubmitted"] = true;
-                TempData["UF_fileId"] = newFileId;
+                _unit.RequirementForm.UpdateFormState(userFile, 1);
+                _unit.RequirementFile.Add(userFile);
             }
 
             //--------------------------------------------------------------------------
@@ -345,44 +344,75 @@ namespace ML_ASP.Controllers
 
         public RequirementVM GetRequirementVM()
         {
+            // Get the user's identity claims
             var claimIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            //getall var
-            var getAllFile = _unit.RequirementForm.GetAll(u => u.UserId == claim.Value);
-            var userForm = _unit.RequirementForm.GetFirstOrDefault(u => u.UserId == claim.Value);
+            // Retrieve all relevant forms and files for the user
+            var getAllForm = _unit.RequirementForm.GetAll(u => u.UserId == claim.Value);
+            var getAllFile = _unit.RequirementFile.GetAll(u => u.UserId == claim.Value);
 
-            string form1FileName = "";
-            string form1FileName2 = "";
-            string form1FileName3 = "";
+            // Initialize variables to hold file IDs
+            string form1FileId = null;
+            string form1FileId2 = null;
+            string form1FileId3 = null;
+            string form1FileId4 = null;
+            string form1FileId5 = null;
 
-            //needs foreach loop
-
-            foreach (var i in getAllFile)
+            if (getAllFile.Any())
             {
-                if (i.FormNumber == 1)
+                foreach (var form in getAllForm)
                 {
-                    form1FileName = userForm.FileId;
-                }
-                if (i.FormNumber == 2)
-                {
-                    form1FileName2 = userForm.FileId;
-                }
-                if (i.FormNumber == 3)
-                {
-                    form1FileName3 = userForm.FileId;
+                    if (form.FormNumber == 1 && getAllFile != null) //1
+                    {
+                        var file = getAllFile.FirstOrDefault(u => u.FileId == form.FileId);
+                        if (file != null)
+                        {
+                            form1FileId = file.FileId;
+                        }
+                    }
+                    if (form.FormNumber == 2 && getAllFile != null) //2
+                    {
+                        var file = getAllFile.FirstOrDefault(u => u.FileId == form.FileId);
+                        if (file != null)
+                        {
+                            form1FileId2 = file.FileId;
+                        }
+                    }
+                    if (form.FormNumber == 3 && getAllFile != null) //3
+                    {
+                        var file = getAllFile.FirstOrDefault(u => u.FileId == form.FileId);
+                        if (file != null)
+                        {
+                            form1FileId3 = file.FileId;
+                        }
+                    }
+                    if (form.FormNumber == 4 && getAllFile != null) //4
+                    {
+                        var file = getAllFile.FirstOrDefault(u => u.FileId == form.FileId);
+                        if (file != null)
+                        {
+                            form1FileId4 = file.FileId;
+                        }
+                    }
+                    if (form.FormNumber == 5 && getAllFile != null) //5
+                    {
+                        var file = getAllFile.FirstOrDefault(u => u.FileId == form.FileId);
+                        if (file != null)
+                        {
+                            form1FileId5 = file.FileId;
+                        }
+                    }
                 }
             }
 
-
             requirementVM = new RequirementVM
             {
-                FileName1 = form1FileName,
-                FileName2 = form1FileName2,
-                FileName3 = form1FileName3,
-                IsSubmittedFile1 = true,
-                IsSubmittedFile2 = true,
-                IsSubmittedFile3 = true,
+                FileName1 = form1FileId,
+                FileName2 = form1FileId2,
+                FileName3 = form1FileId3,
+                FileName4 = form1FileId4,
+                FileName5 = form1FileId5,
             };
 
             return requirementVM;

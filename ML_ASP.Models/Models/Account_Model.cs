@@ -40,7 +40,6 @@ namespace ML_ASP.Models
 
         public List<RequirementFile_Model>? Requirements { get; set; }
 
-        //0 - pending, 1 - accepted, 2 - denied;
-        public int RegistrationPermission { get; set; } = 0;
+        public string RegistrationPermission { get; set; } = "Pending";
 	}
 }

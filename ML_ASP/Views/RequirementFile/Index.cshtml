@@ -80,7 +80,11 @@
                 <br />
 
                 <button id="addDocumentButton" type="button">+ Add Document</button>
-                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                @if (Model.FileName1 != null)
+                {
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+                }
                 <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-APPLICATION-FORM@x-.pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
             </div>
         </div>

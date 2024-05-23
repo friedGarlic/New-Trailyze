@@ -14,9 +14,7 @@ namespace ML_ASP.Models.ViewModel
         public string? FileName1 { get; set; }
         public string? FileName2 { get; set; }
         public string? FileName3 { get; set; }
-
-        public bool? IsSubmittedFile1 { get; set; }
-        public bool? IsSubmittedFile2 { get; set; }
-        public bool? IsSubmittedFile3 { get; set; }
+        public string? FileName4 { get; set; }
+        public string? FileName5 { get; set; }
     }
 }

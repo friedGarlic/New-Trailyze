@@ -205,42 +205,58 @@ namespace ML_ASP.Areas.Identity.Pages.Account
                     user.Medical = newMedicalFileName;
                 }
                 //REQUIREMENT REGISTRATION: ENDS-----------
+                {
+                    RequirementForm_Model formModel = new RequirementForm_Model();
+                    RequirementForm_Model formModel2 = new RequirementForm_Model();
+                    RequirementForm_Model formModel3 = new RequirementForm_Model();
+                    RequirementForm_Model formModel4 = new RequirementForm_Model();
+                    RequirementForm_Model formModel5 = new RequirementForm_Model();
+                    //REQUIREMENTFORM START--------------------
+                    formModel.IsSubmitted = false;
+                    formModel.UserId = user.Id;
+                    formModel.FileName = "Null";
+                    formModel.FormNumber = 1;
 
-                RequirementForm_Model formModel = new RequirementForm_Model();
-                RequirementForm_Model formModel2 = new RequirementForm_Model();
-                RequirementForm_Model formModel3 = new RequirementForm_Model();
-                //REQUIREMENTFORM START--------------------
-                formModel.IsSubmitted = false;
-                formModel.UserId = user.Id;
-                formModel.FileName = "Null";
-                formModel.FormNumber = 1;
+                    formModel2.IsSubmitted = false;
+                    formModel2.UserId = user.Id;
+                    formModel2.FileName = "Null";
+                    formModel2.FormNumber = 2;
 
-                formModel2.IsSubmitted = false;
-                formModel2.UserId = user.Id;
-                formModel2.FileName = "Null";
-                formModel2.FormNumber = 2;
+                    formModel3.IsSubmitted = false;
+                    formModel3.UserId = user.Id;
+                    formModel3.FileName = "Null";
+                    formModel3.FormNumber = 3;
 
-                formModel3.IsSubmitted = false;
-                formModel3.UserId = user.Id;
-                formModel3.FileName = "Null";
-                formModel3.FormNumber = 3;
 
-                _unit.RequirementForm.Add(formModel);
-                _unit.RequirementForm.Add(formModel2);
-                _unit.RequirementForm.Add(formModel3);
+                    formModel4.IsSubmitted = false;
+                    formModel4.UserId = user.Id;
+                    formModel4.FileName = "Null";
+                    formModel4.FormNumber = 4;
 
-                _unit.Save();
+                    formModel5.IsSubmitted = false;
+                    formModel5.UserId = user.Id;
+                    formModel5.FileName = "Null";
+                    formModel5.FormNumber = 5;
+
+                    _unit.RequirementForm.Add(formModel);
+                    _unit.RequirementForm.Add(formModel2);
+                    _unit.RequirementForm.Add(formModel3);
+                    _unit.RequirementForm.Add(formModel4);
+                    _unit.RequirementForm.Add(formModel5);
+
+                    _unit.Save();
+                }
                 //REQUIREMENT FORM ENDS-------------------
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                if (IsAdminRegistration)
+                if (Input.Role == SD.Role_Admin)
                 {
-                    await _userManager.AddToRoleAsync(user, SD.Role_Unregistered);
+                    await _userManager.AddToRoleAsync(user, SD.Role_Admin);
                 }
                 else if(!IsAdminRegistration)
                 {
-                    await _userManager.AddToRoleAsync(user, SD.Role_Admin);
+                    await _userManager.AddToRoleAsync(user, SD.Role_Unregistered);
                 }
                 else
                 {
@@ -252,15 +268,15 @@ namespace ML_ASP.Areas.Identity.Pages.Account
                 {
                     bool isAdmin = await _userManager.IsInRoleAsync(user, SD.Role_Admin);
 
-                    if (user.RegistrationPermission == 0 && !isAdmin) //pending permission
+                    if (user.RegistrationPermission == "Pending" && !isAdmin) //pending permission
                     {
                         returnUrl ??= Url.Content("~/RequirementFile/Index");
                     }
-                    else if (user.RegistrationPermission == 1) //accepted permission
+                    else if (user.RegistrationPermission == "Approved") //accepted permission
                     {
                         returnUrl ??= Url.Content("~/Dashboard/Dashboard");
                     }
-                    else if (user.RegistrationPermission == 2) //denied permission, re register, failed registration account will be deleted in 2 days.
+                    else if (user.RegistrationPermission == "Declined") //denied permission, re register, failed registration account will be deleted in 2 days.
                     {
                         returnUrl ??= Url.Content("~/RequirementFile/PermissionDenied");
                     }

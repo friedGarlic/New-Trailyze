@@ -13,7 +13,7 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 	{
         public void UpdateAccount(string course, int hrsRemain, int weeklyReport, string id);
 
-        public void UpdateAccount(Account_Model accountModel);
+        public void UpdateRegistrationStatus(string id, string registrationStatus);
 
 		public void UpdateTime(
             int? hCompleted, int? mCompleted, int? sCompleted,

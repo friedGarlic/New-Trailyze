@@ -29,16 +29,17 @@ namespace ML_ASP.DataAccess.Repositories
             }
         }
 
-        public void UpdateAccount(Account_Model accountModel)
-        {
-            var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == accountModel.Id);
-            if (objFromDb != null)
-            {
-                objFromDb.Requirements = accountModel.Requirements;
-            }
-        }
 
-        public void UpdateRequirementFile(string fileEnrollment, string fileMedical, string id)
+		public void UpdateRegistrationStatus(string id, string registrationStatus)
+        {
+			var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
+			if (objFromDb != null)
+			{
+                objFromDb.RegistrationPermission = registrationStatus;
+			}
+		}
+
+		public void UpdateRequirementFile(string fileEnrollment, string fileMedical, string id)
         {
             var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
             if (objFromDb != null)

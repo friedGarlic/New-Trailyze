@@ -9,6 +9,6 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 {
     public interface IRequirementFileRepository : IRepository<RequirementFile_Model>
     {
-
+        public void UpdateStatus(int id, string newUpdateStatus);
     }
 }

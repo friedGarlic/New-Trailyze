@@ -9,6 +9,6 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 {
     public interface IRequirementFormRepository : IRepository<RequirementForm_Model>
     {
-        public void UpdateFormState(RequirementForm_Model formModel, int formNumber);
+        public void UpdateFormState(RequirementFile_Model formModel, int formNumber);
     }
 }

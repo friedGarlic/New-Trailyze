@@ -254,14 +254,12 @@
                                 more_vert
 
                                 <form method="post" asp-controller="Dashboard" asp-action="DeleteReminder" asp-route-id="@i.Id">
-                                    <button type="submit">Delete</button>
+                                    <button id="">Delete</button>
                                 </form>
                             </span>
                         </div>
                     </div>
-
                 }
-
                 <div id="addDocumentButton" class="notification add-reminder">
                     <div>
                         <span class="material-icons-sharp">
@@ -324,7 +322,7 @@
     <partial name="_CustomPopup" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="~/js/Popup/CustomPopup.js"></script>
+    <script src="~/js/Popup/UserCustomPopup.js"></script>
     <script>
         let countdownInterval;
 

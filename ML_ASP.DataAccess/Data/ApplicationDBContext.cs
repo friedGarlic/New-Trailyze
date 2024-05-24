@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ML_ASP.Models;
 using ML_ASP.Models.Models;
+using ML_ASP.Models.Models.UserDashboard;
 
 namespace ML_ASP.DataAccess
 {
@@ -27,6 +28,6 @@ namespace ML_ASP.DataAccess
         public DbSet<Notification_Model> Notification { get; set; }
         public DbSet<RequirementFile_Model> RequirementFile { get; set; }
         public DbSet<RequirementForm_Model> RequirementForm { get; set; }
-        public DbSet<AccountInfo_Model> AccountInfo { get; set; }
+        public DbSet<Overtime_Model> Overtime { get; set; }
     }
 }

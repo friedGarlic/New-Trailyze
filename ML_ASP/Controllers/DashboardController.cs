@@ -20,6 +20,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Tensorflow;
 using ML_ASP.Utility;
+using Accord.Statistics.Kernels;
+using ML_ASP.Models.Models.UserDashboard;
 
 namespace ML_ASP.Controllers
 {
@@ -43,87 +45,7 @@ namespace ML_ASP.Controllers
         [HttpGet]
         public IActionResult Dashboard()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value); //userid
-
-            var userId = claim.Value;
-			var accountName = account.FullName;
-            
-            ViewBag.AccountName = accountName;
-
-            //for grades
-            var sublist = _unit.Submission
-                  .GetAll(u => u.SubmissionUserId == claim.Value)
-                  .Take(5)
-                  .Select(u => u.Grade)
-                  .ToList();
-            //-------------------grade ends
-
-
-            //reminder alarm
-            var getaccounttime = _unit.Reminder.GetAll(u => u.UserId == userId);
-
-            foreach (var i in getaccounttime.ToList())
-            {
-                DateTime currentTime = DateTime.Now;
-                if (i.ReminderDateTime > currentTime)
-                {
-                    TimeSpan duration = (TimeSpan)(i.ReminderDateTime - currentTime);
-                    double durationInSeconds = duration.TotalMilliseconds;
-
-                    _unit.Reminder.Update(i.Id, durationInSeconds);
-                }
-            }
-            //-------------------reminder alarm ends
-
-            submissionVM = new SubmissionVM()
-            {
-                LogList = _unit.Log.GetAll(u => u.LogId == claim.Value),
-                ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
-                GradeList = sublist,
-                CurrentUserId = userId,
-			};
-            //Get Account List and name ends --------------------------
-
-            //retrieve last entry
-            //so it stays as Timed in if timed in-------------------
-            var lastLogEntry = _unit.Log.GetAll(u => u.LogId == claim.Value)
-                                   .OrderByDescending(u => u.DateTime)
-                                   .FirstOrDefault();
-
-            bool initialIsTimedIn = lastLogEntry != null && lastLogEntry.Log == "Timed In";
-
-            ViewBag.InitialIsTimedIn = initialIsTimedIn;
-            //-------------------log ends
-
-            //getters
-            var submission = _unit.Submission.GetAll(u => u.SubmissionUserId == userId);
-            int submissionCount = submission.Count();
-
-            ViewBag.SubmissionCount = submissionCount;
-            ViewBag.RemainingReports = account.WeeklyReportRemaining;
-
-            //remaining
-            ViewBag.RemainingHours = account.HoursRemaining;
-            ViewBag.RemainingMinutes = account.MinutesRemaining;
-            ViewBag.RemainingSeconds = account.SecondsRemaining;
-            //completed
-            ViewBag.HoursCompleted = account.HoursCompleted;
-            ViewBag.MinutesCompleted = account.MinutesCompleted;
-            ViewBag.SecondsCompleted = account.SecondsCompleted;
-
-            //check if theres log in account
-            //post picture if there is
-            if (claim != null)
-            {
-                var getAcc = _unit.Account.GetFirstOrDefault(x => x.Id == claim.Value);
-                string? imageUrl = getAcc.ImageUrl;
-
-                ViewData["ImageUrl"] = imageUrl;
-            }
-
-            _unit.Save();
+            GetSubmissionVM();
 
             return View(submissionVM);
         }
@@ -271,6 +193,30 @@ namespace ML_ASP.Controllers
             return RedirectToAction(nameof(Dashboard));
         }
 
+        [HttpPost]
+        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
+
+            var request = new Overtime_Model
+            {
+                UserId = account.Id,
+                Description = description,
+                OvertimeEndTime = endTime,
+            };
+
+            try
+            {
+                _unit.Overtime.Add(request);
+
+                _unit.Save();
+            }
+            catch (Exception e) { }
+
+            return View(nameof(Dashboard));
+        }
 
         //-----------------HELPER FUNCTIONS OR METHODS--------------------------
         [HttpPost]
@@ -374,6 +320,95 @@ namespace ML_ASP.Controllers
             {
                 account.SecondsRemaining = 0;
             }
+        }
+
+
+        //for displaying dashboard
+        public SubmissionVM GetSubmissionVM()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value); //userid
+
+            var userId = claim.Value;
+            var accountName = account.FullName;
+
+            ViewBag.AccountName = accountName;
+
+            //for grades
+            var sublist = _unit.Submission
+                  .GetAll(u => u.SubmissionUserId == claim.Value)
+                  .Take(5)
+                  .Select(u => u.Grade)
+                  .ToList();
+            //-------------------grade ends
+
+
+            //reminder alarm
+            var getaccounttime = _unit.Reminder.GetAll(u => u.UserId == userId);
+
+            foreach (var i in getaccounttime.ToList())
+            {
+                DateTime currentTime = DateTime.Now;
+                if (i.ReminderDateTime > currentTime)
+                {
+                    TimeSpan duration = (TimeSpan)(i.ReminderDateTime - currentTime);
+                    double durationInSeconds = duration.TotalMilliseconds;
+
+                    _unit.Reminder.Update(i.Id, durationInSeconds);
+                }
+            }
+            //-------------------reminder alarm ends
+
+            submissionVM = new SubmissionVM()
+            {
+                LogList = _unit.Log.GetAll(u => u.LogId == claim.Value),
+                ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
+                GradeList = sublist,
+                CurrentUserId = userId,
+            };
+            //Get Account List and name ends --------------------------
+
+            //retrieve last entry
+            //so it stays as Timed in if timed in-------------------
+            var lastLogEntry = _unit.Log.GetAll(u => u.LogId == claim.Value)
+                                   .OrderByDescending(u => u.DateTime)
+                                   .FirstOrDefault();
+
+            bool initialIsTimedIn = lastLogEntry != null && lastLogEntry.Log == "Timed In";
+
+            ViewBag.InitialIsTimedIn = initialIsTimedIn;
+            //-------------------log ends
+
+            //getters
+            var submission = _unit.Submission.GetAll(u => u.SubmissionUserId == userId);
+            int submissionCount = submission.Count();
+
+            ViewBag.SubmissionCount = submissionCount;
+            ViewBag.RemainingReports = account.WeeklyReportRemaining;
+
+            //remaining
+            ViewBag.RemainingHours = account.HoursRemaining;
+            ViewBag.RemainingMinutes = account.MinutesRemaining;
+            ViewBag.RemainingSeconds = account.SecondsRemaining;
+            //completed
+            ViewBag.HoursCompleted = account.HoursCompleted;
+            ViewBag.MinutesCompleted = account.MinutesCompleted;
+            ViewBag.SecondsCompleted = account.SecondsCompleted;
+
+            //check if theres log in account
+            //post picture if there is
+            if (claim != null)
+            {
+                var getAcc = _unit.Account.GetFirstOrDefault(x => x.Id == claim.Value);
+                string? imageUrl = getAcc.ImageUrl;
+
+                ViewData["ImageUrl"] = imageUrl;
+            }
+
+            _unit.Save();
+
+            return submissionVM;
         }
     }
 }

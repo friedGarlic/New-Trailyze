@@ -21,7 +21,7 @@ function loadDataTable() {
             {
                 "data": "registrationPermission", "title": "Registration Permission",
                 "render": function (data, type, row) {
-                    var options = ["Pending", "Declined", "Revised", "Approved"];
+                    var options = ["Pending", "Declined", "Approved"];
 
                     // i dont understand this anymore sadly it got too complicated
                     var selectHtml = '<select name="registrationPermission">';

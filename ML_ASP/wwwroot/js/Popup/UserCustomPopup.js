@@ -24,10 +24,12 @@
             // Get values from input fields and textarea
             var description = $('#description').val();
             var endtime = $('#endTime').val();
+            var overtimeDate = $('#overtimeDate').val();
 
             var dataToSend = {
                 description: description,
-                endtime: endtime
+                endtime: endtime,
+                overtimeDate: overtimeDate
             };
 
             $.ajax({
@@ -43,6 +45,9 @@
                     alert('An error occurred while submitting overtime.');
                 }
             });
+            location.reload();
+            window.location = '/Dashboard/Dashboard';
+            window.location = '/Dashboard/Dashboard';
         });
     });
 

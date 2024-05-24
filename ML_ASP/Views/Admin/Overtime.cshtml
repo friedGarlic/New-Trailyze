@@ -1,5 +1,4 @@
-﻿@model ML_ASP.Models.ViewModel.SubmissionVM
-@{
+﻿@{
 	Layout = "_AMasterpage_2";
 }
 
@@ -9,13 +8,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+	<!-- My CSS -->
+	<link rel="stylesheet" href="~/css/adminStyle.css">
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
 	<link href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
-	<!-- popup modal -->
-	<!-- My CSS -->
-	<link rel="stylesheet" href="~/css/adminStyle.css">
 	<title>AdminHub</title>
 </head>
 <body>
@@ -25,7 +24,7 @@
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
-			<span class="text">AdminHub</span>
+			<span class="text">Admin Hub</span>
 		</a>
 		<ul class="side-menu top">
 			<li>
@@ -40,7 +39,7 @@
 					<span class="text">Analytics</span>
 				</a>
 			</li>
-			<li class="active">
+			<li>
 				<a asp-controller="TimeLog" asp-action="TimeLog">
 					<i class='bx bxs-spreadsheet'></i>
 					<span class="text">Time Log</span>
@@ -52,7 +51,7 @@
 					<span class="text">Requirement Files</span>
 				</a>
 			</li>
-			<li>
+			<li class="active">
 				<a asp-controller="Admin" asp-action="Overtime">
 					<i class='bx bxs-time-five'></i>
 					<span class="text">Overtime Requests</span>
@@ -68,8 +67,7 @@
 			</li>-->
 		</ul>
 	</section>
-	<!-- SIDEBAR ENDS -->
-
+	<!-- SIDEBAR -->
 	<!-- CONTENT -->
 	<section id="content">
 		<!-- NAVBAR -->
@@ -82,10 +80,10 @@
 		<main>
 			<div class="head-title">
 				<div class="left">
-					<h1>Time Log</h1>
+					<h1>Overtime Requests</h1>
 					<ul class="breadcrumb">
 						<li>
-							<a href="#">Time Log</a>
+							<a href="#">Overtime Requests</a>
 						</li>
 						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
@@ -94,20 +92,19 @@
 					</ul>
 				</div>
 			</div>
-			<!-- SOME NEW FEATURE FOR TIME LOGS-->
+			@* ----------------------------------------------------------- *@
 			<div>
-				<h1 class="heading"> Time Log </h1>
+				<h1 class="heading"> Overtime Requests Logs </h1>
 				<h3 class="title"> Approval and Updates </h3>
-				<form id="approvalForm" asp-controller="TimeLog" asp-action="UpdateApprovalStatusBulk" method="post">
-					<table id="timeTable">
+				<form id="approvalForm" asp-controller="Admin" asp-action="UpdateOvertimeStatus" method="post">
+					<table id="overtimeTable">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Date Time</th>
-								<th>Time Log</th>
-								<th>Approval Status</th>
-								<th>Model Approval</th>
-								<th>Action</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -116,16 +113,15 @@
 					<button id="updateButton" type="button">Update Approval Status</button>
 				</form>
 			</div>
-			<!-- SOME NEW FEATURE FOR TIME LOGS ENDS-->
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
 </body>
 </html>
-@section Scripts{
+@section Scripts {
 	@{
-		<script src="~/js/timeLog/timelog.js"></script>
+		<script src="~/js/admin/overtime_admin.js"></script>
 		<script src="~/js/adminScript.js"></script>
 	}
 	<script>

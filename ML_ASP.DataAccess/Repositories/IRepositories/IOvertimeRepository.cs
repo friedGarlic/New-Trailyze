@@ -9,5 +9,6 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 {
     public interface IOvertimeRepository : IRepository<Overtime_Model>
     {
+        public void UpdateApprovalStatus(int id, string approvalStatus);
     }
 }

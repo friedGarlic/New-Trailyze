@@ -194,7 +194,7 @@ namespace ML_ASP.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime)
+        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime, DateTime overtimeDate)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -205,6 +205,8 @@ namespace ML_ASP.Controllers
                 UserId = account.Id,
                 Description = description,
                 OvertimeEndTime = endTime,
+                RequestDate = overtimeDate,
+                UserName = account.FullName,
             };
 
             try
@@ -215,7 +217,9 @@ namespace ML_ASP.Controllers
             }
             catch (Exception e) { }
 
-            return View(nameof(Dashboard));
+            GetSubmissionVM();
+
+            return View(nameof(Dashboard),submissionVM);
         }
 
         //-----------------HELPER FUNCTIONS OR METHODS--------------------------
@@ -343,6 +347,8 @@ namespace ML_ASP.Controllers
                   .ToList();
             //-------------------grade ends
 
+            //OVERTIME 
+            var overtimeList = _unit.Overtime.GetAll(u => u.UserId == account.Id);
 
             //reminder alarm
             var getaccounttime = _unit.Reminder.GetAll(u => u.UserId == userId);
@@ -366,6 +372,7 @@ namespace ML_ASP.Controllers
                 ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
                 GradeList = sublist,
                 CurrentUserId = userId,
+                OvertimeList = overtimeList,
             };
             //Get Account List and name ends --------------------------
 

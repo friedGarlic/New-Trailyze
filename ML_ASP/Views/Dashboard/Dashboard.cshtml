@@ -234,28 +234,29 @@
                 <div class="header">
                     <h2>Overtime Requests</h2>
                 </div>
-                @foreach (var i in Model.ReminderList) // if theres an error here that means your not passing the ReminderList obj
+                @foreach (var i in Model.OvertimeList) // if theres an error here that means your not passing the ReminderList obj
                 {
-                    <div class="notification" id="reminder-@i.Id">
+                    <div class="notification" id="reminder-@i.id">
                         <div class="icon">
-                            <span class="@i.IconClass">
-                                <!-- changes for icon -->
-                                @i.IconType
+                            <span class="material-icons-outlined">
+                                @i.ApprovalStatus
                             </span>
                         </div>
                         <div class="content">
                             <div class="info">
-                                <h3>@i.Name</h3>
+                                <h3>@i.Description</h3>
                                 <small class="text_muted">
-                                    @i.ReminderDateTime
+                                    @i.RequestDate
+                                    <br />
+                                    @i.OvertimeEndTime
                                 </small>
                             </div>
                             <span class="material-icons-sharp">
                                 more_vert
 
-                                <form method="post" asp-controller="Dashboard" asp-action="DeleteReminder" asp-route-id="@i.Id">
+                                @* <form method="post" asp-controller="Dashboard" asp-action="DeleteReminder" asp-route-id="@i.Id">
                                     <button id="">Delete</button>
-                                </form>
+                                </form> *@
                             </span>
                         </div>
                     </div>

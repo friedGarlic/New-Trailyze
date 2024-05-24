@@ -14,7 +14,13 @@ namespace ML_ASP.Models.Models.UserDashboard
 
         public string UserId { get; set; }
 
+        public string UserName { get; set; }
+
         public string? Description { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        public DateTime RequestDate { get; set; }
 
         public TimeSpan OvertimeEndTime { get; set; }
 

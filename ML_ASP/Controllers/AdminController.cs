@@ -13,6 +13,8 @@ using System.Net.Http;
 using System.Security.Claims;
 using OpenAI_API;
 using ML_ASP.DTO;
+using System.Web.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace ML_ASP.Controllers
 {
@@ -78,95 +80,11 @@ namespace ML_ASP.Controllers
 			return View();
 		}
 
-        [Authorize(Roles = SD.Role_Admin)]
-		[HttpPost]
-        public IActionResult RequirementFileUpdate(List<string> id, List<string> registrationPermission, List<string> originalApprovalStatus,
-            List<int> fileId, List<string> fileApprovalStatus, List<string> fileUserId, List<string> originalFileApprovalStatus)
-        {
-            string newApprovalStatus = "";
+		public IActionResult Overtime()
+		{
+			return View();
+		}
 
-            for (int i = 0; i < id.Count; i++)
-            {
-                if (originalApprovalStatus[i] != registrationPermission[i])
-                {
-                    newApprovalStatus = registrationPermission[i];
-
-                    try
-					{
-						var getAcc = _unit.Account.GetFirstOrDefault(u => u.Id == id[i]);
-
-						// Synchronously call the method to change the role
-						ChangeRegistrationRole(getAcc).Wait(); // Blocking call, not recommended like i did, this
-															   // synchronous blocking calls, as they can lead to deadlocks if not used carefully, especially in ASP.NET Core applications
-
-						_unit.Account.UpdateRegistrationStatus(id[i], newApprovalStatus);
-
-						//----for notification
-
-						Notification_Model notif = new Notification_Model();
-                        notif.Title = "Pending Status";
-                        notif.Description = "Your Pending status for registration is changed to:" + newApprovalStatus;
-                        notif.NotifUserId = id[i];
-
-                        _unit.Notification.Add(notif);
-
-                        // save changes in batch/ like dishes in restaurant
-                        _unit.Save();
-                    }
-                    catch (Exception ex)
-                    {
-                        string message = ex.Message;
-                        Console.WriteLine("Exception Message: " + message);
-                    }
-                }
-            }
-
-
-			for (int i = 0; i < fileId.Count; i++)
-			{
-				if (originalFileApprovalStatus[i] != fileApprovalStatus[i])
-				{
-					int changedId = fileId[i]; //the id row owner that needs change on column Approval Status
-					newApprovalStatus = fileApprovalStatus[i];
-
-					try
-					{
-						_unit.RequirementFile.UpdateStatus(changedId, newApprovalStatus);
-
-						//----for notification
-						string fileName = _unit.RequirementFile.GetFirstOrDefault(u => u.Id == fileId[i]).FileName;
-
-						Notification_Model notif = new Notification_Model();
-						notif.Title = "Pending Status";
-						notif.Description = "Your Pending status file requirement: " + fileName + " is changed to:" + newApprovalStatus;
-						notif.NotifUserId = fileUserId[i];
-
-						_unit.Notification.Add(notif);
-
-						// save changes in batch/ like dishes in restaurant
-						_unit.Save();
-					}
-					catch (Exception ex)
-					{
-						string message = ex.Message;
-						Console.WriteLine("Exception Message: " + message);
-					}
-				}
-			}
-
-			// save any remaining changes after the loop completes
-			try
-            {
-                _unit.Save();
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                Console.WriteLine("Exception Message: " + message);
-            }
-
-            return View(nameof(RequirementFile));
-        }
 
         //---------------------ANALYTIC FEATURES METHODS AND GETTERS------------------------------------
         [Authorize(Roles = SD.Role_Admin)]
@@ -245,6 +163,142 @@ namespace ML_ASP.Controllers
 			return RedirectToAction(nameof(Admin));
 		}
 
+		public IActionResult UpdateOvertimeStatus(List<int> id, List<string> approvalStatus, List<string> userId, List<string> originalApprovalStatus)
+		{
+			string newApprovalStatus = "";
+
+			for (int i = 0; i < id.Count; i++)
+			{
+				if (originalApprovalStatus[i] != approvalStatus[i])
+				{
+					int changedId = id[i];
+					newApprovalStatus = approvalStatus[i];
+
+					_unit.Overtime.UpdateApprovalStatus(changedId, newApprovalStatus);
+
+					try
+					{
+						Notification_Model notif = new Notification_Model();
+						notif.Title = "Pending Status";
+						notif.Description = "Your Pending Overtime Request is changed to:" + newApprovalStatus;
+						notif.NotifUserId = userId[i];
+
+						_unit.Notification.Add(notif);
+
+						// save changes in batch/ like dishes in restaurant
+						_unit.Save();
+					}
+					catch (Exception ex)
+					{
+						string message = ex.Message;
+						Console.WriteLine("Exception Message: " + message);
+					}
+				}
+			}
+
+			// save any remaining changes after the loop completes
+			try
+			{
+				_unit.Save();
+			}
+			catch (Exception ex)
+			{
+				string message = ex.Message;
+				Console.WriteLine("Exception Message: " + message);
+			}
+
+			return View(nameof(Overtime));
+		}
+
+		[Authorize(Roles = SD.Role_Admin)]
+		[HttpPost]
+		public IActionResult RequirementFileUpdate(List<string> id, List<string> registrationPermission, List<string> originalApprovalStatus,
+			List<int> fileId, List<string> fileApprovalStatus, List<string> fileUserId, List<string> originalFileApprovalStatus)
+		{
+			string newApprovalStatus = "";
+
+			for (int i = 0; i < id.Count; i++)
+			{
+				if (originalApprovalStatus[i] != registrationPermission[i])
+				{
+					newApprovalStatus = registrationPermission[i];
+
+					try
+					{
+						var getAcc = _unit.Account.GetFirstOrDefault(u => u.Id == id[i]);
+
+						// Synchronously call the method to change the role
+						ChangeRegistrationRole(getAcc).Wait(); // Blocking call, not recommended like i did, this
+															   // synchronous blocking calls, as they can lead to deadlocks if not used carefully, especially in ASP.NET Core applications
+
+						_unit.Account.UpdateRegistrationStatus(id[i], newApprovalStatus);
+
+						//----for notification
+
+						Notification_Model notif = new Notification_Model();
+						notif.Title = "Pending Status";
+						notif.Description = "Your Pending status for registration is changed to:" + newApprovalStatus;
+						notif.NotifUserId = id[i];
+
+						_unit.Notification.Add(notif);
+
+						// save changes in batch/ like dishes in restaurant
+						_unit.Save();
+					}
+					catch (Exception ex)
+					{
+						string message = ex.Message;
+						Console.WriteLine("Exception Message: " + message);
+					}
+				}
+			}
+
+
+			for (int i = 0; i < fileId.Count; i++)
+			{
+				if (originalFileApprovalStatus[i] != fileApprovalStatus[i])
+				{
+					int changedId = fileId[i]; //the id row owner that needs change on column Approval Status
+					newApprovalStatus = fileApprovalStatus[i];
+
+					try
+					{
+						_unit.RequirementFile.UpdateStatus(changedId, newApprovalStatus);
+
+						//----for notification
+						string fileName = _unit.RequirementFile.GetFirstOrDefault(u => u.Id == fileId[i]).FileName;
+
+						Notification_Model notif = new Notification_Model();
+						notif.Title = "Pending Status";
+						notif.Description = "Your Pending status file requirement: " + fileName + " is changed to:" + newApprovalStatus;
+						notif.NotifUserId = fileUserId[i];
+
+						_unit.Notification.Add(notif);
+
+						// save changes in batch/ like dishes in restaurant
+						_unit.Save();
+					}
+					catch (Exception ex)
+					{
+						string message = ex.Message;
+						Console.WriteLine("Exception Message: " + message);
+					}
+				}
+			}
+
+			// save any remaining changes after the loop completes
+			try
+			{
+				_unit.Save();
+			}
+			catch (Exception ex)
+			{
+				string message = ex.Message;
+				Console.WriteLine("Exception Message: " + message);
+			}
+
+			return View(nameof(RequirementFile));
+		}
 
 		[Authorize(Roles = SD.Role_Admin)]
 		public ActionResult ViewPdf(string fileName)
@@ -434,6 +488,13 @@ namespace ML_ASP.Controllers
 			}
 			return Json(new { data = accountList });
         }
+
+		public IActionResult GetAllOvertime()
+		{
+			var getAllOvertime = _unit.Overtime.GetAll();
+
+			return Json(new { data = getAllOvertime });
+		}
 
 		[HttpGet]
 		public async Task<IActionResult> SendToApi()

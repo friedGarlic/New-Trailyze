@@ -209,6 +209,8 @@
                                 </label>
                                 <script>
                                     @* some genius and dumbshit added just to let it run because of both toggle button id is timedin *@
+                                    @* tried to change and fix but it doesnt work count: 6 *@
+                                    @* only god knows how this works now *@
                                     let isChecked = false;
                                     localStorage.setItem('isChecked', isChecked.toString());
                                 </script>
@@ -324,30 +326,36 @@
     <script>
         let countdownInterval;
 
-        document.getElementById("IsTimedIn").addEventListener("click", function () {
+        function isWithinAllowedTime() {
+            let currentDateTime = new Date();
+            let currentHour = currentDateTime.getHours();
+
+            // Check if the current time is between 8 AM (08:00) and 5 PM (17:00)
+            return currentHour >= 8 && currentHour < 17;
+        }
+
+        document.getElementById("IsTimedIn").addEventListener("click", function (event) {
+            if (!isWithinAllowedTime()) {
+                alert("You can only toggle between 8 AM and 5 PM.");
+                event.preventDefault(); // Prevent the default action if outside allowed time
+                return;
+            }
+
             startCountdown();
 
             var slider = document.querySelector(".toggle-slider");
             slider.classList.toggle("on");
             document.getElementById("toggleForm").submit();
         });
-        
-        function startCountdown() {
 
+        function startCountdown() {
             let sc = parseInt("@ViewBag.SecondsCompleted");
             let mc = parseInt("@ViewBag.MinutesCompleted");
             let hc = parseInt("@ViewBag.HoursCompleted");
 
-
             let rs = parseInt("@ViewBag.RemainingSeconds");
             let rm = parseInt("@ViewBag.RemainingMinutes");
             let rh = parseInt("@ViewBag.RemainingHours");
-
-
-            //let approvedOvertime = @ViewBag.ApprovedOvertimeHours; // Get approved overtime hours
-            // if (approvedOvertime) {
-            //     totalInitialSecondsRemaining += approvedOvertime * 3600;
-            // }
 
             let totalInitialSeconds = (hc * 3600) + (mc * 60) + sc;
             let totalInitialSecondsRemaining = (rh * 3600) + (rm * 60) + rs;
@@ -364,28 +372,27 @@
                 let newMinutesRemaining = Math.floor((totalInitialSecondsRemaining % 3600) / 60);
                 let newSecondsRemaining = totalInitialSecondsRemaining % 60;
 
-                // Update the countdown displayed on the HTML element
-                document.getElementById('countdown').innerText = `${newHours}: ${newMinutes}: ${newSeconds}`;
-                document.getElementById('countdownRemaining').innerText = `${newHoursRemaining}: ${newMinutesRemaining}: ${newSecondsRemaining}`;
-
+                document.getElementById('countdown').innerText = `${newHours}:${newMinutes}:${newSeconds}`;
+                document.getElementById('countdownRemaining').innerText = `${newHoursRemaining}:${newMinutesRemaining}:${newSecondsRemaining}`;
             }, 1000);
-        } 
+        }
 
         function stopCountdown() {
             clearInterval(countdownInterval);
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            let isChecked = localStorage.getItem('isChecked') === 'true';
+
             if (isChecked) {
                 startCountdown();
             } else {
                 stopCountdown();
             }
-
         });
 
         function playNotificationSound() {
-            var audio = new Audio("/assets/ararm.mp3");
+            var audio = new Audio("/assets/alarm.mp3");
             audio.play();
         }
     </script>

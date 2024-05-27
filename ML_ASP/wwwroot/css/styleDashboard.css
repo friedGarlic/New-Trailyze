@@ -631,6 +631,30 @@ main .recent-orders a{
 
 }
 
+/*@media (max-width: 800px) {
+    .right-section .nav .profile {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .right-section .nav .profile .button,
+        .right-section .nav .profile .info,
+        .right-section .nav .profile .profile-photo {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+            .right-section .nav .profile .info h3 {
+                font-size: 1.2rem;
+            }
+
+        .right-section .nav .profile .profile-photo {
+            width: 4rem;
+            height: 4rem;
+        }
+}*/
+
 @media screen and (max-width: 768px) {
     .container{
         width: 100%;
@@ -710,7 +734,7 @@ main .recent-orders a{
 
     .right-section .nav{
         position: fixed;
-        top: 0;
+        top: 6.3rem;
         left: 0;
         align-items: center;
         background-color: var(--color-white);
@@ -728,9 +752,6 @@ main .recent-orders a{
         left: 66%;
     }
 
-    .right-section .profile .info{
-        display: none;
-    }
 
     .right-section .nav button{
         display: inline-block;

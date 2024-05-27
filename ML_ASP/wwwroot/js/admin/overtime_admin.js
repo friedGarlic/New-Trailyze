@@ -32,7 +32,20 @@ function loadDataTable() {
 					return selectHtml + hiddenInputHtml + hiddentInputUserId + hiddenInputApproval;
 				}
 			},
+			{
+				"data": null, "title": "Action",
+				"render": function (data, type, row) {
+					return '<button class="btn btn-secondary btn-sm view-pdf" data-id="' + row.fileId + '">View</button>';
+				}
+			},
+
+
 		],
 	});
 
+
+	$('#overtimeTable').on('click', '.view-pdf', function () {
+		var getId = $(this).data('id');
+		window.open('../Admin/ViewOvertimePdf?id=' + getId, '_blank');
+	});
 }

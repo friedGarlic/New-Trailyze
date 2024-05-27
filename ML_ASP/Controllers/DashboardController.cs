@@ -22,6 +22,9 @@ using Tensorflow;
 using ML_ASP.Utility;
 using Accord.Statistics.Kernels;
 using ML_ASP.Models.Models.UserDashboard;
+using GroupDocs.Editor.Options;
+using GroupDocs.Editor;
+using GroupDocs.Editor.Formats;
 
 namespace ML_ASP.Controllers
 {
@@ -39,7 +42,7 @@ namespace ML_ASP.Controllers
             _unit = unit;
             _environment = environment;
             _context = new MLContext(); //was supposed to be DB, but the architecture was applied late
-	} //construction of 2 model are on filemanagement controller
+        } //construction of 2 model are on filemanagement controller
 
         [Authorize(Roles = SD.Role_User)]
         [HttpGet]
@@ -50,6 +53,12 @@ namespace ML_ASP.Controllers
             return View(submissionVM);
         }
 
+
+        public IActionResult EditTemplate()
+        {
+            return View();
+        }
+        //TODO GroupDocs or Aspose  try word feature
 
         // --------- ONLY FOR TIME LOG PURPOSES -----------------
         [Authorize(Roles = SD.Role_User)]
@@ -194,11 +203,38 @@ namespace ML_ASP.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime, DateTime overtimeDate)
+        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime, DateTime overtimeDate, IFormFile postedFiles)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
+
+            string fileName = "";
+            string fileId = "";
+
+            if (postedFiles != null && postedFiles.Length > 0)
+            {
+                string projectPath = _environment.WebRootPath;
+                string uploadFolderName = "Overtime";
+
+
+                var uploads = Path.Combine(projectPath, uploadFolderName);
+                var extension = Path.GetExtension(postedFiles.FileName);
+
+				fileId = Guid.NewGuid().ToString();
+				fileName = postedFiles.FileName + extension;
+				if (!Directory.Exists(uploads))
+                {
+                    Directory.CreateDirectory(uploads);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(uploads, fileId + extension), FileMode.Create))
+                {
+					postedFiles.CopyTo(fileStream);
+                }
+
+                TempData["success"] = "Uploaded Successfully!";
+            }
 
             var request = new Overtime_Model
             {
@@ -207,6 +243,8 @@ namespace ML_ASP.Controllers
                 OvertimeEndTime = endTime,
                 RequestDate = overtimeDate,
                 UserName = account.FullName,
+                FileName = fileName,
+                FileId = fileId,
             };
 
             try
@@ -221,6 +259,7 @@ namespace ML_ASP.Controllers
 
             return View(nameof(Dashboard),submissionVM);
         }
+
 
         //-----------------HELPER FUNCTIONS OR METHODS--------------------------
         [HttpPost]
@@ -327,8 +366,8 @@ namespace ML_ASP.Controllers
         }
 
 
-        //for displaying dashboard
-        public SubmissionVM GetSubmissionVM()
+		//for displaying dashboard
+		public SubmissionVM GetSubmissionVM()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);

@@ -300,6 +300,7 @@ namespace ML_ASP.Controllers
 			return View(nameof(RequirementFile));
 		}
 
+		//pdf viewers
 		[Authorize(Roles = SD.Role_Admin)]
 		public ActionResult ViewPdf(string fileName)
 		{
@@ -348,7 +349,22 @@ namespace ML_ASP.Controllers
 			}
 		}
 
-		[Authorize]
+        public ActionResult ViewOvertimePdf(string id)
+        {
+            string path = Path.Combine(_environment.WebRootPath + "\\Overtime", id + ".pdf");
+
+            if (System.IO.File.Exists(path))
+            {
+                return File(System.IO.File.ReadAllBytes(path), "application/pdf");
+            }
+            else
+            {
+                TempData["failed"] = "File Not Found";
+                return NotFound();
+            }
+        }
+
+        [Authorize]
 		[HttpPost]
 		public ActionResult EditProfile(Guid id, int numberOfHours, int weeklyReport, string _course)
 		{

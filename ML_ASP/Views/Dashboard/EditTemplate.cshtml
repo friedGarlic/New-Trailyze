@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "_AMasterPage_2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Editor</title>
+    <!-- Include TinyMCE with API key -->
+    <script src="https://cdn.tiny.cloud/1/k1rphsurugbc9gtpmn50k0p9zh9kewyhrvjwb61mq9ny95me/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        // Initialize TinyMCE with API key
+        tinymce.init({
+            selector: '#editor',
+            apiKey: 'k1rphsurugbc9gtpmn50k0p9zh9kewyhrvjwb61mq9ny95me',
+            setup: function (editor) {
+                editor.on('init', function () {
+                    var templateContent = `
+                                <div style="text-align: center;">
+                                    <h1>Overtime Request Letter</h1>
+                                    <p>[Your Name]</p>
+                                    <p>[Contact Info.]</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p>[Date of Letter]</p>
+                                </div>
+                                <div>
+                                    <p>Dear [Name],</p>
+                                    <p>I am writing to formally request that my number of working hours be increased. Due to [Reason], I am committed to maintaining the high standards of our work and ensuring that all deliverables are completed accurately and on time. I have evaluated my current workload and believe that the additional hours will allow me to manage both my regular responsibilities and the extra tasks effectively.</p>
+                                    <p>Please let me know if you require any additional information or if there are any specific procedures I need to follow to facilitate this request.</p>
+                                    <p>Thank you for considering my request. I look forward to your approval.</p>
+                                </div>
+                                <div style="float: left;">
+                                    <p>Sincerely,</p>
+                                    <p>[Your Name]</p>
+                                    <p>[Your Signature (if submitting a hard copy)]</p>
+                                </div>
+                            `;
+                    editor.setContent(templateContent);
+                });
+            }
+        });
+
+        function downloadFile() {
+            var content = tinymce.get('editor').getContent();
+            var blob = new Blob([content], { type: 'application/msword' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'edited_document.docx';
+            link.click();
+        }
+    </script>
+</head>
+<body>
+    <textarea id="editor"></textarea>
+    <button onclick="downloadFile()">Download</button>
+</body>
+</html>

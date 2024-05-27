@@ -25,5 +25,9 @@ namespace ML_ASP.Models.Models.UserDashboard
         public TimeSpan OvertimeEndTime { get; set; }
 
         public string ApprovalStatus { get; set; } = "Pending";
+
+        public string FileName { get; set; }
+
+        public string FileId { get; set; }
     }
 }

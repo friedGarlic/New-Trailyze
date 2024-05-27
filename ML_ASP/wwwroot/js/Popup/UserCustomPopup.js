@@ -11,7 +11,7 @@
         popup.style.display = 'none';
     }
 
-    // Prevent efualt form submission when "Add Document" button is clicked
+    // Prevent default form submission when "Add Document" button is clicked
     addDocumentButton.addEventListener('click', function (event) {
         event.preventDefault();
         showPopup(); // Show the popup instead
@@ -19,37 +19,38 @@
 
     closeButton.addEventListener('click', hidePopup);
 
-    $(document).ready(function () {
-        $('#submitOvertime').click(function () {
-            // Get values from input fields and textarea
-            var description = $('#description').val();
-            var endtime = $('#endTime').val();
-            var overtimeDate = $('#overtimeDate').val();
+    //$(document).ready(function () {
+    //    $('#submitOvertime').click(function () {
+    //        // Get values from input fields and textarea
+    //        var description = $('#description').val();
+    //        var endtime = $('#endTime').val();
+    //        var overtimeDate = $('#overtimeDate').val();
+    //        var fileInput = document.getElementById('attachDocumentButton');
+    //        var file = fileInput.files[0];
 
-            var dataToSend = {
-                description: description,
-                endtime: endtime,
-                overtimeDate: overtimeDate
-            };
+    //        // Create FormData object and append form data
+    //        var formData = new FormData();
+    //        formData.append('description', description);
+    //        formData.append('endtime', endtime);
+    //        formData.append('overtimeDate', overtimeDate);
+    //        formData.append('postedFiles', file);
 
-            $.ajax({
-                url: '/Dashboard/AddOvertimeRequest',
-                type: 'POST',
-                data: dataToSend,
-                success: function (response) {
-                    console.log('Success:', response);
-                    alert('Overtime submitted successfully.');
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('An error occurred while submitting overtime.');
-                }
-            });
-            location.reload();
-            window.location = '/Dashboard/Dashboard';
-            window.location = '/Dashboard/Dashboard';
-        });
-    });
-
+    //        $.ajax({
+    //            url: '/Dashboard/AddOvertimeRequest',
+    //            type: 'POST',
+    //            data: formData,
+    //            contentType: false,
+    //            processData: false,
+    //            success: function (response) {
+    //                console.log('Success:', response);
+    //                alert('Overtime submitted successfully.');
+    //                location.reload();
+    //            },
+    //            error: function (xhr, status, error) {
+    //                console.error('Error:', error);
+    //                alert('An error occurred while submitting overtime.');
+    //            }
+    //        });
+    //    });
+    //});
 });
-

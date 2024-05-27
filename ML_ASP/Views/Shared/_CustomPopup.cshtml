@@ -1,5 +1,6 @@
 ﻿@* partial view for popups *@
 
+<form method="post" asp-action="AddOvertimeRequest" asp-controller="Dashboard" enctype="multipart/form-data">
 <div id="popup" class="popup-overlay">
     <div class="popup-content">
         <span class="close-btn">&times;</span>
@@ -15,6 +16,14 @@
         <input type="time" id="endTime" name="endTime" style="margin-bottom:2rem;" required>
         <br />
 
-        <button id="submitOvertime">Submit</button>
+        <label for="attachDocumentButton">Attach Request Letter</label>
+        <a asp-action="EditTemplate" asp-controller="Dashboard">Edit Template</a>
+        
+        <div style="margin-top:10px;" class="prediction" style="margin-bottom: 20px;">
+            <input type="file" id="attachDocumentButton" name="postedFiles"/>
+        </div>
+        <button type="submit" id="submitOvertime">Submit</button>
     </div>
 </div>
+
+</form>

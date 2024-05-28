@@ -20,19 +20,38 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse">
+                <div class="navbar-collapse collapse justify-content-end">
                     <ul class="navbar-nav">
+                        @* for filemanagement *@
+                        <li class="nav-item d-sm-none">
+                            <a class="nav-link text-dark text-sm" asp-controller="FileManagement" asp-action="FileManagement">
+                                <span class="material-symbols-outlined">
+                                    dashboard
+                                </span>
+                                File Management
+                            </a>
+                        </li>
+                        @* for dashboard *@
+                        <li class="nav-item d-sm-none">
+                            <a class="nav-link text-dark text-sm" asp-controller="Dashboard" asp-action="Dashboard">
+                                <span class="material-symbols-outlined">
+                                    dashboard
+                                </span>
+                                Dashboard
+                            </a>
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-action="Dashboard" asp-controller="Dashboard">Trainee Dashboard</a>
+                            <div id="noti_Container">
+                                <span class="material-icons-sharp" style="position: relative; top:10px; right: 10px;">
+                                    notifications_none
+                                </span>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <partial name="_LoginPartial" />
                         </li>
                     </ul>
-            </div>
-            <div id="noti_Container">
-                <span class="material-icons-sharp" style="position: relative; top:10px; right: 10px;">
-                    notifications_none
-                </span>
-            </div>
-            <partial name="_LoginPartial" />
+                </div>
         </nav>
     </header>
     <div class="container">

@@ -15,17 +15,17 @@ namespace ML_ASP.Models
         public string FullName { get; set; }
 
         //for viewing
-        public int? WeeklyReportRemaining { get; set; }
+        public int? WeeklyReportRemaining { get; set; } = 16;
 
         //remaining
-        public int? HoursRemaining { get; set; }
-        public int? MinutesRemaining { get; set; }
-        public int? SecondsRemaining { get; set; }
+        public int? HoursRemaining { get; set; } = 600;
+        public int? MinutesRemaining { get; set; } = 0;
+        public int? SecondsRemaining { get; set; } = 0;
 
         //completed
-        public int? HoursCompleted { get; set; }
-        public int? MinutesCompleted { get; set; }
-        public int? SecondsCompleted { get; set; }
+        public int? HoursCompleted { get; set; } = 0;
+        public int? MinutesCompleted { get; set; } = 0;
+        public int? SecondsCompleted { get; set; } = 0;
 
         //total
         public TimeSpan TotalTime { get; set; }

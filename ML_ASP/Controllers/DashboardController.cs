@@ -44,6 +44,8 @@ namespace ML_ASP.Controllers
             _context = new MLContext(); //was supposed to be DB, but the architecture was applied late
         } //construction of 2 model are on filemanagement controller
 
+        // TODO add another template for printing the table of Timeinout
+
         [Authorize(Roles = SD.Role_User)]
         [HttpGet]
         public IActionResult Dashboard()
@@ -58,7 +60,6 @@ namespace ML_ASP.Controllers
         {
             return View();
         }
-        //TODO GroupDocs or Aspose  try word feature
 
         // --------- ONLY FOR TIME LOG PURPOSES -----------------
         [Authorize(Roles = SD.Role_User)]

@@ -178,7 +178,7 @@
                 </table>
             </div>
             <!-- End of Recent Orders -->
-
+            
         </main>
         <!-- End of Main Content --> 
         <!-- Right Section --> 
@@ -189,6 +189,7 @@
                     <div class="button">
                         <!-- reverse pyschology of default returns in toggle buttons see controller for and put debug break to understand -->
                         <form method="post" id="toggleForm" asp-action="Dashboard" asp-controller="Dashboard">
+
                             @if (Model.TimeLog == "Timed In" || ViewBag.InitialIsTimedIn == true)
                             {
                                 <label class="toggle-container" for="IsTimedIn">
@@ -329,9 +330,17 @@
         function isWithinAllowedTime() {
             let currentDateTime = new Date();
             let currentHour = currentDateTime.getHours();
+            let currentMinute = currentDateTime.getMinutes();
 
-            // Check if the current time is between 8 AM (08:00) and 5 PM (17:00)
-            return currentHour >= 8 && currentHour < 17;
+            // Check if the current time is between 8 AM and 12 PM, or between 1 PM and 5 PM
+            return (currentHour >= 8 && (currentHour < 12 || (currentHour === 12 && currentMinute === 0))) ||
+                (currentHour >= 13 && currentHour < 17);
+        }
+
+        function isPastAllowedTime() {
+            let currentDateTime = new Date();
+            let currentHour = currentDateTime.getHours();
+            return currentHour >= 17; // Past 5 PM
         }
 
         document.getElementById("IsTimedIn").addEventListener("click", function (event) {
@@ -347,6 +356,11 @@
             slider.classList.toggle("on");
             document.getElementById("toggleForm").submit();
         });
+
+        function autoTimeOutUser() {
+            document.getElementById("IsTimedIn").checked = false;
+            document.getElementById("toggleForm").submit();
+        }
 
         function startCountdown() {
             let sc = parseInt("@ViewBag.SecondsCompleted");
@@ -389,6 +403,13 @@
             } else {
                 stopCountdown();
             }
+
+            setInterval(function () {
+                if (isPastAllowedTime() && isChecked) {
+                    autoTimeOutUser();
+                    localStorage.setItem('isChecked', 'false');
+                }
+            }, 60000);
         });
 
         function playNotificationSound() {

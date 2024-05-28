@@ -1,8 +1,17 @@
 
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   html {
     font-size: 16px;
+  }
+  .navbar-nav {
+    flex-direction: row !important; /* Display items horizontally */
+    justify-content: flex-end; /* Align items to the right */
+    margin-top: 0; /* Remove any top margin */
+  }
+
+  .navbar-nav .nav-item {
+    margin-left: 1rem;
   }
 }
 
@@ -30,6 +39,14 @@ header{
 
 .navbar-nav {
     padding: 10px 1%;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav .nav-item{
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
 }
 
 .navbar-nav li{
@@ -59,12 +76,13 @@ header{
     background: grey;
 }
 
-.navbar a .userImage{
-    height: 5.5rem;
-    width: 5.5rem;
+.navbar a .userImage {
+    height: 3.5rem;
+    width: 3.5rem;
     object-fit: cover;
     border-radius: 50%;
-    margin-top: -3rem;
+    margin-top: -1.8rem;
+    margin-right: -1.8rem;
     border: .6rem solid var(--dark-grey);
     border-left: .6rem solid var(--grey);
     border-bottom: .6rem solid var(--grey);

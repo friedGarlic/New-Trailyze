@@ -42,7 +42,6 @@
                 });
             }
         });
-
         function downloadFile() {
             var content = tinymce.get('editor').getContent();
             var blob = new Blob([content], { type: 'application/msword' });
@@ -55,6 +54,6 @@
 </head>
 <body>
     <textarea id="editor"></textarea>
-    <button onclick="downloadFile()">Download</button>
+    @* <button onclick="downloadFile()">Download</button> *@
 </body>
 </html>

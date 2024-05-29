@@ -158,7 +158,6 @@ body{
     padding: 50px;
     left: 0;
     transform: translate(0, 0);
-    z-index: 3;
 }
 
 .statement h3{
@@ -256,11 +255,6 @@ p {
     }
 }
 
-/* ------------- INFO GRAPHICS SECTION ABOUT AND SERVUCES ----------- */
-/* (1920x1080) Full HD Display */
-@media screen and (min-width: 1920px) {
-
-}
 
 .heading{
     margin: 2rem;
@@ -331,9 +325,11 @@ p {
 .services {
     position: relative;
     top: 50px;
-    width: auto;
+    min-height: 100vh;
+    width: 100vw;
     text-align: center;
     margin-bottom: 0px;
+    overflow: hidden;
 }
 
 .services .row{
@@ -438,8 +434,11 @@ p {
     display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
     #about{
+        display: block;
+    }
+    #services {
         display: block;
     }
 }

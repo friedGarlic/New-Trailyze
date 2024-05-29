@@ -36,23 +36,23 @@ namespace ML_ASP.Controllers
             _environment = environment;
             _context = new MLContext(); //was supposed to be DB, but the architecture was applied late
 
-            var currentDirectory = _environment.ContentRootPath;
+   //         var currentDirectory = _environment.ContentRootPath;
 
-            string desiredDirectory = "ML_ASP";
-            string modelDirectory2 = "bin\\Debug\\net7.0";
-            while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
-            {
-                currentDirectory = Directory.GetParent(currentDirectory).FullName;
-            }
+   //         string desiredDirectory = "ML_ASP";
+   //         string modelDirectory2 = "bin\\Debug\\net7.0";
+   //         while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
+   //         {
+   //             currentDirectory = Directory.GetParent(currentDirectory).FullName;
+   //         }
 
-            currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
+   //         currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
 
-			//for image classification
-			string combinePath2 = Path.Combine(currentDirectory, modelDirectory2);
-            string modelPath2 = Path.Combine(combinePath2, "ImageClassification.zip");
+			////for image classification
+			//string combinePath2 = Path.Combine(currentDirectory, modelDirectory2);
+   //         string modelPath2 = Path.Combine(combinePath2, "ImageClassification.zip");
 
-            var trainedModel2 = _context.Model.Load(modelPath2, out var modelSchema2);
-			_imagClassificationEngine = _context.Model.CreatePredictionEngine<Image_DataSet, ImagePrediction>(trainedModel2);
+   //         var trainedModel2 = _context.Model.Load(modelPath2, out var modelSchema2);
+			//_imagClassificationEngine = _context.Model.CreatePredictionEngine<Image_DataSet, ImagePrediction>(trainedModel2);
 
 		}
 
@@ -217,7 +217,7 @@ namespace ML_ASP.Controllers
                     Grade = num
                 };
 
-                prediction = _predictionEngine.Predict(new_data);
+                //prediction = _predictionEngine.Predict(new_data);
                 int convertPrediction = ((int)prediction.Prediciton);
 
                 //determine the additional grade based on how many days have passed
@@ -225,7 +225,7 @@ namespace ML_ASP.Controllers
                 DateTime earlySubmittedDate = dueDate.AddDays(-3);
                 if (currentDate < dueDate) // Submission is before the due date
                 {
-                    convertPrediction += 4;
+                    convertPrediction += 5;
                 }
                 else if (currentDate <= earlySubmittedDate) // Submission is on time (within 3 days after due date)
                 {
@@ -460,31 +460,31 @@ namespace ML_ASP.Controllers
 				ImagePath = fileName,
 			};
 
-			var prediction = _imagClassificationEngine.Predict(new_data);
-            string approved = "Approved";
-            string declined = "Declined";
+			//var prediction = _imagClassificationEngine.Predict(new_data);
+            //string approved = "Approved";
+            //string declined = "Declined";
 
-            Notification_Model notif = new Notification_Model();
-            if (prediction.ToString() == "UniformedHuman")
-            {
-                _unit.Log.Update(logModel, fileName, accountName, approved, id, fileId);
+            //Notification_Model notif = new Notification_Model();
+            //if (prediction.ToString() == "UniformedHuman")
+            //{
+                _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
 
-                notif.Title = "Machine Learning Model Approval Status";
-                notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
-                notif.NotifUserId = account.Id;
+            //    notif.Title = "Machine Learning Model Approval Status";
+            //    notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
+            //    notif.NotifUserId = account.Id;
 
-                _unit.Notification.Add(notif);
-            }
-            else
-            {
-                _unit.Log.Update(logModel, fileName, accountName, declined, id, fileId);
+            //    _unit.Notification.Add(notif);
+            //}
+            //else
+            //{
+                _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
 
-                notif.Title = "Machine Learning Model Approval Status";
-                notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;
-                notif.NotifUserId = account.Id;
+            //    notif.Title = "Machine Learning Model Approval Status";
+            //    notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;
+            //    notif.NotifUserId = account.Id;
 
-                _unit.Notification.Add(notif);
-            }
+            //    _unit.Notification.Add(notif);
+            //}
 
             _unit.Save();
 

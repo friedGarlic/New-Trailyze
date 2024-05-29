@@ -44,16 +44,19 @@
         });
         function downloadFile() {
             var content = tinymce.get('editor').getContent();
-            var blob = new Blob([content], { type: 'application/msword' });
-            var link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'edited_document.docx';
-            link.click();
+            var opt = {
+                margin: 1,
+                filename: 'edited_document.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().from(content).set(opt).save();
         }
     </script>
 </head>
 <body>
     <textarea id="editor"></textarea>
-    @* <button onclick="downloadFile()">Download</button> *@
+    <button onclick="downloadFile()">Download</button>
 </body>
 </html>

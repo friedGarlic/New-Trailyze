@@ -159,6 +159,9 @@ namespace ML_ASP.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LogImageId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LogImageUrl")
                         .HasColumnType("nvarchar(max)");
 

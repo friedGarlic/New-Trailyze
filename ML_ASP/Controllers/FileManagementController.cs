@@ -347,7 +347,36 @@ namespace ML_ASP.Controllers
         {
 			var currentDirectory = _environment.ContentRootPath;
 
-			string desiredDirectory = "ClassLibrary1";
+            string fileName = "";
+            string fileId = "";
+
+            //for time in time out pictures for viewing image a experiment
+            string projectPath = _environment.WebRootPath;
+            string uploadFolderName = "TimeLogPictures";
+
+            if (file.Any())
+            {
+                foreach (IFormFile postedImage in file)
+                {
+                    var uploads = Path.Combine(projectPath, uploadFolderName);
+                    var extension = Path.GetExtension(postedImage.FileName);
+                    fileId = Guid.NewGuid().ToString();
+
+                    if (!Directory.Exists(uploads))
+                    {
+                        Directory.CreateDirectory(uploads);
+                    }
+
+                    using (FileStream fileStream = new FileStream(Path.Combine(uploads, fileId + extension), FileMode.Create))
+                    {
+                        postedImage.CopyTo(fileStream);
+                    }
+                    fileId = fileId + extension;
+                }
+            }
+            //-------------------------------------------------------
+
+            string desiredDirectory = "ClassLibrary1";
 			while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
 			{
 				currentDirectory = Directory.GetParent(currentDirectory).FullName;
@@ -358,8 +387,6 @@ namespace ML_ASP.Controllers
 			string _modelSessionPath = Path.Combine(currentDirectory, "ModelSession_3");
 			string _assetsPath = Path.Combine(_modelSessionPath, "assets");
 			string _imagesFolderPath = Path.Combine(_assetsPath, "samples");
-
-			string fileName = "";
 
             if (!Directory.Exists(_imagesFolderPath))
             {
@@ -410,6 +437,7 @@ namespace ML_ASP.Controllers
 			{
 				ImagePath = fileName,
 			};
+
 			var prediction = _imagClassificationEngine.Predict(new_data);
             string approved = "Approved";
             string declined = "Declined";
@@ -417,7 +445,7 @@ namespace ML_ASP.Controllers
             Notification_Model notif = new Notification_Model();
             if (prediction.ToString() == "UniformedHuman")
             {
-                _unit.Log.Update(logModel, fileName, accountName, approved, id);
+                _unit.Log.Update(logModel, fileName, accountName, approved, id, fileId);
 
                 notif.Title = "Machine Learning Model Approval Status";
                 notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
@@ -427,7 +455,7 @@ namespace ML_ASP.Controllers
             }
             else
             {
-                _unit.Log.Update(logModel, fileName, accountName, declined, id);
+                _unit.Log.Update(logModel, fileName, accountName, declined, id, fileId);
 
                 notif.Title = "Machine Learning Model Approval Status";
                 notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;

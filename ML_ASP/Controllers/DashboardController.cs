@@ -55,10 +55,24 @@ namespace ML_ASP.Controllers
             return View(submissionVM);
         }
 
-
         public IActionResult EditTemplate()
+        {return View(); }
+
+        public IActionResult DTRTemplate()
         {
-            return View();
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value); //userid
+
+            submissionVM = new SubmissionVM()
+            {
+                LogList = _unit.Log.GetAll(u => u.LogId == claim.Value),
+            };
+
+
+
+            return View(submissionVM); 
         }
 
         // --------- ONLY FOR TIME LOG PURPOSES -----------------

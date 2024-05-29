@@ -1,0 +1,143 @@
+﻿@{
+    Layout = "_AMasterPage_2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Editor</title>
+    <!-- TinyMCE with API key -->
+    <script src="https://cdn.tiny.cloud/1/k1rphsurugbc9gtpmn50k0p9zh9kewyhrvjwb61mq9ny95me/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        .header-container {
+            position: relative;
+            line-height: 1;
+            padding-left: 120px;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header-text p {
+            margin: 0;
+        }
+
+        .header-text .bold {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Hidden div to store the initial template content -->
+    <div id="initialContent" style="display:none;">
+        <div style="position: relative; line-height: 0.5; padding-left: 5rem;">
+            <img style="position: absolute;top: 0.1rem;left: 0.1rem; max-width: 4rem;" src="~/assets/prmsuLogo.jpg" alt="PRMSU Logo">
+            <div class="header-text">
+                <p>Republic of the Philippines</p>
+                <p class="bold">President Ramon Magsaysay State University</p>
+                <p>Iba, Zambales, Philippines</p>
+            </div>
+        </div>
+
+        <hr style="width: 100%;
+            border: 1px solid black;
+            margin-top: 35px;">
+
+        <div style="text-align: center; font-size: larger; margin-top: 20px;">
+            Internship Time Sheet
+        </div>
+        <div style="text-align: center; font-weight: bold;">
+            Time Sheet must be signed by your supervisor weekly.
+        </div>
+        <div>
+            <p>Quarter: ___________ Month(s) on this time sheet: ___________ Name: ___________</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="p-4">FullName</th>
+                    @foreach (var logEntry in Model.LogList)
+                    {
+                        <th class="p-4">@logEntry.Log</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    string previousFullName = null;
+                    DateTime? previousDate = null;
+                    List<string> logEntries = new List<string>();
+                    foreach (var logEntry in Model.LogList)
+                    {
+                        if (previousFullName != logEntry.FullName)
+                        {
+                            if (previousFullName != null)
+                            {
+                                <tr>
+                                    <td class="p-4">@previousFullName</td>
+                                    @foreach (var entry in logEntries)
+                                    {
+                                        <td class="p-4">@entry</td>
+                                    }
+                                </tr>
+                            }
+                            previousFullName = logEntry.FullName;
+                            logEntries.Clear();
+                        }
+                        logEntries.Add(logEntry.DateTime.ToString("HH:mm:ss"));
+                    }
+                    if (previousFullName != null)
+                    {
+                        <tr>
+                            <td class="p-4">@previousFullName</td>
+                            @foreach (var entry in logEntries)
+                            {
+                                <td class="p-4">@entry</td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div style="text-align: right; margin-top: 20px;">
+            <p>Total Hours: ___________</p>
+        </div>
+    </div>
+
+    <!-- Textarea for TinyMCE -->
+    <textarea id="editor"></textarea>
+
+    <!-- Button to download the edited content -->
+    @* <button onclick="downloadFile()">Download</button> *@
+
+    <script>
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#editor',
+            apiKey: 'k1rphsurugbc9gtpmn50k0p9zh9kewyhrvjwb61mq9ny95me',
+            setup: function (editor) {
+                editor.on('init', function () {
+                    // Get the content from the hidden div
+                    var initialContent = document.getElementById('initialContent').innerHTML;
+                    // Set the content to the editor
+                    editor.setContent(initialContent);
+                });
+            }
+        });
+
+        // Function to download the edited content
+        function downloadFile() {
+            var content = tinymce.get('editor').getContent();
+            var blob = new Blob([content], { type: 'text/html' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'edited_document.html';
+            link.click();
+        }
+    </script>
+</body>
+</html>

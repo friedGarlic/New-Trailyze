@@ -21,6 +21,8 @@ namespace ML_ASP.Models.Models
 
         public string? LogImageUrl { get; set; }
 
+        public string? LogImageId { get; set; }
+
         [DisplayName("Full Name")]
         public string FullName { get; set; }
 

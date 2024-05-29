@@ -30,7 +30,7 @@ namespace ML_ASP.DataAccess.Repositories
             _dbContext.Update(objFromDb);
         }
 
-		public void Update(LogModel logModel, string fileName, string fullName,string approvalStatus, int id)
+		public void Update(LogModel logModel, string fileName, string fullName,string approvalStatus, int id, string fileId)
 		{
 			var objFromDb = _dbContext.Logs.FirstOrDefault(u => u.Id == id);
 			if (objFromDb != null)
@@ -38,6 +38,7 @@ namespace ML_ASP.DataAccess.Repositories
 				objFromDb.LogImageUrl = fileName;
                 objFromDb.FullName = fullName;
                 objFromDb.ApprovalStatus = approvalStatus;
+                objFromDb.LogImageId = fileId;
             }
 
             _dbContext.Update(objFromDb);

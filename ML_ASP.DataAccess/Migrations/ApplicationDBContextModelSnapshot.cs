@@ -60,6 +60,9 @@ namespace ML_ASP.DataAccess.Migrations
                     b.Property<int?>("HoursRemaining")
                         .HasColumnType("int");
 
+                    b.Property<int?>("HoursRequired")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 

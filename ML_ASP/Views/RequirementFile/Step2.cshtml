@@ -19,17 +19,17 @@
         <p>Document Requirements</p>
 
         <div class="document-item">
-            <p>Parental Consent</p>
-            @if (Model.FileName3 == null)
+            <p>Letter of Indorsement</p>
+            @if (Model.FileName2 == null)
             {
-                <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+                    <button class="green-button" id="addDocumentButton">+ Add Document</button>
             }
             else
             {
                 @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
-                <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+                <button class="green-button" id="addDocumentButton">+ Add Document</button>
 
-                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName3" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+                <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName2" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
 
             }
             <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=PARENTAL-CONSENT-2@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
@@ -37,9 +37,9 @@
     </div>
 
         @*     For document Contract Aggreement     *@
-        <div id="popup3" class="popup-overlay">
+        <div id="popup" class="popup-overlay">
             <div class="popup-content">
-                <span class="close-btn3">&times;</span>
+                <span class="close-btn">&times;</span>
                 <h2>Add Document</h2>
 
                 <label for="title3">Title:</label>
@@ -52,7 +52,7 @@
                     <label for="mandatory">This document is mandatory</label>
                 </div>
                 <div class="prediction" style="margin-bottom: 20px;">
-                    <input type="file" id="attachDocumentButton3" name="postedFiles2" />
+                    <input type="file" id="attachDocumentButton3" name="postedFiles1" />
                 </div>
             </div>
         </div>

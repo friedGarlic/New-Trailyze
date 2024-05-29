@@ -13,6 +13,7 @@ using ML_ASP.Utility;
 using ML_net.ModelSession_3;
 using Microsoft.VisualBasic;
 using Accord;
+using System.Runtime.CompilerServices;
 
 namespace ML_ASP.Controllers
 {
@@ -26,6 +27,7 @@ namespace ML_ASP.Controllers
 
         public SubmissionVM submissionVM { get; set; }
 
+
         //constructor for every model and object needed
         public FileManagementController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment,
             IUnitOfWork unit)
@@ -36,22 +38,14 @@ namespace ML_ASP.Controllers
 
             var currentDirectory = _environment.ContentRootPath;
 
-            string desiredDirectory = "ClassLibrary1";
-            string modelDirectory = "ModelSession_2";
-            string modelDirectory2 = "ModelSession_3";
+            string desiredDirectory = "ML_ASP";
+            string modelDirectory2 = "bin\\Debug\\net7.0";
             while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
             {
                 currentDirectory = Directory.GetParent(currentDirectory).FullName;
             }
 
             currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
-            // Construct the path relative to the desired directory
-            //for Grade prediction
-            string combinePath = Path.Combine(currentDirectory, modelDirectory);
-            string modelPath = Path.Combine(combinePath, "GradePrediction.zip");
-
-			var trainedModel = _context.Model.Load(modelPath, out var modelSchema);
-			_predictionEngine = _context.Model.CreatePredictionEngine<Object_DataSet, Prediction>(trainedModel);
 
 			//for image classification
 			string combinePath2 = Path.Combine(currentDirectory, modelDirectory2);
@@ -60,9 +54,18 @@ namespace ML_ASP.Controllers
             var trainedModel2 = _context.Model.Load(modelPath2, out var modelSchema2);
 			_imagClassificationEngine = _context.Model.CreatePredictionEngine<Image_DataSet, ImagePrediction>(trainedModel2);
 
-			//for deployment mode only or when published--------------------=======================
-			//var modelPath = "C:\\inetpub\\wwwroot\\trailyze\\ModelSession_1\\GradePrediction.zip";
 		}
+
+        public static string GetAssetsPath(string relativePath)
+        {
+            // Get the physical path of the directory containing the web application
+            string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            // Combine the application directory with the relative path to the assets directory
+            string assetsPath = Path.Combine(appDirectory, relativePath);
+
+            return assetsPath;
+        }
 
 
         [Authorize(Roles = SD.Role_User)]
@@ -103,6 +106,22 @@ namespace ML_ASP.Controllers
         {
             var killFile = _unit.Submission.GetFirstOrDefault(u => u.Id == id);
             _unit.Submission.Remove(killFile);
+            _unit.Save();
+            string path = Path.Combine(_environment.ContentRootPath + "\\Uploads", fileName);
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+
+            TempData["failed"] = "File Deleted";
+
+            return RedirectToAction(nameof(FileManagement));
+        }
+
+        public ActionResult DeleteFileImage(int id, string fileName)
+        {
+            var killFile = _unit.Log.GetFirstOrDefault(u => u.Id == id);
+            _unit.Log.Remove(killFile);
             _unit.Save();
             string path = Path.Combine(_environment.ContentRootPath + "\\Uploads", fileName);
             if (System.IO.File.Exists(path))
@@ -376,7 +395,7 @@ namespace ML_ASP.Controllers
             }
             //-------------------------------------------------------
 
-            string desiredDirectory = "ClassLibrary1";
+            string desiredDirectory = "ML_ASP";
 			while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
 			{
 				currentDirectory = Directory.GetParent(currentDirectory).FullName;
@@ -384,7 +403,10 @@ namespace ML_ASP.Controllers
 
 			currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
 
-			string _modelSessionPath = Path.Combine(currentDirectory, "ModelSession_3");
+            string modelDirectoryPath = "bin\\Debug\\net7.0";
+
+            string nextPath = Path.Combine(currentDirectory, modelDirectoryPath);
+            string _modelSessionPath = Path.Combine(nextPath, "ModelSession_3");
 			string _assetsPath = Path.Combine(_modelSessionPath, "assets");
 			string _imagesFolderPath = Path.Combine(_assetsPath, "samples");
 

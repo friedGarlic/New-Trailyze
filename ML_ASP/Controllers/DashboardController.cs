@@ -457,6 +457,8 @@ namespace ML_ASP.Controllers
             ViewBag.MinutesCompleted = account.MinutesCompleted;
             ViewBag.SecondsCompleted = account.SecondsCompleted;
 
+            ViewBag.HoursRequired = account.HoursRequired;
+
             //check if theres log in account
             //post picture if there is
             if (claim != null)

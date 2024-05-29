@@ -27,6 +27,9 @@ namespace ML_ASP.Models
         public int? MinutesCompleted { get; set; } = 0;
         public int? SecondsCompleted { get; set; } = 0;
 
+        //required
+        public int? HoursRequired { get; set; } = 0;
+
         //total
         public TimeSpan TotalTime { get; set; }
 

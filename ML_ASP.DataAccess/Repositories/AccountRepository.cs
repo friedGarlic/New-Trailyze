@@ -58,7 +58,7 @@ namespace ML_ASP.DataAccess.Repositories
             }
         }
 
-		public void UpdateAccount(string course, int hrsRemain,int weeklyReport, string id)
+		public void UpdateAccount(string course, int hrsRemain,int weeklyReport, string id, int requiredHours)
 		{
 			var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
 			if (objFromDb != null)
@@ -66,6 +66,7 @@ namespace ML_ASP.DataAccess.Repositories
 				objFromDb.HoursRemaining = hrsRemain;
                 objFromDb.WeeklyReportRemaining = weeklyReport;
                 objFromDb.Course = course;
+                objFromDb.HoursRequired = requiredHours;
 			}
 		}
 

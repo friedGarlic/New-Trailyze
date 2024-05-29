@@ -17,23 +17,26 @@ namespace ML_net.ModelSession_3
 
     public class Demo
     {
+        public static string GetAssetsPath(string relativePath)
+        {
+            // Get the physical path of the directory containing the web application
+            string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            // Combine the application directory with the relative path to the assets directory
+            string assetsPath = Path.Combine(appDirectory, relativePath);
+
+            return assetsPath;
+        }
+
         public static ITransformer GenerateModel(MLContext mlContext)
         {
             //for trained model to use
             string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            // navigate up until reaching the desired directory (ClassLibrary1)
-            string desiredDirectory = "ModelSession_3";
-            while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
-            {
-                currentDirectory = Directory.GetParent(currentDirectory).FullName;
-            }
-            currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
-            // construct the path relative to the desired directory
-            string _assetsPath = Path.Combine(currentDirectory, "assets");
+            string _assetsPath = GetAssetsPath("ModelSession_3/assets");
 
             //string _imagesFolder = Path.Combine(_assetsPath, "images");
-			string _imagesFolder = Path.Combine(_assetsPath, "samples");
+            string _imagesFolder = Path.Combine(_assetsPath, "samples");
 			string _trainTagsTsv = Path.Combine(_imagesFolder, "tags.tsv");
             string _testTagsTsv = Path.Combine(_imagesFolder, "test-tags.tsv");
             string _inceptionTensorFlowModel = Path.Combine(_assetsPath, "inception", "tensorflow_inception_graph.pb");

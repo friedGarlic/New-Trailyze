@@ -22,7 +22,7 @@ builder.Services.AddHttpContextAccessor();
 
 // Register the DbContext
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register Identity services
 builder.Services.AddIdentity<Account_Model, IdentityRole>()

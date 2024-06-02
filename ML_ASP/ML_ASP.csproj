@@ -55,6 +55,8 @@
     <Folder Include="Images\" />
     <Folder Include="Uploads\" />
     <Folder Include="Views\Notification\" />
+    <Folder Include="wwwroot\Overtime\" />
+    <Folder Include="wwwroot\TimeLogPictures\" />
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 

@@ -8,8 +8,7 @@ namespace ML_ASP.Models
 {
     public class Account_Model : IdentityUser
     {
-        [Range(18, 50)]
-        public int Age { get; set; }
+        public DateTime Birthdte { get; set; }
 
         [DisplayName("Full Name")]
         public string FullName { get; set; }

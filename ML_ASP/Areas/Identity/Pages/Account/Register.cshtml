@@ -49,11 +49,11 @@
                 <span asp-validation-for="Input.FullName" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-2">
-                <input asp-for="Input.Age" class="form-control" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Age">Age</label>
-                <span asp-validation-for="Input.Age" class="text-danger"></span>
-            </div>
+                <div class="form-floating mb-2">
+                    <input asp-for="Input.Birthdate" type="date" class="form-control" aria-required="true" placeholder="Birthdate" min="1990-01-01" />
+                    <label asp-for="Input.Birthdate">Birthdate</label>
+                    <span asp-validation-for="Input.Birthdate" class="text-danger"></span>
+                </div>
 
             <div class="form-floating mb-2">
                 <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" placeholder="password" />

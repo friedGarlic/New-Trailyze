@@ -39,6 +39,7 @@ namespace ML_ASP.Models
         //CERTIFICATE REQUIREMENTS
         public string? Medical { get; set; }
         public string? Enrollment { get; set; }
+        public string? DocumentVerification { get; set; } = "Pending";
 
         public List<RequirementFile_Model>? Requirements { get; set; }
 

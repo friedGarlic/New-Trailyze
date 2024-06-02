@@ -19,7 +19,36 @@ function loadDataTable() {
                 "title": "Requirements"
             },
             {
-                "data": "registrationPermission", "title": "Registration Permission",
+                "data": "medical", "title": "Medical Verification",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-primary btn-sm group-btn view-pdf2" data-id="' + row.medical + '">VIEW</button>';
+                }
+            },
+            {
+                "data": "enrollment", "title": "Enrolled Verification",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-primary btn-sm group-btn view-pdf2" data-id="' + row.enrollment + '">VIEW</button>';
+                }
+            },
+            {
+                "data": "documentVerification", "title": "Registration Permission",
+                "render": function (data, type, row) {
+                    var options = ["Pending", "Declined", "Approved"];
+
+                    // i dont understand this anymore sadly it got too complicated
+                    var selectHtml = '<select name="documentVerification">';
+                    for (var i = 0; i < options.length; i++) {
+                        var isSelected = row.documentVerification === options[i] ? 'selected="selected"' : '';
+                        selectHtml += '<option value="' + options[i] + '" ' + isSelected + '>' + options[i] + '</option>';
+                    }
+                    selectHtml += '</select>';
+                    var hiddenInputApproval = '<input type="hidden" name="documentApprovalStatus" value = "' + row.documentVerification + '" />';
+                    var hiddenInputHtml = '<input type="hidden" name="documentId" value="' + row.id + '">'; // to pass in controller
+                    return selectHtml + hiddenInputHtml + hiddenInputApproval;
+                }
+            },
+            {
+                "data": "registrationPermission", "title": "Document Permission",
                 "render": function (data, type, row) {
                     var options = ["Pending", "Declined", "Approved"];
 
@@ -53,6 +82,11 @@ function loadDataTable() {
             tr.addClass('shown');
             $(this).find('.toggle-details').text('Clicked Here to Collapse');
         }
+    });
+
+    $(document).on('click', '.view-pdf2', function () {
+        var getId = $(this).data('id');
+        window.open('../Admin/RequirementViewPdf2?id=' + getId, '_blank');
     });
 }
 

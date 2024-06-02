@@ -35,9 +35,8 @@ body {
     background-image: url('/assets/bgReg.jpg');
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    height: 130vh;
     width: 100vw;
-    overflow: hidden;
     font-family: 'Arial', sans-serif;
 }
 
@@ -130,6 +129,24 @@ body {
 }
 
 .close-btn3{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+}
+
+.close-btn4 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+}
+
+.close-btn5 {
     position: absolute;
     top: 10px;
     right: 10px;

@@ -115,8 +115,8 @@ namespace ML_ASP.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Range(18, 50)]
-            public int Age { get; set; }
+            [Required]
+            public DateTime Birthdate{ get; set; }
 
             [Required]
             [DisplayName("Full Name")]
@@ -168,7 +168,7 @@ namespace ML_ASP.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.PhoneNumber = Input.PhoneNumber;
                 user.FullName = Input.FullName;
-                user.Age = Input.Age;
+                user.Birthdte = Input.Birthdate;
 
                 //REQUIREMENT REGISTRATION
                 

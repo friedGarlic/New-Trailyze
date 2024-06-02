@@ -19,6 +19,11 @@
             <div class="document-item">
                 <p>Application Form</p>
 
+                @if (Model.FileName1 == null)
+                {
+                    <div class="text-danger">You didn't submit anything for the Application Form.</div>
+                }
+
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <label>Categories</label>
                 <div class="form-floating mb-2 py-1">
@@ -93,10 +98,12 @@
                 <p>Letter of Indorsement</p>
                 @if (Model.FileName1 == null)
                 {
+                    <div class="text-danger">You need to submit the Application Form first.</div>
                     <button disabled class="gray-button"> Disabled </button>
                 }
                 else if(Model.FileName2 == null)
                 {
+                    <div class="text-danger">You didn't submit anything for the Letter of Indorsement.</div>
                     <button class="green-button" id="addDocumentButton2">+ Add Document</button>
                 }
                 else
@@ -195,6 +202,7 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton" name="postedFiles0" />
                 </div>
+                <button type="submit">Submit</button>
             </div>
         </div>
 
@@ -216,6 +224,7 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton2" name="postedFiles1" />
                 </div>
+                <button type="submit">Submit</button>
             </div>
         </div>
 
@@ -237,6 +246,7 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton3" name="postedFiles2" />
                 </div>
+                <button type="submit">Submit</button>
             </div>
         </div>
 
@@ -258,6 +268,7 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton4" name="postedFiles3" />
                 </div>
+                <button type="submit">Submit</button>
             </div>
         </div>
 
@@ -279,11 +290,19 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton5" name="postedFiles4" />
                 </div>
+                <button type="submit">Submit</button>
             </div>
         </div>
 
 
-        <button type="submit">Next</button>
+        @if (Model.FileName1 == null && Model.FileName2 == null && Model.FileName3 == null && Model.FileName4 == null && Model.FileName5 == null)
+        {
+            <button class="btn-primary" type="submit"> Submit </button>
+        }
+        else
+        {
+            <button class="gray-button" disabled> Disabled </button>
+        }
     </form>
 
 </body>

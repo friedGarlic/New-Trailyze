@@ -87,6 +87,94 @@
                 }
                 <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-APPLICATION-FORM@x-.pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
             </div>
+
+            @*  For document Letter of Indorsement *@
+            <div class="document-item">
+                <p>Letter of Indorsement</p>
+                @if (Model.FileName1 == null)
+                {
+                    <button disabled class="gray-button"> Disabled </button>
+                }
+                else if(Model.FileName2 == null)
+                {
+                    <button class="green-button" id="addDocumentButton2">+ Add Document</button>
+                }
+                else
+                {
+                    @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                    <button class="green-button" id="addDocumentButton2">+ Add Document</button>
+
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName2" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                }
+                <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=PARENTAL-CONSENT-2@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+            </div>
+
+            @*  For document Notice of Acceptance *@
+            <div class="document-item">
+                <p>Notice of Acceptance</p>
+                @if (Model.FileName2 == null)
+                {
+                    <button disabled class="gray-button"> Disabled </button>
+                }
+                else if (Model.FileName3 == null)
+                {
+                    <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+                }
+                else
+                {
+                    @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                    <button class="green-button" id="addDocumentButton3">+ Add Document</button>
+
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName3" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                }
+                <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=PARENTAL-CONSENT-2@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+            </div>
+
+            @*  For document Parens Concent *@
+            <div class="document-item">
+                <p>Parents Concent</p>
+                @if (Model.FileName3 == null)
+                {
+                    <button disabled class="gray-button"> Disabled </button>
+                }
+                else if (Model.FileName4 == null)
+                {
+                    <button class="green-button" id="addDocumentButton4">+ Add Document</button>
+                }
+                else
+                {
+                    @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                    <button class="green-button" id="addDocumentButton4">+ Add Document</button>
+
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName4" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                }
+                <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=PARENTAL-CONSENT-2@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+            </div>
+
+            @*  For document Contract Agreement *@
+            <div class="document-item">
+                <p>Contract Agreement</p>
+                @if (Model.FileName4 == null)
+                {
+                    <button disabled class="gray-button"> Disabled </button>
+                }
+                else if (Model.FileName5 == null)
+                {
+                    <button class="green-button" id="addDocumentButton5">+ Add Document</button>
+                }
+                else
+                {
+                    @* <a href="../RequirementFile/ViewImage?fileName=@Model.FileName1" target="_blank" style="margin-bottom: 2px;">View</a> *@
+                    <button class="green-button" id="addDocumentButton5">+ Add Document</button>
+
+                    <a class="green-button" href="../RequirementFile/ViewPdf?fileName=@Model.FileName5" target="_blank" style="margin-bottom: 2px;">View Attached Document</a>
+
+                }
+                <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-CONTRACT-AGREEMENT@x..pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
+            </div>
         </div>
 
         <div id="popup" class="popup-overlay">
@@ -109,6 +197,91 @@
                 </div>
             </div>
         </div>
+
+        @*     For document Letter of Indorsement     *@
+        <div id="popup2" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn2">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title2">Title:</label>
+                <input type="text" name="title2" id="title2" placeholder="Provide document title, e.g., 'Document for OJT'">
+
+                <label for="description2">Document Description:</label>
+                <textarea id="description2" name="description2" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton2" name="postedFiles1" />
+                </div>
+            </div>
+        </div>
+
+        @*     For document Notice of Acceptance     *@
+        <div id="popup3" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn3">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title3">Title:</label>
+                <input type="text" name="title3" id="title3" placeholder="Provide document title, e.g., 'Document for OJT'">
+
+                <label for="description3">Document Description:</label>
+                <textarea id="description3" name="description3" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton3" name="postedFiles2" />
+                </div>
+            </div>
+        </div>
+
+        @*     For document Parents Concent     *@
+        <div id="popup4" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn4">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title4">Title:</label>
+                <input type="text" name="title4" id="title4" placeholder="Provide document title, e.g., 'Document for OJT'">
+
+                <label for="description4">Document Description:</label>
+                <textarea id="description4" name="description4" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton4" name="postedFiles3" />
+                </div>
+            </div>
+        </div>
+
+        @*     For document Contract Agreement     *@
+        <div id="popup5" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-btn5">&times;</span>
+                <h2>Add Document</h2>
+
+                <label for="title5">Title:</label>
+                <input type="text" name="title5" id="title5" placeholder="Provide document title, e.g., 'Document for OJT'">
+
+                <label for="description5">Document Description:</label>
+                <textarea id="description5" name="description5" placeholder="Provide document description"></textarea>
+
+                <div>
+                    <label for="mandatory">This document is mandatory</label>
+                </div>
+                <div class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton5" name="postedFiles4" />
+                </div>
+            </div>
+        </div>
+
 
         <button type="submit">Next</button>
     </form>

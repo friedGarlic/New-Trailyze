@@ -48,7 +48,7 @@
 			<li class="active">
 				<a asp-controller="Admin" asp-action="RequirementFile">
 					<i class='bx bxs-file-pdf'></i>
-					<span class="text">Requirement Files</span>
+					<span class="text">Registration Files</span>
 				</a>
 			</li>
 			<li>
@@ -83,7 +83,7 @@
 					<h1>Requirement Files</h1>
 					<ul class="breadcrumb">
 						<li>
-							<a href="#">Requirement Files</a>
+							<a href="#">Registration Files</a>
 						</li>
 						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
@@ -94,12 +94,14 @@
 			</div>
 			@* ----------------------------------------------------------- *@
 			<div>
-				<h1 class="heading"> Requirement File Logs </h1>
+				<h1 class="heading"> Registration File Logs </h1>
 				<h3 class="title"> Approval and Updates </h3>
 				<form id="approvalForm" asp-controller="Admin" asp-action="RequirementFileUpdate" method="post">
 					<table id="requirementFilesTable">
 						<thead>
 							<tr>
+								<th></th>
+								<th></th>
 								<th></th>
 								<th></th>
 								<th></th>

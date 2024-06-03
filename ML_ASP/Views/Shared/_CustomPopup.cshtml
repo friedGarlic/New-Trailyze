@@ -9,8 +9,22 @@
         <label for="description">Overtime Description:</label>
         <textarea id="description" name="description" placeholder="Provide description on overtime, and reason."></textarea>
 
-        <label for="overtimeDate">Overtime Date:</label>
-        <input type="date" id="overtimeDate" name="overtimeDate" required>
+        <label>
+                <input type="checkbox" id="daysOvertimeCheckbox"> Days Overtime
+        </label>
+
+        <div id="datePickers" style="display: none;">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate">
+            <br>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate">
+        </div>
+
+        <div id="datePickers2">
+            <label for="overtimeDate">Overtime Date:</label>
+            <input type="date" id="overtimeDate" name="overtimeDate" required>
+        </div>
 
         <label for="endTime">Select Request End Time:</label>
         <input type="time" id="endTime" name="endTime" style="margin-bottom:2rem;" required>
@@ -27,3 +41,80 @@
 </div>
 
 </form>
+
+<script>
+    // List of Philippine holidays (for example)
+    const holidays = [
+        '2024-01-01', // New Year's Day
+        '2024-04-09', // Araw ng Kagitingan
+        '2024-04-10', // Maundy Thursday
+        '2024-04-11', // Good Friday
+        '2024-05-01', // Labor Day
+        '2024-06-12', // Independence Day
+        '2024-08-21', // Ninoy Aquino Day
+        '2024-08-26', // National Heroes Day
+        '2024-11-01', // All Saints' Day
+        '2024-11-30', // Bonifacio Day
+        '2024-12-25', // Christmas Day
+        '2024-12-30'  // Rizal Day
+    ];
+
+    const checkbox = document.getElementById('daysOvertimeCheckbox');
+    const datePickers = document.getElementById('datePickers');
+    const datePickers2 = document.getElementById('datePickers2');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const overtimeDateInput = document.getElementById('overtimeDate');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            datePickers.style.display = 'block';
+            datePickers2.style.display = 'none';
+        } else {
+            datePickers.style.display = 'none';
+            datePickers2.style.display = 'block';
+            startDateInput.value = '';
+            endDateInput.value = '';
+        }
+    });
+
+    function isHoliday(date) {
+        return holidays.includes(date);
+    }
+
+    function isWeekend(date) {
+        const day = new Date(date).getUTCDay();
+        return day === 0 || day === 6; // Sunday is 0 and Saturday is 6
+    }
+
+    function disableInvalidDates(input) {
+        input.addEventListener('input', function () {
+            const dateValue = input.value;
+            if (isHoliday(dateValue) || isWeekend(dateValue)) {
+                alert('Selected date is either a holiday or a weekend and cannot be selected. Please choose another date.');
+                input.value = '';
+            }
+        });
+    }
+
+    disableInvalidDates(startDateInput);
+    disableInvalidDates(endDateInput);
+    disableInvalidDates(overtimeDateInput);
+
+    // Get current date
+    let currentDate = new Date();
+
+    // Get the date exactly two days ahead
+    let twoDaysAhead = new Date(currentDate.getTime() + (2 * 24 * 60 * 60 * 1000));
+
+    // Format the dates to YYYY-MM-DD
+    let formattedDate = twoDaysAhead.toISOString().slice(0, 10);
+
+    // Set the minimum and maximum attributes for startDate and endDate inputs
+    startDateInput.setAttribute("min", formattedDate);
+    endDateInput.setAttribute("min", formattedDate);
+
+    // Set the minimum and maximum attributes for overtimeDate input
+    overtimeDateInput.setAttribute("min", formattedDate);
+</script>
+

@@ -36,7 +36,7 @@ namespace ML_ASP.Controllers
 
         public SubmissionVM submissionVM { get; set; }
 
-        public DashboardController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment, 
+        public DashboardController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment,
             IUnitOfWork unit)
         {
             _unit = unit;
@@ -56,7 +56,7 @@ namespace ML_ASP.Controllers
         }
 
         public IActionResult EditTemplate()
-        {return View(); }
+        { return View(); }
 
         public IActionResult DTRTemplate()
         {
@@ -72,7 +72,7 @@ namespace ML_ASP.Controllers
 
 
 
-            return View(submissionVM); 
+            return View(submissionVM);
         }
 
         // --------- ONLY FOR TIME LOG PURPOSES -----------------
@@ -117,7 +117,7 @@ namespace ML_ASP.Controllers
                 LogList = _unit.Log.GetAll(u => u.LogId == claim.Value)
             };
 
-            
+
             _unit.Log.Add(logModel);
             _unit.Save();
 
@@ -132,15 +132,15 @@ namespace ML_ASP.Controllers
         [Authorize]
         [HttpPost]
         public ActionResult UploadImage(IFormFile file) //for profile image
-		{
+        {
             //find the unique user
-			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-			var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
             //
 
-			if (file != null && file.Length > 0)
+            if (file != null && file.Length > 0)
             {
                 string projectPath = _environment.WebRootPath;
                 string uploadFolderName = "ProfileImages";
@@ -152,12 +152,12 @@ namespace ML_ASP.Controllers
                 {
                     Directory.CreateDirectory(uploads);
                 }
-                 
-                if(account.ImageUrl != null)
-                {
-					var oldImagePath = Path.Combine(projectPath, account.ImageUrl.TrimStart('/'));
 
-					if (System.IO.File.Exists(oldImagePath))
+                if (account.ImageUrl != null)
+                {
+                    var oldImagePath = Path.Combine(projectPath, account.ImageUrl.TrimStart('/'));
+
+                    if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);
                     }
@@ -171,7 +171,7 @@ namespace ML_ASP.Controllers
                 // Update the image URL in the model
                 var imageUrl = Path.Combine("/", uploadFolderName, fileName + extension);
 
-				_unit.Account.Update(imageUrl, account.Id);
+                _unit.Account.Update(imageUrl, account.Id);
 
                 _unit.Save();
                 TempData["success"] = "Uploaded Successfully!";
@@ -186,7 +186,7 @@ namespace ML_ASP.Controllers
 
         //-----------------ADD ON FEATURES ---------------------
         [HttpPost]
-        public ActionResult AddReminder(string nameOfReminder,string iconType, string iconClass, DateTime dateTime)
+        public ActionResult AddReminder(string nameOfReminder, string iconType, string iconClass, DateTime dateTime)
         {
             //find the unique current user
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -218,7 +218,7 @@ namespace ML_ASP.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime, DateTime overtimeDate, IFormFile postedFiles)
+        public ActionResult AddOvertimeRequest(string description, TimeSpan endTime, DateTime overtimeDate, IFormFile postedFiles, DateTime startDate, DateTime endDate)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -236,16 +236,16 @@ namespace ML_ASP.Controllers
                 var uploads = Path.Combine(projectPath, uploadFolderName);
                 var extension = Path.GetExtension(postedFiles.FileName);
 
-				fileId = Guid.NewGuid().ToString();
-				fileName = postedFiles.FileName + extension;
-				if (!Directory.Exists(uploads))
+                fileId = Guid.NewGuid().ToString();
+                fileName = postedFiles.FileName + extension;
+                if (!Directory.Exists(uploads))
                 {
                     Directory.CreateDirectory(uploads);
                 }
 
                 using (var fileStream = new FileStream(Path.Combine(uploads, fileId + extension), FileMode.Create))
                 {
-					postedFiles.CopyTo(fileStream);
+                    postedFiles.CopyTo(fileStream);
                 }
 
                 TempData["success"] = "Uploaded Successfully!";
@@ -260,6 +260,8 @@ namespace ML_ASP.Controllers
                 UserName = account.FullName,
                 FileName = fileName,
                 FileId = fileId,
+                EndDate = endDate,
+                StartDate = startDate,
             };
 
             try
@@ -272,7 +274,7 @@ namespace ML_ASP.Controllers
 
             GetSubmissionVM();
 
-            return View(nameof(Dashboard),submissionVM);
+            return View(nameof(Dashboard), submissionVM);
         }
 
 
@@ -325,7 +327,7 @@ namespace ML_ASP.Controllers
                                      .OrderByDescending(u => u.DateTime)
                                      .FirstOrDefault();
 
-            
+
             TimeSpan fullDuration = lastTimedOutEntry.DateTime - lastTimedInEntry.DateTime;
 
             int totalDurationSeconds = (int)fullDuration.TotalSeconds;
@@ -370,25 +372,25 @@ namespace ML_ASP.Controllers
             var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
 
             //completed
-            if(account.HoursCompleted == null)
+            if (account.HoursCompleted == null)
             {
                 account.HoursCompleted = 0;
             }
-            if(account.MinutesCompleted == null)
+            if (account.MinutesCompleted == null)
             {
                 account.MinutesCompleted = 0;
             }
-            if(account.SecondsCompleted == null)
+            if (account.SecondsCompleted == null)
             {
                 account.SecondsCompleted = 0;
             }
 
             //remaining
-            if(account.HoursRemaining == null)
+            if (account.HoursRemaining == null)
             {
                 account.HoursRemaining = 0;
             }
-            if(account.MinutesRemaining == null)
+            if (account.MinutesRemaining == null)
             {
                 account.MinutesRemaining = 0;
             }
@@ -399,8 +401,8 @@ namespace ML_ASP.Controllers
         }
 
 
-		//for displaying dashboard
-		public SubmissionVM GetSubmissionVM()
+        //for displaying dashboard
+        public SubmissionVM GetSubmissionVM()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -421,6 +423,42 @@ namespace ML_ASP.Controllers
 
             //OVERTIME 
             var overtimeList = _unit.Overtime.GetAll(u => u.UserId == account.Id);
+
+            var overtimeToday = DateTime.Now;
+
+            foreach (var overtime in overtimeList)
+            {
+                if (DateTime.Now.Date == overtime.RequestDate?.Date) // Ensure RequestDate is not null before accessing its Date property
+                {
+                    overtimeToday = (DateTime)overtime.RequestDate;
+                    if (overtime.OvertimeEndTime != null) // Ensure OvertimeEndTime is not null
+                    {
+                        // Assuming overtime.OvertimeEndTime is a TimeSpan
+                        TimeSpan overtimeEndTime = (TimeSpan)overtime.OvertimeEndTime;
+                        DateTime currentDateTime = DateTime.Today; // Get today's date without the time
+                        DateTime overtimeEndDateTime = currentDateTime.Add(overtimeEndTime); // Combine today's date with the TimeSpan
+
+                        // Pass the combined DateTime to the ViewBag
+                        ViewBag.OvertimeEndTime = overtimeEndDateTime;
+                    }
+                }
+            }
+
+            var allOvertimeDates = new List<DateTime>();
+            foreach (var overtime in overtimeList)
+            {
+                if (overtime.StartDate.HasValue && overtime.EndDate.HasValue)
+                {
+                    var datesInRange = GetDateRange(overtime.StartDate.Value, overtime.EndDate.Value);
+                    var validDates = datesInRange.Where(d => !IsWeekend(d) && !IsHoliday(d)).ToList();
+                    allOvertimeDates.AddRange(validDates);
+                }
+            }
+
+            bool isTodayOvertime = allOvertimeDates.Any(d => d.Date == DateTime.Now.Date);
+
+            ViewBag.IsTodayOvertime = isTodayOvertime;
+            ViewBag.OvertimeToday = overtimeToday;
 
             //reminder alarm
             var getaccounttime = _unit.Reminder.GetAll(u => u.UserId == userId);
@@ -504,6 +542,43 @@ namespace ML_ASP.Controllers
             return Json(new { data = getAllOvertime });
         }
         #endregion
+
+        private List<DateTime> GetDateRange(DateTime start, DateTime end)
+        {
+            var dates = new List<DateTime>();
+            for (var dt = start; dt <= end; dt = dt.AddDays(1))
+            {
+                dates.Add(dt);
+            }
+            return dates;
+        }
+
+        private bool IsHoliday(DateTime date)
+        {
+            return _holidays.Contains(date.Date);
+        }
+
+        private bool IsWeekend(DateTime date)
+        {
+            var day = date.DayOfWeek;
+            return day == DayOfWeek.Saturday || day == DayOfWeek.Sunday;
+        }
+
+        private readonly List<DateTime> _holidays = new List<DateTime>
+    {
+        new DateTime(2024, 1, 1), // New Year's Day
+        new DateTime(2024, 4, 9), // Araw ng Kagitingan
+        new DateTime(2024, 4, 10), // Maundy Thursday
+        new DateTime(2024, 4, 11), // Good Friday
+        new DateTime(2024, 5, 1), // Labor Day
+        new DateTime(2024, 6, 12), // Independence Day
+        new DateTime(2024, 8, 21), // Ninoy Aquino Day
+        new DateTime(2024, 8, 26), // National Heroes Day
+        new DateTime(2024, 11, 1), // All Saints' Day
+        new DateTime(2024, 11, 30), // Bonifacio Day
+        new DateTime(2024, 12, 25), // Christmas Day
+        new DateTime(2024, 12, 30)  // Rizal Day
+    };
     }
 }
 

@@ -328,7 +328,7 @@
 
             // Check if the current time is between 8 AM and 12 PM, or between 1 PM and 5 PM
             return (currentHour >= 8 && (currentHour < 12 || (currentHour === 12 && currentMinute === 0))) ||
-                (currentHour >= 13 && currentHour < 17);
+                (currentHour >= 13 && currentHour < 20);
         }
 
         function checkCompletedHours() {
@@ -343,7 +343,16 @@
         function isPastAllowedTime() {
             let currentDateTime = new Date();
             let currentHour = currentDateTime.getHours();
-            return currentHour >= 19; // Past 5 PM
+            return currentHour >= 20; // Past 8 PM
+        }
+
+        function isPastAllowedOverTime() {
+            let isTodayOvertime = "@ViewBag.IsTodayOvertime"; // Assuming IsTodayOvertime is a boolean
+            let overtimeToday = new Date("@ViewBag.OvertimeToday"); // Assuming OvertimeToday is a date/time string in "YYYY-MM-DDTHH:mm:ss" format
+            let currentDateTime = new Date();
+            let overtimeEndTime = new Date("@ViewBag.OvertimeEndTime");
+
+            return currentDateTime >= overtimeEndTime;
         }
 
         function isPastAllowedTime2() {
@@ -415,10 +424,10 @@
 
 
             setInterval(function () {
-                if (isPastAllowedTime2) { 
+                if (isPastAllowedTime2 && isPastAllowedOverTime()) {
                     stopCountdown();
                 }
-                if (isPastAllowedTime() && isChecked) {
+                if (isPastAllowedTime() && isChecked && isPastAllowedOverTime()) {
                     autoTimeOutUser();
                     localStorage.setItem('isChecked', 'false');
                 }

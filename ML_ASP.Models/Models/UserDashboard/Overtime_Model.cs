@@ -20,7 +20,7 @@ namespace ML_ASP.Models.Models.UserDashboard
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public DateTime RequestDate { get; set; }
+        public DateTime? RequestDate { get; set; }
 
         public TimeSpan OvertimeEndTime { get; set; }
 
@@ -29,5 +29,9 @@ namespace ML_ASP.Models.Models.UserDashboard
         public string FileName { get; set; }
 
         public string FileId { get; set; }
+
+        //dates overtime not single
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

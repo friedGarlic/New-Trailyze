@@ -342,6 +342,9 @@ namespace ML_ASP.DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FileId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -353,7 +356,10 @@ namespace ML_ASP.DataAccess.Migrations
                     b.Property<TimeSpan>("OvertimeEndTime")
                         .HasColumnType("time");
 
-                    b.Property<DateTime>("RequestDate")
+                    b.Property<DateTime?>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")

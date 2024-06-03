@@ -146,7 +146,6 @@
 		async function showChatPopup(id) {
 			try {
 				const data = await retrieveGradeList(id);
-
 				await sendToController(data)
 			} catch (error) {
 				console.error("Error:", error);

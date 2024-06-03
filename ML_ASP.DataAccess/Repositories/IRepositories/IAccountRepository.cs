@@ -15,7 +15,9 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 
         public void UpdateRegistrationStatus(string id, string registrationStatus);
 
-		public void UpdateTime(
+        public void UpdateVerficationStatus(string id, string documentVerification);
+
+        public void UpdateTime(
             int? hCompleted, int? mCompleted, int? sCompleted,
             int? hRemaining, int? mRemaining, int? sRemaining,
             TimeSpan totalTime,

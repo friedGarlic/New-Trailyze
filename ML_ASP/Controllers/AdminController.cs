@@ -87,6 +87,8 @@ namespace ML_ASP.Controllers
 
 		public IActionResult RequirementFile()
 		{
+			GetSubmissionVM();
+
 			return View();
 		}
 
@@ -121,8 +123,6 @@ namespace ML_ASP.Controllers
 			return View(nameof(Analytics), submissionVM);
 		}
 		// --------------------METHODS ------------------
-
-
 		[Authorize(Roles = SD.Role_Admin)]
 		[HttpPost]
 		public IActionResult UpdateApprovalStatusBulk(List<int> id, List<string> approvalStatus, List<string> userId, List<string> originalApprovalStatus)
@@ -222,10 +222,47 @@ namespace ML_ASP.Controllers
 
 		[Authorize(Roles = SD.Role_Admin)]
 		[HttpPost]
-		public IActionResult RequirementFileUpdate(List<string> id, List<string> registrationPermission, List<string> originalApprovalStatus,
+		public IActionResult RequirementFileUpdate(List<string> documentId, List<string> documentVerification, List<string> documentApprovalStatus,
+			List<string> id, List<string> registrationPermission, List<string> originalApprovalStatus,
 			List<int> fileId, List<string> fileApprovalStatus, List<string> fileUserId, List<string> originalFileApprovalStatus)
 		{
 			string newApprovalStatus = "";
+			string anotherNewApprovalStatus = "";
+			string fileNewStatus = "";
+
+			for (int i = 0; i < documentId.Count; i++)
+			{
+				if (documentApprovalStatus[i] != documentVerification[i])
+				{
+					anotherNewApprovalStatus = documentVerification[i];
+
+					try
+					{
+						var getAcc = _unit.Account.GetFirstOrDefault(u => u.Id == documentId[i]);
+
+						_emailSender.SendEmailAsync(getAcc.Email, "Registration Accepted", $"Congratulations your registration is completed, you can now use the dashboard in full.");
+
+						_unit.Account.UpdateVerficationStatus(documentId[i], anotherNewApprovalStatus);
+
+						//----for notification
+
+						Notification_Model notif = new Notification_Model();
+						notif.Title = "Pending Status";
+						notif.Description = "Your Pending status for registration is changed to:" + anotherNewApprovalStatus;
+						notif.NotifUserId = documentId[i];
+
+						_unit.Notification.Add(notif);
+
+						// save changes in batch/ like dishes in restaurant
+						_unit.Save();
+					}
+					catch (Exception ex)
+					{
+						string message = ex.Message;
+						Console.WriteLine("Exception Message: " + message);
+					}
+				}
+			}
 
 			for (int i = 0; i < id.Count; i++)
 			{
@@ -265,24 +302,23 @@ namespace ML_ASP.Controllers
 				}
 			}
 
-
 			for (int i = 0; i < fileId.Count; i++)
 			{
 				if (originalFileApprovalStatus[i] != fileApprovalStatus[i])
 				{
 					int changedId = fileId[i]; //the id row owner that needs change on column Approval Status
-					newApprovalStatus = fileApprovalStatus[i];
+					fileNewStatus = fileApprovalStatus[i];
 
 					try
 					{
-						_unit.RequirementFile.UpdateStatus(changedId, newApprovalStatus);
+						_unit.RequirementFile.UpdateStatus(changedId, fileNewStatus);
 
 						//----for notification
 						string fileName = _unit.RequirementFile.GetFirstOrDefault(u => u.Id == fileId[i]).FileName;
 
 						Notification_Model notif = new Notification_Model();
 						notif.Title = "Pending Status";
-						notif.Description = "Your Pending status file requirement: " + fileName + " is changed to:" + newApprovalStatus;
+						notif.Description = "Your Pending status file requirement: " + fileName + " is changed to:" + fileNewStatus;
 						notif.NotifUserId = fileUserId[i];
 
 						_unit.Notification.Add(notif);
@@ -309,7 +345,7 @@ namespace ML_ASP.Controllers
 				Console.WriteLine("Exception Message: " + message);
 			}
 
-			return View(nameof(RequirementFile));
+			return RedirectToAction(nameof(RequirementFile));
 		}
 
 		//pdf viewers
@@ -528,13 +564,14 @@ namespace ML_ASP.Controllers
 		[HttpGet]
 		public async Task<IActionResult> SendToApi()
 		{
+			//TODO add boxes of overtime estimate by Hours of submitted date.
 			string OutputResult = "";
 			try
 			{
-				string apiKey = "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";
+				string apiKey = "sk-proj-5LKlmb8fgh7khHHXCwC9T3BlbkFJPsE7EIyFcwFNymcH9joV";
 				var openai = new OpenAIAPI(apiKey);
 				var request = openai.Chat.CreateConversation();
-				request.AppendUserInput("The grade of student is 82/100,79/100,82/100,81.67/100. What is your analysis and recommendation on this.");
+				request.AppendUserInput("The grade of student is 4/5,4/5,4/5,4/5. What is your analysis and recommendation on this.");
 				var response = await request.GetResponseFromChatbotAsync();
 
 				foreach (var message in response)
@@ -614,8 +651,8 @@ namespace ML_ASP.Controllers
 
 		public SubmissionVM GetSubmissionVM()
 		{
-				var claimsIdentity = (ClaimsIdentity) User.Identity;
-				var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
 			IEnumerable<Account_Model> accountList = _unit.Account.GetAll();
 			IEnumerable<SubmissionModel> modelList = _unit.Submission.GetAll();
@@ -624,48 +661,25 @@ namespace ML_ASP.Controllers
 			int accountCount = accountList.Select(u => u.Id).Distinct().Count();
 
 			ViewBag.AccountCount = accountCount;
-				ViewBag.SubmissionCount = submissionCount;
+			ViewBag.SubmissionCount = submissionCount;
 
-				//find last 5 grade from current user selected
-				var sublist = _unit.Submission
-					  .GetAll(u => u.SubmissionUserId == claim.Value)
-					  .OrderByDescending(u => u.Id)
-					  .Take(5)
-					  .Select(u => u.Grade)
-					  .ToList();
+			//find last 5 grade from current user selected
+			var sublist = _unit.Submission
+				  .GetAll(u => u.SubmissionUserId == claim.Value)
+				  .OrderByDescending(u => u.Id)
+				  .Take(5)
+				  .Select(u => u.Grade)
+				  .ToList();
 
 
 			submissionVM = new SubmissionVM()
 			{
 				ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
-					GradeList = sublist,
-					WorkloadList = _unit.Workload.GetAll(),
-				};
+				GradeList = sublist,
+				WorkloadList = _unit.Workload.GetAll(),
+			};
 
 			return submissionVM;
 		}
-
-        public async Task<ActionResult> RunConsoleApp()
-        {
-            try
-            {
-                // Initialize MLContext
-                MLContext mlContext = new MLContext();
-
-                // Generate model
-                var model = Demo.GenerateModel(mlContext);
-
-                // Optionally, you can return the results to a view
-                return View();
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions
-                return Content($"An error occurred: {ex.Message}");
-            }
-        }
-
-
-
-    }
+	}
 }

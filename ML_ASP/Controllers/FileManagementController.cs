@@ -107,6 +107,7 @@ namespace ML_ASP.Controllers
             var killFile = _unit.Submission.GetFirstOrDefault(u => u.Id == id);
             _unit.Submission.Remove(killFile);
             _unit.Save();
+
             string path = Path.Combine(_environment.ContentRootPath + "\\Uploads", fileName);
             if (System.IO.File.Exists(path))
             {
@@ -218,7 +219,7 @@ namespace ML_ASP.Controllers
                 };
 
                 //prediction = _predictionEngine.Predict(new_data);
-                int convertPrediction = ((int)prediction.Prediciton);
+                int convertPrediction = 0;
 
                 //determine the additional grade based on how many days have passed
                 DateTime currentDate = DateTime.Now;

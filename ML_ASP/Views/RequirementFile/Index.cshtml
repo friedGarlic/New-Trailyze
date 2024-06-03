@@ -11,9 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimalist Pop-Up Design</title>
     <link rel="stylesheet" href="~/css/CustomPopup.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <form id="requirementForm" method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="SubmitDocument">
         <div class="main-content">
             <p>Document Requirements</p>
             <div class="document-item">
@@ -43,45 +43,20 @@
                 </div>
                 <br />
 
-                <div class="form-floating mb-2 py-1" id="inCampusSelect" style="display:none;">
+                <div class="form-floating mb-2 py-1" id="inCampusSelect" style="display: none">
                     <select id="inCampusOffices" class="form-control" name="inCampusValue">
-                        <option value="">Please select one of the offices: </option>
-                        <option value="CCIT- DEAN'S OFFICE">CCIT- DEAN'S OFFICE</option>
-                        <option value="PROGRAMS CHAIR'S OFFICE">PROGRAMS CHAIR'S OFFICE</option>
-                        <option value="OJT OFFICE">OJT OFFICE</option>
-                        <option value="CCIT LABORATORY OFFICE">CCIT LABORATORY OFFICE</option>
-                        <option value="SPORT'S DIRECTOR OFFICE">SPORT'S DIRECTOR OFFICE</option>
-                        <option value="COLLEGE OF NURSING">COLLEGE OF NURSING</option>
-                        <option value="COLLEGE OF EDUC">COLLEGE OF EDUC</option>
-                        <option value="DIRECTOR FOR INSTRUCTION OFFICE">DIRECTOR FOR INSTRUCTION OFFICE</option>
-                        <option value="COLLEGE OF ENGINEERING (UNDER COMPUTER ENGINEERING'S OFFICE)">COLLEGE OF ENGINEERING (UNDER COMPUTER ENGINEERING'S OFFICE)</option>
-                        <option value="UMISO">UMISO</option>
-                        <option value="IGP">IGP</option>
-                        <option value="OSA">OSA</option>
+                        <!-- Options will be populated dynamically -->
                     </select>
-                    <span id="officeError" class="text-danger"></span>
+                    <span class="text-danger" id="inCampusError"></span>
                 </div>
 
                 <div class="form-floating mb-2 py-1" id="offCampusSelect" style="display:none;">
                     <select id="offCampusOffices" class="form-control" name="offCampusValue">
-                        <option value="">Please select one of the options:</option>
-                        <option value="CAAP">CAAP (Civil Authority of the Philippines)</option>
-                        <option value="Fantasy Beach Resort">Fantasy Beach Resort</option>
-                        <option value="IFormat">IFormat (IT COMPANY)</option>
-                        <optgroup label="North">
-                            <option value="Santo Thomas Batangas">Santo Thomas Batangas</option>
-                        </optgroup>
-                        <optgroup label="South">
-                            <option value="LGU BOTOLAN">LGU BOTOLAN</option>
-                            <option value="LGU CABANGAN">LGU CABANGAN</option>
-                            <option value="COMELEC SAN NARCISO">COMELEC SAN NARCISO</option>
-                            <option value="CRYSTAL BEACH RESORT">CRYSTAL BEACH RESORT</option>
-                            <option value="IP TECH (PAMPANGA) WORK FROM HOME">IP TECH (PAMPANGA) WORK FROM HOME</option>
-                            <option value="ECKTO-BOTOLAN/STA CRUZ">ECKTO-BOTOLAN/STA CRUZ</option>
-                        </optgroup>
+                        <!-- Options will be populated dynamically -->
                     </select>
-                    <span id="officeError" class="text-danger"></span>
+                    <span class="text-danger" id="offCampusError"></span>
                 </div>
+
                 <br />
 
                 <button id="addDocumentButton" type="button">+ Add Document</button>
@@ -122,10 +97,12 @@
                 <p>Notice of Acceptance</p>
                 @if (Model.FileName2 == null)
                 {
+                    <div class="text-danger">You need to submit the Notice of Acceptance first.</div>
                     <button disabled class="gray-button"> Disabled </button>
                 }
                 else if (Model.FileName3 == null)
                 {
+                    <div class="text-danger">You didn't submit anything for the Notice of Acceptance.</div>
                     <button class="green-button" id="addDocumentButton3">+ Add Document</button>
                 }
                 else
@@ -184,6 +161,7 @@
             </div>
         </div>
 
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="SubmitDocument">
         <div id="popup" class="popup-overlay">
             <div class="popup-content">
                 <span class="close-btn">&times;</span>
@@ -205,8 +183,11 @@
                 <button type="submit">Submit</button>
             </div>
         </div>
+        </form>
 
         @*     For document Letter of Indorsement     *@
+        
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step2Submit">
         <div id="popup2" class="popup-overlay">
             <div class="popup-content">
                 <span class="close-btn2">&times;</span>
@@ -227,30 +208,38 @@
                 <button type="submit">Submit</button>
             </div>
         </div>
+        </form>
 
         @*     For document Notice of Acceptance     *@
-        <div id="popup3" class="popup-overlay">
-            <div class="popup-content">
-                <span class="close-btn3">&times;</span>
-                <h2>Add Document</h2>
+        
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step3Submit">
+            <div id="popup3" class="popup-overlay">
+                <div class="popup-content">
+                    <span class="close-btn3">&times;</span>
+                    <h2>Add Document</h2>
 
-                <label for="title3">Title:</label>
-                <input type="text" name="title3" id="title3" placeholder="Provide document title, e.g., 'Document for OJT'">
+                    <label for="title3">Title:</label>
+                    <input type="text" name="title3" id="title3" placeholder="Provide document title, e.g., 'Document for OJT'">
 
-                <label for="description3">Document Description:</label>
-                <textarea id="description3" name="description3" placeholder="Provide document description"></textarea>
+                    <label for="description3">Document Description:</label>
+                    <textarea id="description3" name="description3" placeholder="Provide document description"></textarea>
 
-                <div>
-                    <label for="mandatory">This document is mandatory</label>
+                    <div>
+                        <label for="mandatory">This document is mandatory</label>
+                    </div>
+                    <div class="prediction" style="margin-bottom: 20px;">
+                        <input type="file" id="attachDocumentButton3" name="postedFiles2" />
+                    </div>
+
+                    <input type="hidden" name="step3" value="step3" />
+                    <button type="submit">Submit</button>
                 </div>
-                <div class="prediction" style="margin-bottom: 20px;">
-                    <input type="file" id="attachDocumentButton3" name="postedFiles2" />
-                </div>
-                <button type="submit">Submit</button>
             </div>
-        </div>
+        </form>
 
         @*     For document Parents Concent     *@
+        
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step3Submit">
         <div id="popup4" class="popup-overlay">
             <div class="popup-content">
                 <span class="close-btn4">&times;</span>
@@ -266,13 +255,16 @@
                     <label for="mandatory">This document is mandatory</label>
                 </div>
                 <div class="prediction" style="margin-bottom: 20px;">
-                    <input type="file" id="attachDocumentButton4" name="postedFiles3" />
+                    <input type="file" id="attachDocumentButton4" name="postedFiles2" />
                 </div>
                 <button type="submit">Submit</button>
             </div>
         </div>
+        </form>
 
         @*     For document Contract Agreement     *@
+        
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="Step2Submit">
         <div id="popup5" class="popup-overlay">
             <div class="popup-content">
                 <span class="close-btn5">&times;</span>
@@ -290,21 +282,19 @@
                 <div class="prediction" style="margin-bottom: 20px;">
                     <input type="file" id="attachDocumentButton5" name="postedFiles4" />
                 </div>
+                <input type="hidden" name="step" value="laststep" />
                 <button type="submit">Submit</button>
             </div>
         </div>
+        </form>
 
 
-        @if (Model.FileName1 == null && Model.FileName2 == null && Model.FileName3 == null && Model.FileName4 == null && Model.FileName5 == null)
-        {
-            <button class="btn-primary" type="submit"> Submit </button>
+        @if (Model.FileName1 == null && Model.FileName2 == null && Model.FileName3 == null && Model.FileName4 == null && Model.FileName5 == null){
+            <a class="btn-primary" style="text-decoration: none;" asp-action="Index" asp-controller="Home"> Done </a>
         }
-        else
-        {
+        else{
             <button class="gray-button" disabled> Disabled </button>
         }
-    </form>
-
 </body>
 </html>
 @section Scripts {
@@ -316,7 +306,8 @@
         function infoPopup() {
             Swal.fire({
                 title: "Instruction",
-                text: `You can skim through the form pages and get the template documents for printing. Remember: not submitting a file will just waste time for admin. Submit it as soon as you can so the admin can check and give permission for acceptance.`,
+                text: `Files that are submitted on steps will be a sent as pending permission to admin,
+                                Further information for acceptance will be sent in Mail you provided in registration.`,
                 icon: "info",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -370,6 +361,25 @@
             if (!isValid) {
                 event.preventDefault(); // Prevent form submission if validation fails
             }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to populate select options
+            function populateSelectOptions(optionType) {
+                const select = $('#' + optionType);
+                select.empty();
+                select.append('<option value="">Please select one of the offices: </option>');
+                const options = JSON.parse(localStorage.getItem(optionType)) || [];
+                options.forEach(option => {
+                    select.append(`<option value="${option}">${option}</option>`);
+                });
+            }
+
+            // Initial population of options
+            populateSelectOptions('inCampusOptions');
+            populateSelectOptions('offCampusOptions');
         });
     </script>
 }

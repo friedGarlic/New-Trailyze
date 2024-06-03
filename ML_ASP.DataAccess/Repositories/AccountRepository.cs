@@ -29,8 +29,17 @@ namespace ML_ASP.DataAccess.Repositories
             }
         }
 
+        public void UpdateVerficationStatus(string id, string documentVerification)
+        {
+            var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
+            if (objFromDb != null)
+            {
+                objFromDb.DocumentVerification = documentVerification;
+            }
+        }
 
-		public void UpdateRegistrationStatus(string id, string registrationStatus)
+
+        public void UpdateRegistrationStatus(string id, string registrationStatus)
         {
 			var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
 			if (objFromDb != null)

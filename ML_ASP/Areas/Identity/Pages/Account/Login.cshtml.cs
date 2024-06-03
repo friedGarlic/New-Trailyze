@@ -124,11 +124,15 @@ namespace ML_ASP.Areas.Identity.Pages.Account
 
                 if (user.RegistrationPermission == "Pending" && !isAdmin) //pending permission
                 {
-                    returnUrl ??= Url.Content("~/RequirementFile/Index");
-                }
-                else if (user.RegistrationPermission == "Approved") //accepted permission
+                    returnUrl ??= Url.Content("~/Home/Index");
+				}
+				else if (user.RegistrationPermission == "Approved") //accepted permission
+				{
+					returnUrl ??= Url.Content("~/Dashboard/Dashboard");
+				}
+				else if (user.DocumentVerification == "Approved") //accepted permission
                 {
-                    returnUrl ??= Url.Content("~/Dashboard/Dashboard");
+                    returnUrl ??= Url.Content("~/RequirementFile/Index");
                 }
                 else if (user.RegistrationPermission == "Declined") //denied permission, re register, failed registration account will be deleted in 2 days.
                 {

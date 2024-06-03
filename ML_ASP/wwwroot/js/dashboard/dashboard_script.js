@@ -1,41 +1,64 @@
-﻿let gradeData = [80, 79, 78];
+﻿var dataTable;
 
-const chartData = {
-	chart: {
-		type: 'area',
-		height: 100,
-		toolbar: { show: false },
-		zoom: { enable: false }
-	},
-	colors: ['#3498db'],
-	series: [{ name: 'Grade', data: gradeData }],
-	dataLabels: { enable: false },
-	stroke: { width: 5, curve: 'smooth' },
-	fill: {
-		type: 'gradient',
-		gradient: {
-			shadeIntensity: 1,
-			opacityFrom: 0.7,
-			opacityTo: 0,
-			stops: [0, 90, 100]
-		}
-	},
-	xaxis: {
-		categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-		axisBorder: { show: false },
-		labels: { style: { colors: '#a7a7a7', fontFamily: 'system-ui' } }
-	},
-	yaxis: { show: false },
-	grid: { borderColor: 'rgba(0,0,0,0)', padding: { top: -30, bottom: -8, left: 12, right: 12 } },
-	tooltip: {
-		disable: true,
-		y: { formatter: value => '${value}K' },
-		style: { fontFamily: 'system-ui' }
-	},
-	markers: { show: false }
-};
+$(document).ready(function () {
+    loadDataTable();
 
-error: function (xhr, status, error) {
-	console.error(xhr.responseText);
-	// Handle errors
+});
+
+function loadDataTable() {
+    dataTable = $('#overTimeTable').DataTable({
+        "ajax": {
+            "url": "/Dashboard/GetOvertime",
+        },
+        "columns": [
+            { "data": "createdDate", "title": "Date Created" },
+            { "data": "overtimeEndTime", "title": "Overtime Ends" },
+            { "data": "requestDate", "title": "Date Request" },
+            {
+                "data": null, "title": "Action",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-secondary btn-sm view-pdf" data-id="' + row.fileId + '">View</button>';
+                }
+            },
+            {
+                "data": null, "title": "Action",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-secondary btn-sm delete-btn" data-id="' + row.id + '">Delete</button>';
+                }
+            },
+        ],
+    });
+
+    $('#overTimeTable').on('click', '.view-pdf', function () {
+        var getId = $(this).data('id');
+        window.open('../Admin/ViewOvertimePdf?id=' + getId, '_blank');
+    });
+
+    $('#overTimeTable').on('click', '.delete-btn', function () {
+        var getId = $(this).data('id');
+        deleteOvertime(getId);
+
+        location.reload();
+        window.location = '/Dashboard/Dashboard';
+    });
+}
+
+function deleteOvertime(id, fileId) {
+    if (confirm('Are you sure you want to delete this overtime request?')) {
+        $.ajax({
+            url: '/Dashboard/DeleteOvertime',
+            type: 'POST',
+            data: { id: id},
+            success: function (response) {
+                if (response.success) {
+                    alert('Overtime request deleted successfully.');
+                } else {
+                    alert('Failed to delete overtime request.');
+                }
+            },
+            error: function () {
+                alert('An error occurred while deleting the overtime request.');
+            }
+        });
+    }
 }

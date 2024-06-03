@@ -83,7 +83,7 @@
         showPopup4();
     });
 
-    closeButton5.addEventListener('click', hidePopup5);
+    closeButton4.addEventListener('click', hidePopup4);
 
     /*-------------------------------------5RD POPUP*/
 

@@ -31,7 +31,7 @@ function loadDataTable() {
                 }
             },
             {
-                "data": "documentVerification", "title": "Registration Permission",
+                "data": "documentVerification", "title": "Initial Registration",
                 "render": function (data, type, row) {
                     var options = ["Pending", "Declined", "Approved"];
 
@@ -48,7 +48,7 @@ function loadDataTable() {
                 }
             },
             {
-                "data": "registrationPermission", "title": "Document Permission",
+                "data": "registrationPermission", "title": "Requirement File Permission",
                 "render": function (data, type, row) {
                     var options = ["Pending", "Declined", "Approved"];
 

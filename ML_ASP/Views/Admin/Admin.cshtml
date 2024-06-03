@@ -16,6 +16,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
 	<link href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<title>AdminHub</title>
 </head>
 <body>
@@ -184,6 +185,44 @@
 					<div>
 						<img src="@ViewBag.QRCodeImage" style="height:200px; width:200px"/>
 					</div> *@
+
+					<div class="container mt-5">
+						<!-- In-Campus Select -->
+						<div class="form-floating mb-2 py-1" id="inCampusSelect">
+							<select id="inCampusOffices" class="form-control" name="inCampusValue">
+								<!-- Options will be populated dynamically -->
+							</select>
+							<span id="officeError" class="text-danger"></span>
+						</div>
+
+						<!-- Admin Interface for In-Campus Options -->
+						<div id="adminInterface" class="mt-4">
+							<h3>In-Campus Interface</h3>
+							<form id="inCampusOptionForm" class="form-inline">
+								<input type="text" id="inCampusOptionValue" class="form-control mb-2 mr-sm-2" placeholder="Option Value">
+								<button type="button" id="inCampusAddOptionBtn" class="btn btn-primary">Add Option</button>
+								<button type="button" id="inCampusDeleteOptionBtn" class="btn btn-danger mb-2">Delete Option</button>
+							</form>
+						</div>
+
+						<!-- Off-Campus Select -->
+						<div class="form-floating mb-2 py-1" id="offCampusSelect">
+							<select id="offCampusOffices" class="form-control" name="offCampusValue">
+								<!-- Options will be populated dynamically -->
+							</select>
+							<span id="officeError" class="text-danger"></span>
+						</div>
+
+						<!-- Admin Interface for Off-Campus Options -->
+						<div id="adminInterface2" class="mt-4">
+							<h3>Off-Campus Interface</h3>
+							<form id="offCampusOptionForm" class="form-inline mb-3">
+								<input type="text" id="offCampusOptionValue" class="form-control mr-2" placeholder="Option Value">
+								<button type="button" id="offCampusAddOptionBtn" class="btn btn-primary">Add Option</button>
+								<button type="button" id="offCampusDeleteOptionBtn" class="btn btn-danger mb-2">Delete Option</button>
+							</form>
+						</div>
+					</div>
 
 
 				</div>

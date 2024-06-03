@@ -289,6 +289,24 @@ namespace ML_ASP.Controllers
             return RedirectToAction(nameof(Dashboard));
         }
 
+        [HttpPost]
+        public ActionResult DeleteOvertime(int id)
+        {
+            //string path = Path.Combine(_environment.ContentRootPath + "\\Uploads", fileId);
+            //if (System.IO.File.Exists(path))
+            //{
+            //    System.IO.File.Delete(path);
+            //}
+
+            var killFile = _unit.Overtime.GetFirstOrDefault(u => u.id == id);
+            _unit.Overtime.Remove(killFile);
+            _unit.Save();
+
+            TempData["success"] = "Delete Overtime Request Succesfully!";
+
+            return RedirectToAction(nameof(Dashboard));
+        }
+
         //for calculation in time duration between Timein/timout
         public void InputTimeDuration()
         {
@@ -473,6 +491,19 @@ namespace ML_ASP.Controllers
 
             return submissionVM;
         }
+
+        #region
+        public IActionResult GetOvertime()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
+
+            var getAllOvertime = _unit.Overtime.GetAll(u => u.UserId == account.Id);
+
+            return Json(new { data = getAllOvertime });
+        }
+        #endregion
     }
 }
 

@@ -118,13 +118,8 @@ namespace ML_ASP.Controllers
                 _unit.Save();
             }
 
-            if (step == "laststep")
-            {
-                return RedirectToAction("index", "Home");
-            }
-            else{
-                return View(nameof(Step3), requirementVM);
-            }
+
+            return RedirectToAction("index", "RequirementFile");
         }
 
         public IActionResult Step3Submit(IFormFile postedFiles2, string title3, string description3, string step3)
@@ -186,18 +181,10 @@ namespace ML_ASP.Controllers
                 _unit.Save();
             }
 
-            if (step3 == "step3")
-            {
-                return View(nameof(Step4), requirementVM);
-            }
-            else
-            {
-                return View(nameof(Step5), requirementVM);
-            }
-
+            return RedirectToAction("index", "RequirementFile");
         }
 
-        public ActionResult SubmitDocument(IFormFile postedFiles0, string title, string description,string campusOption, string inCampusValue)
+        public ActionResult SubmitDocument(IFormFile postedFiles0, string title, string description,string campusOption, string inCampusValue, string step)
         {
             var claimIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -259,8 +246,16 @@ namespace ML_ASP.Controllers
                 _unit.Save();
             }
 
-            return View(nameof(Step2), requirementVM);
+            if (step == "laststep")
+            {
+                return RedirectToAction("index", "Home");
+            }
+            else
+            {
+                return RedirectToAction("index", "RequirementFile");
+            }
         }
+
 
 
         //------------------------------------------

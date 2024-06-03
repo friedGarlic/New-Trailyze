@@ -37,6 +37,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                             var currentUser = await UserManager.GetUserAsync(User);
+                            var isAdmin = await UserManager.IsInRoleAsync(currentUser, SD.Role_Admin);
                             if (await UserManager.IsInRoleAsync(currentUser, SD.Role_Admin))
                             {
                                 <a class="nav-link text-dark" asp-action="Admin" asp-controller="Admin">
@@ -60,10 +61,14 @@
                             if (await UserManager.IsInRoleAsync(currentUser, SD.Role_Unregistered))
                             {
                                 <a class="nav-link text-dark" asp-action="Index" asp-controller="RequirementFile">
-                                    <span class="material-symbols-outlined">
-                                        dashboard
-                                    </span>
-                                    Requirement Form
+
+                                    @if (currentUser.DocumentVerification == "Approved" && !isAdmin)
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            dashboard
+                                        </span>
+                                        <h2>Requirement Form</h2>
+                                    }
                                 </a>
                             }
                             

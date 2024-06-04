@@ -109,7 +109,32 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="task-completed">
+                    <div class="status">
+                        <div class="info">
+                            <h3>Estimated End Training</h3>
+                            <h1>@ViewBag.EstimateEndTraining?.ToString("MMMM dd, yyyy")</h1>
+                        </div>
+                        <div class="task-progress">
+                            <span class="material-symbols-outlined">
+                                pending
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="task-completed">
+                    <div class="status">
+                        <div class="info">
+                            <h3>Estimated Needed Overtime</h3>
+                            <h1>@ViewBag.OvertimeNeeded Hour/s Overtimes</h1>
+                        </div>
+                        <div class="task-progress">
+                            <span class="material-symbols-outlined">
+                                pending
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--end of task analytics-->
 

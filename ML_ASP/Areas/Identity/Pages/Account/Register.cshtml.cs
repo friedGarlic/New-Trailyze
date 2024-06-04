@@ -244,11 +244,12 @@ namespace ML_ASP.Areas.Identity.Pages.Account
                     _unit.RequirementForm.Add(formModel4);
                     _unit.RequirementForm.Add(formModel5);
 
-                    _unit.Save();
                 }
                 //REQUIREMENT FORM ENDS-------------------
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+
 
                 if (Input.Role == SD.Role_Admin)
                 {
@@ -263,8 +264,20 @@ namespace ML_ASP.Areas.Identity.Pages.Account
                     await _userManager.AddToRoleAsync(user, SD.Role_User);
                 }
 
+				var admins = await _userManager.GetUsersInRoleAsync(SD.Role_Admin);
 
-                if (result.Succeeded)
+				foreach (var admin in admins)
+				{
+					Notification_Model notif = new Notification_Model();
+					notif.Title = "New User Created";
+					notif.Description = $"A new user with the role {Input.Role} has been created. Named {Input.FullName}.";
+					notif.NotifUserId = admin.Id;
+
+					_unit.Notification.Add(notif);
+				}
+				_unit.Save();
+
+				if (result.Succeeded)
                 {
                     bool isAdmin = await _userManager.IsInRoleAsync(user, SD.Role_Admin);
 

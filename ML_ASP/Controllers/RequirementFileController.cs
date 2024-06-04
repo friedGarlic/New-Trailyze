@@ -184,7 +184,7 @@ namespace ML_ASP.Controllers
             return RedirectToAction("index", "RequirementFile");
         }
 
-        public ActionResult SubmitDocument(IFormFile postedFiles0, string title, string description,string campusOption, string inCampusValue, string step)
+        public ActionResult SubmitDocument(IFormFile postedFiles0, string title, string description,string campusOption, string CampusValue, string step)
         {
             var claimIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -198,9 +198,12 @@ namespace ML_ASP.Controllers
             var userForm = _unit.RequirementForm.GetFirstOrDefault(x => x.UserId == userId);
             var getAllForm = _unit.RequirementForm.GetAll(x => x.UserId == userId);
 
-            AccountInfo_Model accountInfo = new();
             RequirementFile_Model userFile = new();
             string fileName = "";
+
+            if(campusOption != null || CampusValue != null) {
+                _unit.Account.UpdateAccountTrainingLocation(userId, campusOption, CampusValue);
+            }
 
             //--------------------------------------------------------------------------POSTED FILE 0
             if (postedFiles0 != null && postedFiles0.Length > 0)

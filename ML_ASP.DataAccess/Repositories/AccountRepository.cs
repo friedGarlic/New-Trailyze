@@ -29,6 +29,16 @@ namespace ML_ASP.DataAccess.Repositories
             }
         }
 
+        public void UpdateAccountTrainingLocation(string id, string campusOption, string campusValue)
+        {
+            var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
+            if (objFromDb != null)
+            {
+                objFromDb.CampusOption = campusOption;
+                objFromDb.CampusValue = campusValue;
+            }
+        }
+
         public void UpdateVerficationStatus(string id, string documentVerification)
         {
             var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);

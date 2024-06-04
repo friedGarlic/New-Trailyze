@@ -27,7 +27,7 @@ namespace ML_ASP.Models
         public int? SecondsCompleted { get; set; } = 0;
 
         //required
-        public int? HoursRequired { get; set; } = 0;
+        public int? HoursRequired { get; set; } = 600;
 
         //total
         public TimeSpan TotalTime { get; set; }
@@ -44,5 +44,8 @@ namespace ML_ASP.Models
         public List<RequirementFile_Model>? Requirements { get; set; }
 
         public string RegistrationPermission { get; set; } = "Pending";
-	}
+
+        public string? CampusOption { get; set; }
+        public string? CampusValue { get; set; }
+    }
 }

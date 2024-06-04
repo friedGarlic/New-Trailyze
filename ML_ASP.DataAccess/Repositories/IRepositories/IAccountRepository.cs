@@ -13,6 +13,8 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 	{
         public void UpdateAccount(string course, int hrsRemain, int weeklyReport, string id, int requiredHours);
 
+        public void UpdateAccountTrainingLocation(string id, string campusOption, string campusValue);
+
         public void UpdateRegistrationStatus(string id, string registrationStatus);
 
         public void UpdateVerficationStatus(string id, string documentVerification);

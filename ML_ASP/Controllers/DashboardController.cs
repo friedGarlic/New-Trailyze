@@ -413,8 +413,45 @@ namespace ML_ASP.Controllers
 
             ViewBag.AccountName = accountName;
 
-            //for grades
-            var sublist = _unit.Submission
+			//calculation of estimated datetime
+			int TrainingHoursPerWeek = 40; 
+            DateTime EndDate = new DateTime(DateTime.Now.Year, 12, 1); //december 1, end of summer
+
+            int totalCompletedSeconds =
+				(account.HoursCompleted.Value * 3600) +
+				(account.MinutesCompleted.Value * 60) +
+				account.SecondsCompleted.Value;
+
+			// Calculate total required time in seconds
+			int totalRequiredSeconds = account.HoursRequired.Value * 3600;
+
+			int remainingSeconds = totalRequiredSeconds - totalCompletedSeconds;
+
+			int trainingHoursPerWeekInSeconds = TrainingHoursPerWeek * 3600;
+
+			double weeksNeeded = (double)remainingSeconds / trainingHoursPerWeekInSeconds;
+
+			DateTime startDate = DateTime.Now;
+			DateTime estimatedEndDate = startDate.AddDays(weeksNeeded * 7); //end date of training base on how many trainings per week.----------
+            //
+
+            int remainingDays = (EndDate - startDate).Days;
+            int remainingWeeks = remainingDays / 7;
+
+            int totalAvailableTrainingSeconds = remainingWeeks * trainingHoursPerWeekInSeconds;
+
+            double overtimeNeeded = 0;
+            if (remainingSeconds > totalAvailableTrainingSeconds)
+            {
+                int remainingSecondsAfterAvailable = remainingSeconds - totalAvailableTrainingSeconds;
+                overtimeNeeded = Math.Ceiling(remainingSecondsAfterAvailable / 3600.0);
+            }
+
+            ViewBag.OvertimeNeeded = overtimeNeeded;
+            ViewBag.EstimateEndTraining = estimatedEndDate;
+
+			//for grades
+			var sublist = _unit.Submission
                   .GetAll(u => u.SubmissionUserId == claim.Value)
                   .Take(5)
                   .Select(u => u.Grade)
@@ -579,6 +616,7 @@ namespace ML_ASP.Controllers
         new DateTime(2024, 12, 25), // Christmas Day
         new DateTime(2024, 12, 30)  // Rizal Day
     };
-    }
+
+	}
 }
 

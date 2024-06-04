@@ -16,6 +16,28 @@
 <body>
         <div class="main-content">
             <p>Document Requirements</p>
+        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="SubmitDocument">
+            <div id="popup" class="popup-overlay">
+                <div class="popup-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Add Document</h2>
+
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" placeholder="Provide document title, e.g., 'Document'">
+
+                    <label for="description">Document Description:</label>
+                    <textarea id="description" name="description" placeholder="Provide document description"></textarea>
+
+                    <div>
+                        <label for="mandatory">This document is mandatory</label>
+                    </div>
+
+                    <div class="prediction" style="margin-bottom: 20px;">
+                        <input type="file" id="attachDocumentButton" name="postedFiles0" />
+                    </div>
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
             <div class="document-item">
                 <p>Application Form</p>
 
@@ -44,14 +66,14 @@
                 <br />
 
                 <div class="form-floating mb-2 py-1" id="inCampusSelect" style="display: none">
-                    <select id="inCampusOffices" class="form-control" name="inCampusValue">
+                    <select id="inCampusOffices" class="form-control" name="CampusValue">
                         <!-- Options will be populated dynamically -->
                     </select>
                     <span class="text-danger" id="inCampusError"></span>
                 </div>
 
                 <div class="form-floating mb-2 py-1" id="offCampusSelect" style="display:none;">
-                    <select id="offCampusOffices" class="form-control" name="offCampusValue">
+                    <select id="offCampusOffices" class="form-control" name="CampusValue">
                         <!-- Options will be populated dynamically -->
                     </select>
                     <span class="text-danger" id="offCampusError"></span>
@@ -67,6 +89,8 @@
                 }
                 <a class="gray-button" href="../RequirementFile/ViewTemplatePdf?fileName=INTERNSHIP-APPLICATION-FORM@x-.pdf" target="_blank" style="margin-bottom: 2px;">Get Template PDF</a>
             </div>
+
+        </form>
 
             @*  For document Letter of Indorsement *@
             <div class="document-item">
@@ -161,29 +185,7 @@
             </div>
         </div>
 
-        <form method="post" enctype="multipart/form-data" asp-controller="RequirementFile" asp-action="SubmitDocument">
-        <div id="popup" class="popup-overlay">
-            <div class="popup-content">
-                <span class="close-btn">&times;</span>
-                <h2>Add Document</h2>
-
-                <label for="title">Title:</label>
-                <input type="text" name="title" id="title" placeholder="Provide document title, e.g., 'Document'">
-
-                <label for="description">Document Description:</label>
-                <textarea id="description" name="description" placeholder="Provide document description"></textarea>
-
-                <div>
-                    <label for="mandatory">This document is mandatory</label>
-                </div>
-
-                <div class="prediction" style="margin-bottom: 20px;">
-                    <input type="file" id="attachDocumentButton" name="postedFiles0" />
-                </div>
-                <button type="submit">Submit</button>
-            </div>
-        </div>
-        </form>
+        
 
         @*     For document Letter of Indorsement     *@
         
@@ -300,14 +302,13 @@
 @section Scripts {
     @{
         <script src="~/js/Popup/CustomPopup.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     }
     <script>
         function infoPopup() {
             Swal.fire({
                 title: "Instruction",
                 text: `Files that are submitted on steps will be a sent as pending permission to admin,
-                                Further information for acceptance will be sent in Mail you provided in registration.`,
+                                        Further information for acceptance will be sent in Mail you provided in registration.`,
                 icon: "info",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -342,14 +343,12 @@
             categoryError.innerText = '';
             officeError.innerText = '';
 
-            // Check if a category is selected
             const selectedCategory = document.querySelector('input[name="campusOption"]:checked');
             if (!selectedCategory) {
                 categoryError.innerText = "Please select where you're residing during the training.";
                 isValid = false;
             }
 
-            // Check if an office is selected
             const selectedOffice = (document.getElementById('inCampusSelect').style.display === 'block')
                 ? document.getElementById('inCampusOffices').value
                 : document.getElementById('offCampusOffices').value;
@@ -359,29 +358,30 @@
             }
 
             if (!isValid) {
-                event.preventDefault(); // Prevent form submission if validation fails
+                event.preventDefault();
             }
         });
     </script>
 
     <script>
         $(document).ready(function () {
-            // Function to populate select options
-            function populateSelectOptions(optionType) {
-                const select = $('#' + optionType);
+            function populateSelectOptions(optionType, selectId) {
+                const select = $('#' + selectId); //id is important to take the key from local storage
                 select.empty();
                 select.append('<option value="">Please select one of the offices: </option>');
-                const options = JSON.parse(localStorage.getItem(optionType)) || [];
-                options.forEach(option => {
-                    select.append(`<option value="${option}">${option}</option>`);
-                });
+                const options = JSON.parse(localStorage.getItem(optionType));
+                if (options) {
+                    options.forEach(option => {
+                        select.append(`<option value="${option}">${option}</option>`);
+                    });
+                }
             }
 
-            // Initial population of options
-            populateSelectOptions('inCampusOptions');
-            populateSelectOptions('offCampusOptions');
+            populateSelectOptions('inCampusOptions', 'inCampusOffices');
+            populateSelectOptions('offCampusOptions', 'offCampusOffices');
         });
     </script>
+
 }
 
 <style>

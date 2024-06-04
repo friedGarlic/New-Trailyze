@@ -1,6 +1,6 @@
 ﻿@model ML_ASP.Models.ViewModel.SubmissionVM
 @{
-	Layout = "_AMasterpage_2";
+	Layout = "_AMasterPage_2_1";
 }
 
 <!DOCTYPE html>
@@ -74,6 +74,11 @@
 		<!-- NAVBAR -->
 		<nav>
 			<i class='bx bx-menu'></i>
+			<div id="noti_Container">
+				<span class="material-icons-sharp">
+					notifications_none
+				</span>
+			</div>
 			<a href="#" class="nav-link">Categories</a>
 
 			<form asp-controller="Admin" asp-action="ProfileFilter" method="GET" id="searchForm">
@@ -116,10 +121,10 @@
 						<div class="box">
 							<img src="@models.ImageUrl" />
 							<h3> @models.FullName </h3>
-							<p> Description: This is for descript of individual user.</p>
+							<p> Email: @models.Email</p>
 							<p> Time Remaining: @models.HoursRemaining</p>
 							<p> Weekly Report: @models.WeeklyReportRemaining</p>
-							<p> Overall Performance: Excellent</p>
+							<p> Training Location: @models.CampusOption, @models.CampusValue</p>
 
 							<button type="button" class="btn btn-primary" onclick="showInputPopup('@models.Id', '@models.HoursRemaining', '@models.WeeklyReportRemaining', '@models.Course')">Edit Profile</button>
 							<button type="button" class="btn btn-primary" onclick="showChatPopup('@models.Id')" style="margin-top: 10px;"> Analyze Performance</button>

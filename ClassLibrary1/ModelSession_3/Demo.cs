@@ -34,7 +34,8 @@ namespace ML_net.ModelSession_3
 
         public static async Task<ITransformer> GenerateModelAsync(MLContext mlContext)
         {
-		
+            //TODO change to azure file share so it can be trained using web app
+
             //for trained model to use
 			string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 

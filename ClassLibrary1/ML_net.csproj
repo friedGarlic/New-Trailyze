@@ -6,15 +6,17 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <PlatformTarget>x64</PlatformTarget>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	  <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.18.0" />
     <PackageReference Include="itext7" Version="8.0.2" />
     <PackageReference Include="Microsoft.ML" Version="3.0.0" />
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.0" />
     <PackageReference Include="Microsoft.ML.TensorFlow" Version="3.0.0" />
+    <PackageReference Include="Microsoft.ML.TensorFlow.Redist" Version="0.14.0" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
   </ItemGroup>
 

@@ -1,10 +1,6 @@
 ﻿using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
-using Accord.MachineLearning;
-using Accord.MachineLearning.VectorMachines;
-using Accord.MachineLearning.VectorMachines.Learning;
-using Accord.Statistics.Kernels;
 using Microsoft.ML;
 using ML_net.ModelSession_1;
 

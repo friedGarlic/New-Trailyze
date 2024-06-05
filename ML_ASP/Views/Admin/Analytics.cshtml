@@ -115,7 +115,8 @@
 					@foreach (var models in Model.AccountList.Where(m =>
 										(string.IsNullOrEmpty(Model.SearchQuery) ||
 										m.FullName.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase) ||
-										(m.Course != null && m.Course.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase))
+										(m.Course != null && m.Course.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase)) ||
+										(m.CampusOption != null && m.CampusOption.Contains(Model.SearchQuery, StringComparison.OrdinalIgnoreCase))
 										)))
 					{
 						<div class="box">

@@ -8,13 +8,11 @@ namespace Setup
 {
     public class Setup
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             //ML_net.ModelSession_1.Demo.Execute();
-
-            ML_net.ModelSession_3.Demo.Execute();
-
-
+            
+            await ML_net.ModelSession_3.Demo.Execute();
         }
     }
 }

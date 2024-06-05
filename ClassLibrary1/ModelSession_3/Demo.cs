@@ -1,7 +1,6 @@
 ﻿using Microsoft.ML.Data;
 using Microsoft.ML;
 using iText.IO.Image;
-using Tensorflow.Contexts;
 
 
 namespace ML_net.ModelSession_3
@@ -19,21 +18,27 @@ namespace ML_net.ModelSession_3
     {
         public static string GetAssetsPath(string relativePath)
         {
-            // Get the physical path of the directory containing the web application
-            string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			// Get the physical path of the directory containing the web application
+			var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            // Combine the application directory with the relative path to the assets directory
-            string assetsPath = Path.Combine(appDirectory, relativePath);
+			string uploadPath = "models";
+			if (!Directory.Exists(uploadPath))
+			{
+				Directory.CreateDirectory(uploadPath);
+			}
 
-            return assetsPath;
+			string combinePath2 = Path.Combine(currentDirectory, uploadPath);
+
+			return combinePath2;
         }
 
-        public static ITransformer GenerateModel(MLContext mlContext)
+        public static async Task<ITransformer> GenerateModelAsync(MLContext mlContext)
         {
+		
             //for trained model to use
-            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            string _assetsPath = GetAssetsPath("ModelSession_3/assets");
+            string _assetsPath = GetAssetsPath("assets");
 
             //string _imagesFolder = Path.Combine(_assetsPath, "images");
             string _imagesFolder = Path.Combine(_assetsPath, "samples");
@@ -81,7 +86,11 @@ namespace ML_net.ModelSession_3
 
             string modelPath = Path.Combine(currentDirectory, "ImageClassification.zip");
             mlContext.Model.Save(model, null, modelPath);
-            return model;
+
+			// Upload the model to Azure File Share
+			await FileShareService.UploadFileAsync(modelPath, "ImageClassification.zip");
+
+			return model;
         }
 
         public static void ClassifySingleImage(MLContext mlContext, ITransformer model)
@@ -131,12 +140,11 @@ namespace ML_net.ModelSession_3
             }
 
         }
-        public static void Execute()
+        public static async Task Execute()
         {
             MLContext mlContext = new MLContext();
 
-            var a = GenerateModel(mlContext);
-            ClassifySingleImage(mlContext, a);
-        }
+			ITransformer model = await GenerateModelAsync(mlContext);
+		}
     }
 }

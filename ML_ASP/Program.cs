@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Hosting.Internal;
 using ML_ASP.Models;
 using ML_ASP.Areas.Identity.Pages.Account;
+using Microsoft.ML;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +19,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<MLContext>();
+
 builder.Services.AddHttpContextAccessor();
 
 // Register the DbContext
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection")));
 
 // Register Identity services
 builder.Services.AddIdentity<Account_Model, IdentityRole>()

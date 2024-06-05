@@ -110,20 +110,20 @@ namespace ML_ASP.Controllers
 			return View(submissionVM);
 		}
 
-		public ActionResult ProfileFilter(string searchName)
-		{
-			var getAccounts = _unit.Account.GetAll();
+        public ActionResult ProfileFilter(string searchName)
+        {
+            var accounts = _unit.Account.GetAll();
 
-			submissionVM = new SubmissionVM()
-			{
-				AccountList = getAccounts,
-				SearchQuery = searchName
-			};
+            var submissionVM = new SubmissionVM()
+            {
+                AccountList = accounts.ToList(),
+                SearchQuery = searchName
+            };
 
-			return View(nameof(Analytics), submissionVM);
-		}
-		// --------------------METHODS ------------------
-		[Authorize(Roles = SD.Role_Admin)]
+            return View(nameof(Analytics), submissionVM);
+        }
+        // --------------------METHODS ------------------
+        [Authorize(Roles = SD.Role_Admin)]
 		[HttpPost]
 		public IActionResult UpdateApprovalStatusBulk(List<int> id, List<string> approvalStatus, List<string> userId, List<string> originalApprovalStatus)
 		{
@@ -680,6 +680,26 @@ namespace ML_ASP.Controllers
 			};
 
 			return submissionVM;
+		}
+
+		public async Task<ActionResult> RunConsoleApp()
+		{
+			try
+			{
+				// Initialize MLContext
+				MLContext mlContext = new MLContext();
+
+				// Generate model
+				await Demo.GenerateModelAsync(mlContext);
+
+				// Optionally, you can return the results to a view
+				return View();
+			}
+			catch (Exception ex)
+			{
+				// Handle any exceptions
+				return Content($"An error occurred: {ex.Message}");
+			}
 		}
 	}
 }

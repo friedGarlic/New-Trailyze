@@ -14,6 +14,11 @@ using ML_net.ModelSession_3;
 using Microsoft.VisualBasic;
 using Accord;
 using System.Runtime.CompilerServices;
+using Azure.Storage.Files.Shares;
+using System.IO.Compression;
+using Humanizer;
+using static System.Web.Razor.Parser.SyntaxConstants;
+using System.IO;
 
 namespace ML_ASP.Controllers
 {
@@ -22,39 +27,26 @@ namespace ML_ASP.Controllers
         private readonly IUnitOfWork _unit;
         private readonly MLContext _context;
         private readonly PredictionEngine<Object_DataSet, Prediction> _predictionEngine;
-		private readonly PredictionEngine<Image_DataSet, ImagePrediction> _imagClassificationEngine;
-		private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _environment;
+        private PredictionEngine<Image_DataSet, ImagePrediction> _imagClassificationEngine;
+        private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _environment;
 
         public SubmissionVM submissionVM { get; set; }
 
 
         //constructor for every model and object needed
         public FileManagementController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment,
-            IUnitOfWork unit)
+            IUnitOfWork unit,
+            MLContext context)
         {
             _unit = unit;
             _environment = environment;
-            _context = new MLContext(); //was supposed to be DB, but the architecture was applied late
+            _context = context; //was supposed to be DB, but the architecture was applied late
 
-   //         var currentDirectory = _environment.ContentRootPath;
+            //var currentDirectory = _environment.ContentRootPath;
 
-   //         string desiredDirectory = "ML_ASP";
-   //         string modelDirectory2 = "bin\\Debug\\net7.0";
-   //         while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
-   //         {
-   //             currentDirectory = Directory.GetParent(currentDirectory).FullName;
-   //         }
 
-   //         currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
-
-			////for image classification
-			//string combinePath2 = Path.Combine(currentDirectory, modelDirectory2);
-   //         string modelPath2 = Path.Combine(combinePath2, "ImageClassification.zip");
-
-   //         var trainedModel2 = _context.Model.Load(modelPath2, out var modelSchema2);
-			//_imagClassificationEngine = _context.Model.CreatePredictionEngine<Image_DataSet, ImagePrediction>(trainedModel2);
-
-		}
+            //===================--------------------------------
+        }
 
         public static string GetAssetsPath(string relativePath)
         {
@@ -101,7 +93,7 @@ namespace ML_ASP.Controllers
             }
         }
 
-		[HttpPost]
+        [HttpPost]
         public ActionResult DeleteFile(int id, string fileName)
         {
             var killFile = _unit.Submission.GetFirstOrDefault(u => u.Id == id);
@@ -137,7 +129,7 @@ namespace ML_ASP.Controllers
 
         [Authorize(Roles = SD.Role_User)]
         [HttpPost]
-		public IActionResult FileManagement(List<IFormFile> postedFiles, int modelId, DateTime dueDate)
+        public IActionResult FileManagement(List<IFormFile> postedFiles, int modelId, DateTime dueDate)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -153,7 +145,7 @@ namespace ML_ASP.Controllers
 
             Prediction prediction = null;
 
-            if(!Directory.Exists(uploadPath))
+            if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
@@ -265,7 +257,7 @@ namespace ML_ASP.Controllers
                 return RedirectToAction(nameof(FileManagement));
             }
             //VERIFICATION OF NO UPLOAD SUBMIT ENDS--------------
-            
+
             //DATABASE COLLERATION ENDS------------
 
             TempData["success"] = "Uploaded Succesfully!";
@@ -300,7 +292,7 @@ namespace ML_ASP.Controllers
                 WorkloadSubmissionList = _unit.WorkloadSubmissionList.GetAll(),
             };
 
-            return View(nameof(FileManagement),submissionVM);
+            return View(nameof(FileManagement), submissionVM);
         }
 
         public SubmissionModel SubmissionInjection(SubmissionModel submissionModel, string filename, string grade, string submissionFolderName, bool submissionIsGreaterThan1)
@@ -362,10 +354,10 @@ namespace ML_ASP.Controllers
             }
         }
 
-		[HttpPost]
-        public ActionResult UploadImage(List<IFormFile> file, int id)
+        [HttpPost]
+        public async Task<ActionResult> UploadImage(List<IFormFile> file, int id)
         {
-			var currentDirectory = _environment.ContentRootPath;
+            var currentDirectory = _environment.ContentRootPath;
 
             string fileName = "";
             string fileId = "";
@@ -374,7 +366,13 @@ namespace ML_ASP.Controllers
             string projectPath = _environment.WebRootPath;
             string uploadFolderName = "TimeLogPictures";
 
-            if (file.Any())
+
+			//------------------=-===========================================
+			string connectionString = "DefaultEndpointsProtocol=https;AccountName=trailyzestorage1;AccountKey=1CWwbsb1L8VGeuc+rMXOLf7U8kHJz2cYcxGXZITGQyRBgi7ML/4iUR4qzxYCq+NxQo9lf45YD6or+AStOP4c8Q==;EndpointSuffix=core.windows.net";
+			string fileShareName = "trailyzestorage";
+			string zipFilePath = "ImageClassification.zip";
+			//---------------------------------------------------------------
+			if (file.Any())
             {
                 foreach (IFormFile postedImage in file)
                 {
@@ -396,20 +394,14 @@ namespace ML_ASP.Controllers
             }
             //-------------------------------------------------------
 
-            string desiredDirectory = "ML_ASP";
-			while (!Directory.Exists(Path.Combine(currentDirectory, desiredDirectory)))
-			{
-				currentDirectory = Directory.GetParent(currentDirectory).FullName;
-			}
+            string desiredDirectory = _environment.WebRootPath;
 
-			currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
+            currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
 
-            string modelDirectoryPath = "bin\\Debug\\net7.0";
-
-            string nextPath = Path.Combine(currentDirectory, modelDirectoryPath);
+            string nextPath = Path.Combine(currentDirectory, currentDirectory);
             string _modelSessionPath = Path.Combine(nextPath, "ModelSession_3");
-			string _assetsPath = Path.Combine(_modelSessionPath, "assets");
-			string _imagesFolderPath = Path.Combine(_assetsPath, "samples");
+            string _assetsPath = Path.Combine(_modelSessionPath, "assets");
+            string _imagesFolderPath = Path.Combine(_assetsPath, "samples");
 
             if (!Directory.Exists(_imagesFolderPath))
             {
@@ -456,36 +448,40 @@ namespace ML_ASP.Controllers
             var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
             var accountName = account.FullName;
 
-			var new_data = new Image_DataSet
-			{
-				ImagePath = fileName,
-			};
+            var new_data = new Image_DataSet
+            {
+                ImagePath = fileName,
+            };
 
-			//var prediction = _imagClassificationEngine.Predict(new_data);
-            //string approved = "Approved";
-            //string declined = "Declined";
+            await LoadModelFromAzureFileShare(connectionString, fileShareName, zipFilePath);
 
-            //Notification_Model notif = new Notification_Model();
-            //if (prediction.ToString() == "UniformedHuman")
-            //{
+			var prediction = _imagClassificationEngine.Predict(new_data);
+            string approved = "Approved";
+            string declined = "Declined";
+
+            Notification_Model notif = new Notification_Model();
+            if (prediction.ToString() == "UniformedHuman")
+            {
                 _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
 
-            //    notif.Title = "Machine Learning Model Approval Status";
-            //    notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
-            //    notif.NotifUserId = account.Id;
+                notif.Title = "Machine Learning Model Approval Status";
+                notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
+                notif.NotifUserId = account.Id;
+                _unit.Log.ChangeApprovalStatus(id, approved);
 
-            //    _unit.Notification.Add(notif);
-            //}
-            //else
-            //{
+                _unit.Notification.Add(notif);
+            }
+            else
+            {
                 _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
 
-            //    notif.Title = "Machine Learning Model Approval Status";
-            //    notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;
-            //    notif.NotifUserId = account.Id;
+                notif.Title = "Machine Learning Model Approval Status";
+                notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;
+                notif.NotifUserId = account.Id;
+				_unit.Log.ChangeApprovalStatus(id, declined);
 
-            //    _unit.Notification.Add(notif);
-            //}
+				_unit.Notification.Add(notif);
+            }
 
             _unit.Save();
 
@@ -531,5 +527,35 @@ namespace ML_ASP.Controllers
         }
 
         #endregion
-    }
+
+        public async Task<PredictionEngine<Image_DataSet, ImagePrediction>> LoadModelFromAzureFileShare(string connectionString, string fileShareName, string zipFilePath)
+        {
+            // Create a ShareClient to connect to the Azure file share
+            ShareServiceClient serviceClient = new ShareServiceClient(connectionString);
+            ShareClient shareClient = serviceClient.GetShareClient(fileShareName);
+
+            // Get a reference to the zip file
+            ShareDirectoryClient directoryClient = shareClient.GetDirectoryClient(Path.GetDirectoryName(zipFilePath));
+            ShareFileClient fileClient = directoryClient.GetFileClient(Path.GetFileName(zipFilePath));
+
+			using (MemoryStream memoryStream = new MemoryStream())
+			{
+				// Download the zip file to the memory stream
+				var response = await fileClient.DownloadAsync();
+
+				// Copy the content stream from the response to the memory stream
+				await response.Value.Content.CopyToAsync(memoryStream);
+
+				// Set the position to the beginning of the memory stream
+				memoryStream.Position = 0;
+
+				// Load the model directly from the memory stream using _context
+				var trainedModel = _context.Model.Load(memoryStream, out var modelSchema);
+				_imagClassificationEngine = _context.Model.CreatePredictionEngine<Image_DataSet, ImagePrediction>(trainedModel);
+			}
+
+			return _imagClassificationEngine;
+			//-----------------
+		}
+	}
 }

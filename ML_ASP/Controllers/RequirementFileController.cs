@@ -205,6 +205,8 @@ namespace ML_ASP.Controllers
                 _unit.Account.UpdateAccountTrainingLocation(userId, campusOption, CampusValue);
             }
 
+            _unit.Save();
+
             //--------------------------------------------------------------------------POSTED FILE 0
             if (postedFiles0 != null && postedFiles0.Length > 0)
             {

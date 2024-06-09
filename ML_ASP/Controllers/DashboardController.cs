@@ -276,7 +276,81 @@ namespace ML_ASP.Controllers
             return View(nameof(Dashboard), submissionVM);
         }
 
+        [HttpPost]
+        public ActionResult SubmitExit(IFormFile postedFiles1, IFormFile postedFiles2)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
 
+            string fileName = "";
+            string fileId = "";
+
+            string fileName2 = "";
+            string fileId2 = "";
+
+            if (postedFiles1 != null && postedFiles1.Length > 0)
+            {
+                string projectPath = _environment.WebRootPath;
+                string uploadFolderName = "RequirementFiles";
+
+
+                var uploads = Path.Combine(projectPath, uploadFolderName);
+                var extension = Path.GetExtension(postedFiles1.FileName);
+
+                fileId = Guid.NewGuid().ToString();
+                fileName = fileId + extension;
+                if (!Directory.Exists(uploads))
+                {
+                    Directory.CreateDirectory(uploads);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(uploads, fileId + extension), FileMode.Create))
+                {
+                    postedFiles1.CopyTo(fileStream);
+                }
+
+                TempData["success"] = "Uploaded Successfully!";
+            }
+            if (postedFiles2 != null && postedFiles2.Length > 0)
+            {
+                string projectPath = _environment.WebRootPath;
+                string uploadFolderName = "RequirementFiles";
+
+
+                var uploads = Path.Combine(projectPath, uploadFolderName);
+                var extension = Path.GetExtension(postedFiles2.FileName);
+
+                fileId2 = Guid.NewGuid().ToString();
+                fileName2 = fileId2 + extension;
+                if (!Directory.Exists(uploads))
+                {
+                    Directory.CreateDirectory(uploads);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(uploads, fileId2 + extension), FileMode.Create))
+                {
+                    postedFiles2.CopyTo(fileStream);
+                }
+
+                TempData["success"] = "Uploaded Successfully!";
+            }
+
+
+
+            try
+            {
+                _unit.Account.UpdateExit(account.Id, fileName);
+                _unit.Account.UpdateEvaluation(account.Id, fileName2);
+
+                _unit.Save();
+            }
+            catch (Exception e) { }
+
+            GetSubmissionVM();
+
+            return View(nameof(Dashboard), submissionVM);
+        }
         //-----------------HELPER FUNCTIONS OR METHODS--------------------------
         [HttpPost]
         public ActionResult DeleteReminder(int id)
@@ -398,7 +472,6 @@ namespace ML_ASP.Controllers
                 account.SecondsRemaining = 0;
             }
         }
-
 
         //for displaying dashboard
         public SubmissionVM GetSubmissionVM()

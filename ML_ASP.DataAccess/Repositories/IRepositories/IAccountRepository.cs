@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using ML_ASP.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,10 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 	public interface IAccountRepository : IRepository<Account_Model>
 	{
         public void UpdateAccount(string course, int hrsRemain, int weeklyReport, string id, int requiredHours);
+
+        public void UpdateExit(string id, string filename);
+
+        public void UpdateEvaluation(string id, string filename);
 
         public void UpdateAccountTrainingLocation(string id, string campusOption, string campusValue);
 

@@ -1,18 +1,20 @@
-﻿<div class="reminders">
+﻿@* _StudentExit.cshtml *@
+<form method="post" asp-action="SubmitExit" asp-controller="Dashboard" enctype="multipart/form-data">
+<div class="reminders">
     <div class="header">
         <h2>Exit Survey</h2>
     </div>
     <div class="notification add-reminder">
         <div>
-            <span class="material-icons-sharp">
-                add
-            </span>
-            <h3>Exit Survey</h3>
+                <div style="margin-top:10px;" class="prediction" style="margin-bottom: 20px;">
+                    <input type="file" id="attachDocumentButton" name="postedFiles1" />
+                    <button type="submit" style="font-size:12px;">Submit</button>
+                </div>
         </div>
     </div>
     <div class="notification add-reminder">
         <div>
-            <a href="/RequirementFiles/TemplateFiles/INTERNSHIP-EXIT-SURVEY.admin.pdf" target="_blank">Get Template</a>
+            <a style="text-decoration: none;" href="/RequirementFiles/TemplateFiles/INTERNSHIP-EXIT-SURVEY.admin.pdf" target="_blank">Get Template</a>
         </div>
     </div>
     <hr />
@@ -22,15 +24,16 @@
     </div>
     <div class="notification add-reminder">
         <div>
-            <span class="material-icons-sharp">
-                add
-            </span>
-            <h3>Performance Evaluation</h3>
+            <div style="margin-top:10px;" class="prediction" style="margin-bottom: 20px;">
+                <input type="file" id="attachDocumentButton" name="postedFiles2" />
+                    <button type="submit" style="font-size:12px;">Submit</button>
+            </div>
         </div>
     </div>
     <div class="notification add-reminder">
         <div>
-            <a href="/RequirementFiles/TemplateFiles/STUDENT-PERFORMANCE-EVALUATION.admin.pdf" target="_blank">Get Template</a>
+            <a style="text-decoration: none;" href="/RequirementFiles/TemplateFiles/STUDENT-PERFORMANCE-EVALUATION.admin.pdf" target="_blank">Get Template</a>
         </div>
     </div>
 </div>
+</form>

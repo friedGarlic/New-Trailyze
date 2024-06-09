@@ -64,6 +64,18 @@ function loadDataTable() {
                     return selectHtml + hiddenInputHtml  + hiddenInputApproval;
                 }
             },
+            {
+                "data": "exitSurvey", "title": "Exit Survey",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-primary btn-sm group-btn view-pdf2" data-id="' + row.exitSurvey + '">VIEW</button>';
+                }
+            },
+            {
+                "data": "performanceEval", "title": "Performance Evaluation",
+                "render": function (data, type, row) {
+                    return '<button class="btn btn-primary btn-sm group-btn view-pdf2" data-id="' + row.performanceEval + '">VIEW</button>';
+                }
+            },
         ],
         "order": [[1, 'asc']]
     });

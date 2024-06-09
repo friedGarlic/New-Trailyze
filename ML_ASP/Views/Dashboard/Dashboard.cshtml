@@ -274,7 +274,12 @@
             <!-- End of Nav -->
 
             <!-- STart of Request overtime-->
-            <partial name="_StudentExit" />
+            <div id="studentExitContainer" style="display:none;">
+                <!-- This is where the _StudentExit partial will be rendered -->
+                <partial name="_StudentExit" />
+            </div>
+
+
 
             <div class="reminders">
                 <div class="header">
@@ -339,13 +344,14 @@
 
         </div>
 
-
+        
     </div>
     <partial name="_CustomPopup" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="~/js/Popup/UserCustomPopup.js"></script>
     <script>
+
         let countdownInterval;
 
         function isWithinAllowedTime() {
@@ -364,8 +370,10 @@
 
             if (hoursCompleted > hoursRequired) {
                 infoPopup();
+                document.getElementById("studentExitContainer").style.display = "block";
             }
         }
+
 
         function isPastAllowedTime() {
             let currentDateTime = new Date();

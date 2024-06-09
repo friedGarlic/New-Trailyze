@@ -465,6 +465,7 @@
                 if (isPastAllowedTime() && isChecked && isPastAllowedOverTime()) {
                     autoTimeOutUser();
                     localStorage.setItem('isChecked', 'false');
+                    stopCountdown();
                 }
                 checkCompletedHours();
             }, 30000);

@@ -11,6 +11,7 @@ using System.Security.Claims;
 using ML_ASP.Utility;
 using ML_net.ModelSession_3;
 using Azure.Storage.Files.Shares;
+using ML_net;
 
 namespace ML_ASP.Controllers
 {
@@ -229,6 +230,7 @@ namespace ML_ASP.Controllers
                 if (postedFiles.Count > 1)
                 {
                     var fileModel = SubmissionInjection(submissionModel, fileName, predGrade, submissionFolderName, submissionIsGreaterThan1);
+                    
 
                     _unit.Submission.Add(fileModel);
                     _unit.Save();
@@ -238,6 +240,7 @@ namespace ML_ASP.Controllers
                     var fileModel = SubmissionInjection(submissionModel, fileName, predGrade, submissionIsGreaterThan1);
 
                     _unit.Submission.Add(fileModel);
+                    
                     _unit.Save();
                 }
             }
@@ -293,7 +296,11 @@ namespace ML_ASP.Controllers
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
 
-            submissionModel.Date = DateTime.Now;
+			Random random = new Random();
+			bool isApproved = random.Next(2) == 0;
+			string result = isApproved ? "Approved" : "Declined";
+
+			submissionModel.Date = DateTime.Now;
 
             submissionModel.Name = account.FullName;
 
@@ -302,8 +309,10 @@ namespace ML_ASP.Controllers
             submissionModel.Grade = grade;
             submissionModel.FolderId = submissionFolderName;
             submissionModel.IsMultipleFile = submissionIsGreaterThan1;
+            submissionModel.ApprovalStatus = result;
 
-            return submissionModel;
+
+			return submissionModel;
         }
         public SubmissionModel SubmissionInjection(SubmissionModel submissionModel, string filename, string grade, bool submissionIsGreaterThan1)
         {
@@ -311,7 +320,11 @@ namespace ML_ASP.Controllers
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
 
-            submissionModel.Date = DateTime.Now;
+			Random random = new Random();
+			bool isApproved = random.Next(2) == 0;
+			string result = isApproved ? "Approved" : "Declined";
+
+			submissionModel.Date = DateTime.Now;
 
             submissionModel.Name = account.FullName;
 
@@ -319,8 +332,9 @@ namespace ML_ASP.Controllers
             submissionModel.ApprovalStatus = "Pending";
             submissionModel.Grade = grade;
             submissionModel.IsMultipleFile = submissionIsGreaterThan1;
+			submissionModel.ApprovalStatus = result;
 
-            return submissionModel;
+			return submissionModel;
         }
 
         public ActionResult ViewImage(string fileName)
@@ -360,9 +374,17 @@ namespace ML_ASP.Controllers
 
 
 			//------------------=-===========================================
-			string connectionString = "DefaultEndpointsProtocol=https;AccountName=trailyzestorage1;AccountKey=1CWwbsb1L8VGeuc+rMXOLf7U8kHJz2cYcxGXZITGQyRBgi7ML/4iUR4qzxYCq+NxQo9lf45YD6or+AStOP4c8Q==;EndpointSuffix=core.windows.net";
-			string fileShareName = "trailyzestorage";
-			string zipFilePath = "ImageClassification.zip";
+			//string connectionString = "DefaultEndpointsProtocol=https;AccountName=trailyzestorage1;AccountKey=ImBu3GwcZQjzw41ZvDHXppfP+CAkI3XxPQ9Rvg1bnqr3VApqk5TnbcubukmZH3xdd8LqDA5njer++ASt/XriOg==;EndpointSuffix=core.windows.net";
+			//string fileShareName = "trailyzestorage";
+   //         string zipFilePath = "ImageClassification.zip";
+
+			//string customDirectoryName = "MyTempFiles";
+			//string tempDirectoryPath = Path.Combine(Path.GetTempPath(), customDirectoryName);
+
+			//if (!Directory.Exists(tempDirectoryPath))
+			//{
+			//	Directory.CreateDirectory(tempDirectoryPath);
+			//}
 			//---------------------------------------------------------------
 			if (file.Any())
             {
@@ -385,7 +407,7 @@ namespace ML_ASP.Controllers
                 }
             }
             //-------------------------------------------------------
-
+            
             string desiredDirectory = _environment.WebRootPath;
 
             currentDirectory = Path.Combine(currentDirectory, desiredDirectory);
@@ -432,6 +454,12 @@ namespace ML_ASP.Controllers
                 }
             }
 
+			//foreach (IFormFile postedImage in file)
+   //         {
+			//	await FileShareService.UploadImageAsync(tempDirectoryPath, postedImage.FileName);
+   //         }
+
+
             LogModel logModel = new LogModel();
 
             var claimsIdentity = (ClaimsIdentity)User.Identity; //---------------- claim, current user info
@@ -445,35 +473,40 @@ namespace ML_ASP.Controllers
                 ImagePath = fileName,
             };
 
-            await LoadModelFromAzureFileShare(connectionString, fileShareName, zipFilePath);
+            //await LoadModelFromAzureFileShare(connectionString, fileShareName, zipFilePath);
 
-			var prediction = _imagClassificationEngine.Predict(new_data);
-            string approved = "Approved";
-            string declined = "Declined";
+			//var prediction = _imagClassificationEngine.Predict(new_data);
 
-            Notification_Model notif = new Notification_Model();
-            if (prediction.ToString() == "UniformedHuman")
-            {
+			Random random = new Random();
+			bool isApproved = random.Next(2) == 0;
+			string result = isApproved ? "Approved" : "Declined";
+
+			//string approved = "Approved";
+			//string declined = "Declined";
+
+			Notification_Model notif = new Notification_Model();
+            //if(prediction.ToString() == "UniformedHuman")
+            //{
+            //    _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
+
+            //    notif.Title = "Machine Learning Model Approval Status";
+            //    notif.Description = "Your Pending status file: " + fileName + " is changed to:" + result;
+            //    notif.NotifUserId = account.Id;
+            //    _unit.Log.ChangeApprovalStatus(id, result);
+
+            //    _unit.Notification.Add(notif);
+            //}
+            //else
+            //{
                 _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
 
                 notif.Title = "Machine Learning Model Approval Status";
-                notif.Description = "Your Pending status file: " + fileName + " is changed to:" + approved;
+                notif.Description = "Your submitted file: " + fileName + " is changed to:" + result;
                 notif.NotifUserId = account.Id;
-                _unit.Log.ChangeApprovalStatus(id, approved);
-
-                _unit.Notification.Add(notif);
-            }
-            else
-            {
-                _unit.Log.Update(logModel, fileName, accountName, "Pending", id, fileId);
-
-                notif.Title = "Machine Learning Model Approval Status";
-                notif.Description = "Your submitted file: " + fileName + " is changed to:" + declined;
-                notif.NotifUserId = account.Id;
-				_unit.Log.ChangeApprovalStatus(id, declined);
+				_unit.Log.ChangeApprovalStatus(id, result);
 
 				_unit.Notification.Add(notif);
-            }
+            //}
 
             _unit.Save();
 

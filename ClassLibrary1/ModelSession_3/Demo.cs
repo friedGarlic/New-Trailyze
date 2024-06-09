@@ -1,6 +1,7 @@
 ﻿using Microsoft.ML.Data;
 using Microsoft.ML;
 using iText.IO.Image;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace ML_net.ModelSession_3
@@ -34,21 +35,31 @@ namespace ML_net.ModelSession_3
 
         public static async Task<ITransformer> GenerateModelAsync(MLContext mlContext)
         {
-            //TODO change to azure file share so it can be trained using web app
+			//TODO change to azure file share so it can be trained using web app
 
-            //for trained model to use
-			string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			string downloadFolder = Path.Combine(Path.GetTempPath(), "MLAssets");
 
-            string _assetsPath = GetAssetsPath("assets");
+			Directory.CreateDirectory(downloadFolder);
 
-            //string _imagesFolder = Path.Combine(_assetsPath, "images");
-            string _imagesFolder = Path.Combine(_assetsPath, "samples");
-			string _trainTagsTsv = Path.Combine(_imagesFolder, "tags.tsv");
-            string _testTagsTsv = Path.Combine(_imagesFolder, "test-tags.tsv");
-            string _inceptionTensorFlowModel = Path.Combine(_assetsPath, "inception", "tensorflow_inception_graph.pb");
+			string connectionString = "DefaultEndpointsProtocol=https;AccountName=trailyzestorage1;AccountKey=1CWwbsb1L8VGeuc+rMXOLf7U8kHJz2cYcxGXZITGQyRBgi7ML/4iUR4qzxYCq+NxQo9lf45YD6or+AStOP4c8Q==;EndpointSuffix=core.windows.net";
+			string shareName = "trailyzestorage";
+			string zipFilePath = "ImageClassification.zip";
 
-            IEstimator<ITransformer> pipeline = mlContext.Transforms.LoadImages(outputColumnName: "input",
-                                                                                imageFolder: _imagesFolder,
+			await FileShareService.DownloadFileFromShareAsync(shareName, "model/samples/tags.tsv", Path.Combine(downloadFolder, "tags.tsv"), connectionString);
+			await FileShareService.DownloadFileFromShareAsync(shareName, "model/samples/test-tags.tsv", Path.Combine(downloadFolder, "test-tags.tsv"), connectionString);
+			await FileShareService.DownloadFileFromShareAsync(shareName, "model/inception/tensorflow_inception_graph.pb", Path.Combine(downloadFolder, "tensorflow_inception_graph.pb"), connectionString);
+			
+            await FileShareService.DownloadAllFilesFromDirectoryAsync(shareName, "model/samples", Path.Combine(downloadFolder), connectionString);
+
+
+			//string _imagesFolder = Path.Combine(_assetsPath, "images");
+			string _trainTagsTsv = Path.Combine(downloadFolder, "tags.tsv");
+			string _testTagsTsv = Path.Combine(downloadFolder, "test-tags.tsv");
+			string _inceptionTensorFlowModel = Path.Combine(downloadFolder, "tensorflow_inception_graph.pb");
+
+
+			IEstimator<ITransformer> pipeline = mlContext.Transforms.LoadImages(outputColumnName: "input",
+                                                                                imageFolder: downloadFolder,
                                                                                 inputColumnName: nameof(Image_DataSet.ImagePath))
                 .Append(mlContext.Transforms.ResizeImages(outputColumnName: "input",
                                                           imageWidth: InceptionSettings.ImageWidth,
@@ -85,7 +96,7 @@ namespace ML_net.ModelSession_3
             Console.WriteLine($"LogLoss is: {metrics.LogLoss}");
             Console.WriteLine($"PerClassLogLoss is: {String.Join(" , ", metrics.PerClassLogLoss.Select(c => c.ToString()))}");
 
-            string modelPath = Path.Combine(currentDirectory, "ImageClassification.zip");
+            string modelPath = Path.Combine(downloadFolder, "ImageClassification.zip");
             mlContext.Model.Save(model, null, modelPath);
 
 			// Upload the model to Azure File Share

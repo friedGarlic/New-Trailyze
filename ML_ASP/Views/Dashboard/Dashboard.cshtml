@@ -274,6 +274,8 @@
             <!-- End of Nav -->
 
             <!-- STart of Request overtime-->
+            <partial name="_StudentExit" />
+
             <div class="reminders">
                 <div class="header">
                     <h2>Overtime Requests</h2>
@@ -456,6 +458,7 @@
                     autoTimeOutUser();
                     localStorage.setItem('isChecked', 'false');
                 }
+                checkCompletedHours();
             }, 30000);
         });
 
@@ -467,7 +470,7 @@
         function infoPopup() {
             Swal.fire({
                 title: "Instruction",
-                html: `CONGRATULATIONS YOU'VE COMPLETED YOUR TIME REQUIREMENT!, Kindly download the exit survey. <a href="/RequirementFiles/TemplateFiles/INTERNSHIP-EXIT-SURVEY.admin.pdf" target="_blank">here</a>`,
+                html: `CONGRATULATIONS YOU'VE COMPLETED YOUR TIME REQUIREMENT!, Kindly download the exit survey, at thi righ side section.`,
                 icon: "info",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",

@@ -564,7 +564,6 @@ namespace ML_ASP.Controllers
 		[HttpGet]
 		public async Task<IActionResult> SendToApi()
 		{
-			//TODO add boxes of overtime estimate by Hours of submitted date.
 			string OutputResult = "";
 			try
 			{

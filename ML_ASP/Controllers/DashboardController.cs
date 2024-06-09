@@ -449,8 +449,10 @@ namespace ML_ASP.Controllers
             ViewBag.OvertimeNeeded = overtimeNeeded;
             ViewBag.EstimateEndTraining = estimatedEndDate;
 
-			//for grades
-			var sublist = _unit.Submission
+
+
+            //for grades
+            var sublist = _unit.Submission
                   .GetAll(u => u.SubmissionUserId == claim.Value)
                   .Take(5)
                   .Select(u => u.Grade)
@@ -538,7 +540,13 @@ namespace ML_ASP.Controllers
             int submissionCount = submission.Count();
 
             ViewBag.SubmissionCount = submissionCount;
-            ViewBag.RemainingReports = account.WeeklyReportRemaining;
+
+
+            int hoursPerDay = 8;
+            int daysPerWeek = 5;
+            int hoursPerWeek = hoursPerDay * daysPerWeek;
+            
+            ViewBag.RemainingReports = account.HoursRequired / hoursPerWeek;
 
             //remaining
             ViewBag.RemainingHours = account.HoursRemaining;

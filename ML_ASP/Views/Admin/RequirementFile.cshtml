@@ -48,7 +48,7 @@
 			<li class="active">
 				<a asp-controller="Admin" asp-action="RequirementFile">
 					<i class='bx bxs-file-pdf'></i>
-					<span class="text">Registration Files</span>
+					<span class="text">Requirements</span>
 				</a>
 			</li>
 			<li>
@@ -113,6 +113,7 @@
 								<th></th>
 								<th></th>
 								<th></th>
+								<th>OverallGrade</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -132,6 +133,9 @@
 		<script src="~/js/admin/requirement_admin.js"></script>
 		<script src="~/js/adminScript.js"></script>
 	}
+	<script>
+		var overallGrade = @ViewBag.OverallGrade;
+	</script>
 	<script>
 		document.getElementById('updateButton').addEventListener('click', function () {
 			confirmInput();

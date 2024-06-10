@@ -76,6 +76,9 @@ function loadDataTable() {
                     return '<button class="btn btn-primary btn-sm group-btn view-pdf2" data-id="' + row.performanceEval + '">VIEW</button>';
                 }
             },
+            {
+                "data": "overallGrade", "title": "Overall Grade",
+            },
         ],
         "order": [[1, 'asc']]
     });

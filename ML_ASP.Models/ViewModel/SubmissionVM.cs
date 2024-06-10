@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ML_ASP.Models.ViewModel
 {
@@ -26,7 +27,11 @@ namespace ML_ASP.Models.ViewModel
 
 		public IEnumerable<Overtime_Model> OvertimeList { get; set; }
 
-        public LogModel LogModel { get; set; }
+		public SelectList OptionList1 { get; set; }
+
+		public SelectList OptionList2 { get; set; }
+
+		public LogModel LogModel { get; set; }
 
         public string CurrentUserId{ get; set; }
 

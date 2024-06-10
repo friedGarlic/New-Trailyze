@@ -44,11 +44,14 @@ namespace ML_ASP.Models
         public string? PerformanceEval { get; set; }
         public string? DocumentVerification { get; set; } = "Pending";
 
+        public double? OverallGrade { get; set; }
+
         public List<RequirementFile_Model>? Requirements { get; set; }
 
         public string RegistrationPermission { get; set; } = "Pending";
 
         public string? CampusOption { get; set; }
         public string? CampusValue { get; set; }
+
     }
 }

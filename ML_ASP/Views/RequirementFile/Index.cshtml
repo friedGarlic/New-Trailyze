@@ -66,14 +66,16 @@
                 <br />
 
                 <div class="form-floating mb-2 py-1" id="inCampusSelect" style="display: none">
-                    <select id="inCampusOffices" class="form-control" name="CampusValue">
+                    <select id="inCampusOffices" class="form-control" name="CampusValue" asp-items="Model.OptionList1">
+                        <option value="">-- Please select an office: --</option>
                         <!-- Options will be populated dynamically -->
                     </select>
                     <span class="text-danger" id="inCampusError"></span>
                 </div>
 
                 <div class="form-floating mb-2 py-1" id="offCampusSelect" style="display:none;">
-                    <select id="offCampusOffices" class="form-control" name="CampusValue">
+                    <select id="offCampusOffices" class="form-control" name="CampusValue" asp-items="Model.OptionList2">
+                        <option value="">-- Please select an office: --</option>
                         <!-- Options will be populated dynamically -->
                     </select>
                     <span class="text-danger" id="offCampusError"></span>
@@ -292,7 +294,7 @@
 
 
         @if (Model.FileName1 != null && Model.FileName2 != null && Model.FileName3 != null && Model.FileName4 != null && Model.FileName5 != null){
-        <a class="btn-primary gray-button" style="text-decoration: none;" asp-action="Index" asp-controller="Home"> Done </a>
+        <a class="gray-button" style="text-decoration: none;" asp-action="Index" asp-controller="Home"> Done </a>
         }
         else{
             <button class="gray-button" disabled> Disabled </button>
@@ -360,25 +362,6 @@
             if (!isValid) {
                 event.preventDefault();
             }
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            function populateSelectOptions(optionType, selectId) {
-                const select = $('#' + selectId); //id is important to take the key from local storage
-                select.empty();
-                select.append('<option value="">Please select one of the offices: </option>');
-                const options = JSON.parse(localStorage.getItem(optionType));
-                if (options) {
-                    options.forEach(option => {
-                        select.append(`<option value="${option}">${option}</option>`);
-                    });
-                }
-            }
-
-            populateSelectOptions('inCampusOptions', 'inCampusOffices');
-            populateSelectOptions('offCampusOptions', 'offCampusOffices');
         });
     </script>
 

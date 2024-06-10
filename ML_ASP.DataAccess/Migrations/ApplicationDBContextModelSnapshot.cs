@@ -101,6 +101,9 @@ namespace ML_ASP.DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<double?>("OverallGrade")
+                        .HasColumnType("float");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -334,6 +337,40 @@ namespace ML_ASP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequirementForm");
+                });
+
+            modelBuilder.Entity("ML_ASP.Models.Models.UserDashboard.ListModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("ListName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ListName");
+                });
+
+            modelBuilder.Entity("ML_ASP.Models.Models.UserDashboard.ListModel2", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("ListName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ListName2");
                 });
 
             modelBuilder.Entity("ML_ASP.Models.Models.UserDashboard.Overtime_Model", b =>

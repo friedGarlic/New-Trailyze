@@ -30,6 +30,10 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 
         IOvertimeRepository Overtime { get; }
 
+        I_ListRepository ListItem { get; }
+
+        I_ListRepository2 ListItem2 { get; }
+
         void Save();
     }
 }

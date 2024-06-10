@@ -26,6 +26,8 @@ namespace ML_ASP.DataAccess.Repositories
             RequirementFile = new RequirementFileRepository(_dbContext);
             RequirementForm = new RequirementFormRepository(_dbContext);
             Overtime = new OvertimeRepository(_dbContext);
+            ListItem = new _ListRepository(_dbContext);
+            ListItem2 = new _ListRepository2(_dbContext);
         }
 
         public ISubmissionRepository Submission { get; private set; }
@@ -39,6 +41,8 @@ namespace ML_ASP.DataAccess.Repositories
         public IRequirementFileRepository RequirementFile { get; private set; }
         public IRequirementFormRepository RequirementForm { get; private set; }
         public IOvertimeRepository Overtime { get; private set; }
+        public I_ListRepository ListItem { get; private set; }
+        public I_ListRepository2 ListItem2 { get; private set; }
 
         public void Save()
         {

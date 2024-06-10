@@ -21,6 +21,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.ML;
 using ML_net.ModelSession_3;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ML_ASP.Models.Models.UserDashboard;
 
 namespace ML_ASP.Controllers
 {
@@ -57,30 +59,7 @@ namespace ML_ASP.Controllers
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-			IEnumerable<Account_Model> accountList = _unit.Account.GetAll();
-			IEnumerable<SubmissionModel> modelList = _unit.Submission.GetAll();
-
-			var submissionCount = modelList.Count();
-			int accountCount = accountList.Select(u => u.Id).Distinct().Count();
-
-			ViewBag.AccountCount = accountCount;
-			ViewBag.SubmissionCount = submissionCount;
-
-			//find last 5 grade from current user selected
-			var sublist = _unit.Submission
-				  .GetAll(u => u.SubmissionUserId == claim.Value)
-				  .OrderByDescending(u => u.Id)
-				  .Take(5)
-				  .Select(u => u.Grade)
-				  .ToList();
-
-
-			submissionVM = new SubmissionVM()
-			{
-				ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
-				GradeList = sublist,
-				WorkloadList = _unit.Workload.GetAll(),
-			};
+			GetSubmissionVM();
 
 			return View(submissionVM);
 		}
@@ -536,20 +515,39 @@ namespace ML_ASP.Controllers
 			return Json(new { data = modelList });
 		}
 
-		public IActionResult GetAllReqFile()
+		public async Task<IActionResult> GetAllReqFile()
 		{
+
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
 			var accountList = _unit.Account.GetAll().ToList();
 			var getAllReqFile = _unit.RequirementFile.GetAll().ToList();
 
 			foreach (var account in accountList)
 			{
-				// Filter the requirement files for the current account
-				var accountRequirementFiles = getAllReqFile
+				var user = await _userManager.FindByIdAsync(account.Id);
+				var roles = await _userManager.GetRolesAsync(user);
+
+				if (roles.Contains("Individual"))
+				{
+					// Filter the requirement files for the current account
+					var accountRequirementFiles = getAllReqFile
 					.Where(r => r.UserId == account.Id)
 					.ToList();
 
-				// Populate the Requirements property of the current account with the filtered requirement files
-				account.Requirements = accountRequirementFiles;
+					// Populate the Requirements property of the current account with the filtered requirement files
+					account.Requirements = accountRequirementFiles;
+
+					var overallGrade = CalculateOverallGrade(
+						account.WeeklyReportRemaining,
+						account.HoursCompleted,
+						account.HoursRequired,
+						account.PerformanceEval
+					);
+
+					account.OverallGrade = overallGrade;
+				}
 			}
 			return Json(new { data = accountList });
 		}
@@ -559,6 +557,50 @@ namespace ML_ASP.Controllers
 			var getAllOvertime = _unit.Overtime.GetAll();
 
 			return Json(new { data = getAllOvertime });
+		}
+
+		[HttpPost]
+		public ActionResult AddListOption(string listname)
+		{
+			ListModel model = new();
+			model.ListName = listname;
+
+			_unit.ListItem.Add(model);
+			_unit.Save();
+
+			return RedirectToAction(nameof(Admin));
+		}
+
+		public ActionResult DeleteOptionList(int optionToDelete)
+		{
+			var model = _unit.ListItem.GetFirstOrDefault(u => u.id == optionToDelete);
+
+			_unit.ListItem.Remove(model);
+			_unit.Save();
+
+			return RedirectToAction(nameof(Admin));
+		}
+
+		public ActionResult DeleteOptionList2(int optionToDelete)
+		{
+			var model = _unit.ListItem2.GetFirstOrDefault(u => u.id == optionToDelete);
+
+			_unit.ListItem2.Remove(model);
+			_unit.Save();
+
+			return RedirectToAction(nameof(Admin));
+		}
+
+		[HttpPost]
+		public ActionResult AddListOption2(string listname)
+		{
+			ListModel2 model = new();
+			model.ListName = listname;
+
+			_unit.ListItem2.Add(model);
+			_unit.Save();
+
+			return RedirectToAction(nameof(Admin));
 		}
 
 		[HttpGet]
@@ -653,6 +695,7 @@ namespace ML_ASP.Controllers
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
+			var getAcccountUser = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value);
 			IEnumerable<Account_Model> accountList = _unit.Account.GetAll();
 			IEnumerable<SubmissionModel> modelList = _unit.Submission.GetAll();
 
@@ -671,34 +714,63 @@ namespace ML_ASP.Controllers
 				  .ToList();
 
 
-			submissionVM = new SubmissionVM()
+            submissionVM = new SubmissionVM()
 			{
 				ReminderList = _unit.Reminder.GetAll(u => u.UserId == claim.Value),
 				GradeList = sublist,
 				WorkloadList = _unit.Workload.GetAll(),
+				OptionList1 = new SelectList(_unit.ListItem.GetAll(), "id", "ListName"),
+				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName")
 			};
 
 			return submissionVM;
 		}
 
-		public async Task<ActionResult> RunConsoleApp()
-		{
-			try
-			{
-				// Initialize MLContext
-				MLContext mlContext = new MLContext();
+        public double CalculateOverallGrade(int? weeklyReportRemaining, int? hoursCompleted, int? hoursRequired, string performanceEval)
+        {
+            // Default values
+            int weeklyReportRemainingDefault = 16;
+            int hoursCompletedDefault = 0;
+            int hoursRequiredDefault = 600;
 
-				// Generate model
-				await Demo.GenerateModelAsync(mlContext);
+            // Assign provided or default values
+            weeklyReportRemaining ??= weeklyReportRemainingDefault;
+            hoursCompleted ??= hoursCompletedDefault;
+            hoursRequired ??= hoursRequiredDefault;
 
-				// Optionally, you can return the results to a view
-				return View();
-			}
-			catch (Exception ex)
+            // Calculate completion ratio
+            double completedRatio = (double)((double)hoursCompleted / hoursRequired);
+
+            // Calculate progress in weekly report completion
+            double weeklyProgress = (double)(weeklyReportRemainingDefault - weeklyReportRemaining);
+
+            // Normalize values to range [0, 1]
+            double normalizedCompletion = Normalize(completedRatio, 0, 1);
+            double normalizedProgress = Normalize(weeklyProgress, 0, weeklyReportRemainingDefault);
+
+            // Assign weights to each criterion
+            double completionWeight = 0.6; // Weight for completion ratio
+            double progressWeight = 0.4;   // Weight for weekly report progress
+
+            // Combine values using weights
+            double overallGrade = (completionWeight * normalizedCompletion) + (progressWeight * normalizedProgress);
+
+            // Scale the overall grade to the desired range [0, 30]
+            double scaledGrade = overallGrade * 30;
+
+			int result = (int)Math.Round(scaledGrade);
+
+            if (performanceEval != null)
 			{
-				// Handle any exceptions
-				return Content($"An error occurred: {ex.Message}");
+				result += 60;
 			}
-		}
-	}
+
+            return result;
+        }
+
+        private double Normalize(double value, double min, double max)
+        {
+            return (value - min) / (max - min);
+        }
+    }
 }

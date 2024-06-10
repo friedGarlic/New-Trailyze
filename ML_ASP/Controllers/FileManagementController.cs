@@ -211,11 +211,11 @@ namespace ML_ASP.Controllers
                 DateTime earlySubmittedDate = dueDate.AddDays(-3);
                 if (currentDate < dueDate) // Submission is before the due date
                 {
-                    convertPrediction += 5;
+                    convertPrediction += 4;
                 }
                 else if (currentDate <= earlySubmittedDate) // Submission is on time (within 3 days after due date)
                 {
-                    convertPrediction += 4;
+                    convertPrediction += 3;
                 }
                 else // Submission is late
                 {

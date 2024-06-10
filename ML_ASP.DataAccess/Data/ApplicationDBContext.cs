@@ -29,5 +29,7 @@ namespace ML_ASP.DataAccess
         public DbSet<RequirementFile_Model> RequirementFile { get; set; }
         public DbSet<RequirementForm_Model> RequirementForm { get; set; }
         public DbSet<Overtime_Model> Overtime { get; set; }
+        public DbSet<ListModel> ListName { get; set; }
+        public DbSet<ListModel2> ListName2 { get; set; }
     }
 }

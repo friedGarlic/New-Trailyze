@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ML_ASP.DataAccess.Repositories.IRepositories;
 using ML_ASP.Models.Models;
 using ML_ASP.Models.ViewModel;
@@ -413,7 +414,9 @@ namespace ML_ASP.Controllers
                 FileName3 = form1FileId3,
                 FileName4 = form1FileId4,
                 FileName5 = form1FileId5,
-            };
+				OptionList1 = new SelectList(_unit.ListItem.GetAll(), "id", "ListName"),
+				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName")
+			};
 
             return requirementVM;
         }

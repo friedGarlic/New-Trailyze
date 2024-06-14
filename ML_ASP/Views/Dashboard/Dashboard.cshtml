@@ -115,7 +115,7 @@
                             <h3>Estimated End Training</h3>
                             <h1>@ViewBag.EstimateEndTraining?.ToString("MMMM dd, yyyy")</h1>
                         </div>
-                        <div class="task-progress">
+                        <div class="task-progress" id="addDocumentButton3">
                             <span class="material-symbols-outlined">
                                 pending
                             </span>
@@ -128,7 +128,7 @@
                             <h3>Estimated Needed Overtime</h3>
                             <h1>@ViewBag.OvertimeNeeded Hour/s Overtimes</h1>
                         </div>
-                        <div class="task-progress">
+                        <div class="task-progress" id="addDocumentButton2">
                             <span class="material-symbols-outlined">
                                 pending
                             </span>
@@ -347,6 +347,8 @@
         
     </div>
     <partial name="_CustomPopup" />
+    <partial name="_UserAnalyticBox" />
+    <partial name="_UserEstimatedDate" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="~/js/Popup/UserCustomPopup.js"></script>
@@ -624,7 +626,44 @@
             });
         }
     </script>
-   
+
+    <script>
+        document.getElementById('infoButton').addEventListener('click', function () {
+            infoButtonPopup();
+        });
+
+        function infoButtonPopup() {
+            Swal.fire({
+                title: "What's the end date for?",
+                text: "The custom settings is for desired date time and see how much overtime you would need to finish within that scope.",
+                icon: "info",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = '/Dashboard/Dashboard';
+                }
+            });
+        }
+    </script>
+
+    <script>
+        document.getElementById('infoButton2').addEventListener('click', function () {
+            infoButtonPopup2();
+        });
+
+        function infoButtonPopup2() {
+            Swal.fire({
+                title: "What's the trending hours per day?",
+                text: "The trending hours per day, is hours per day datas from users thats inputted everyday and stored in account, its calculated everyweek(5 working days) and the uses as basis on calculation.",
+                icon: "info",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = '/Dashboard/Dashboard';
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>

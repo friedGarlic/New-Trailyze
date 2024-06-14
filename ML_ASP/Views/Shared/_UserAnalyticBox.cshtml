@@ -1,0 +1,72 @@
+﻿<form method="post" asp-action="" asp-controller="Dashboard" enctype="multipart/form-data">
+    <div id="popup2" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-btn2">&times;</span>
+            <h2>Overtime Prediction Settings</h2>
+
+            <label>Desired Training Endtime.</label>
+
+            <div>
+                <label for="radio1">Use Summer Sem End Date</label>
+                <input type="radio" id="radio1" name="endtime" value="semester" onclick="toggleDivs()">
+
+                <label for="radio2">Use Estimated End Date</label>
+                <input type="radio" id="radio2" name="endtime" value="estimatedDate" onclick="toggleDivs()">
+
+                <label for="radio3">Custom End Date</label>
+                <input type="radio" id="radio3" name="endtime" value="custom" onclick="toggleDivs()">
+            </div>
+
+            <div id="div1" class="bordered-div hidden">
+                SY 2024-2025 which follows the schedule of March - June (before june 10).
+            </div>
+
+            <div id="div2" class="bordered-div hidden">
+                Uses Estimated date on analytic boxes, also uses trending hours per day base on user, or custom hours per day.
+
+                Recommended: 8hrs / Day(Usual).
+                <button type="button" id="infoButton2"> Trending Hours? </button>
+            </div>
+
+            <div id="div3" class="bordered-div hidden">
+                Input the End Date desired to finish:
+
+                <input type="date" id="customEndDate" name="inputEndDate">
+                <button type="button" id="infoButton"> Information! </button>
+            </div>
+
+            <button type="submit"> Submit </button>
+        </div>
+    </div>
+</form>
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .bordered-div {
+        border: 1px solid black;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 10px;
+    }
+</style>
+
+<script>
+    function toggleDivs() {
+        // Hide all divs initially
+        document.getElementById('div1').classList.add('hidden');
+        document.getElementById('div2').classList.add('hidden');
+        document.getElementById('div3').classList.add('hidden');
+
+        // Show the corresponding div based on the selected radio button
+        if (document.getElementById('radio1').checked) {
+            document.getElementById('div1').classList.remove('hidden');
+        } else if (document.getElementById('radio2').checked) {
+            document.getElementById('div2').classList.remove('hidden');
+        } else if (document.getElementById('radio3').checked) {
+            document.getElementById('div3').classList.remove('hidden');
+        }
+    }
+</script>

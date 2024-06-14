@@ -609,18 +609,33 @@ namespace ML_ASP.Controllers
 			string OutputResult = "";
 			try
 			{
-				string apiKey = "sk-proj-5LKlmb8fgh7khHHXCwC9T3BlbkFJPsE7EIyFcwFNymcH9joV";
-				var openai = new OpenAIAPI(apiKey);
-				var request = openai.Chat.CreateConversation();
-				request.AppendUserInput("The grade of student is 4/5,4/5,4/5,4/5. What is your analysis and recommendation on this.");
-				var response = await request.GetResponseFromChatbotAsync();
+				//string apiKey = "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";
+				//var openai = new OpenAIAPI(apiKey);
+				//var request = openai.Chat.CreateConversation();
+				//request.AppendUserInput("The grade of student is 4/5,4/5,4/5,4/5. What is your analysis and recommendation on this.");
+				//var response = await request.GetResponseFromChatbotAsync();
 
-				foreach (var message in response)
+				//foreach (var message in response)
+				//{
+				//	OutputResult += message.ToString();
+				//}
+				Random random = new Random();
+
+				string[] outputs = new string[]
 				{
-					OutputResult += message.ToString();
-				}
+					"The student's grades are consistently 4/5 across all assessments, indicating a reliable and stable performance. This consistency suggests that the student has a strong grasp of the subject matter, as they are able to achieve high marks regularly. However, while 4/5 is a commendable score, it also shows that there is still room for improvement to achieve a perfect score. My recommendation is to review the assessments to identify any common mistakes or areas where the student consistently loses points. Additionally, conducting feedback sessions to discuss these specific weaknesses can provide targeted guidance to help the student refine their understanding and potentially achieve a higher score in future assessments.",
+					"The grades of 4/5 indicate a strong and reliable understanding of the material, demonstrating that they perform well across different assessments. This consistency is a positive sign of their stable performance. However, there is room for improvement since the scores are not perfect. To help the student reach their full potential, it is important to review the areas where they lost points to identify any recurring mistakes or gaps in understanding. Providing targeted feedback and additional support in these specific areas can help the student improve their performance and aim for a perfect score in future assessments.",
+					"I recommend identifying specific areas where they lost points and providing additional resources to address these gaps. For further improvement, recommending books that delve deeper into the subject matter can be beneficial. Books that provide advanced insights, practice problems, and comprehensive explanations can help the student refine their understanding and improve their performance.",
+					"To help the student improve beyond their consistent 4/5 scores, I suggest focusing on advanced topics and exploring areas outside the standard curriculum. Learning about algorithms, data structures, and optimization techniques can provide a deeper understanding of core computer science concepts. Additionally, studying emerging technologies such as artificial intelligence, machine learning, and blockchain can give the student a competitive edge. Seeking mentorship from professors or industry professionals can also provide valuable insights and guidance.",
+					"Given the student's consistent performance, exploring different learning resources can be beneficial. Online courses from platforms like Coursera, edX, or Udacity offer specialized courses in various computer science topics that can complement their current studies. Additionally, reading books like 'Clean Code' by Robert C. Martin, 'Introduction to Algorithms' by Cormen, Leiserson, Rivest, and Stein, or 'Design Patterns' by the Gang of Four can provide deeper insights and new perspectives. Regularly practicing coding on platforms like LeetCode, HackerRank, or CodeSignal can also help in honing their problem-solving skills.",
+					"The student can improve their grades by actively participating in study groups or discussion forums. Collaborating with peers can provide different viewpoints and insights that may not be covered in individual study. Teaching others or explaining concepts to classmates can reinforce the student’s own understanding. Additionally, attending workshops, seminars, and tech talks can expose the student to new ideas and trends in the field, further enhancing their knowledge and skills.",
+					"To enhance their 4/5 performance, the student should consider seeking internships or part-time jobs related to computer science. Real-world experience in a professional setting can provide practical skills that are invaluable and often not covered in academic coursework. Working on real-life projects and collaborating with experienced professionals can significantly boost their understanding and application of computer science principles. Additionally, internships can help build a strong resume and provide networking opportunities for future career prospects."
+				};
 
-				return Json(new { data = OutputResult });
+				int randomIndex = random.Next(outputs.Length);
+				string selectedOutput = outputs[randomIndex];
+
+				return Json(new { data = selectedOutput });
 			}
 			catch (Exception ex)
 			{

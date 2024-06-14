@@ -485,39 +485,42 @@ namespace ML_ASP.Controllers
 
             ViewBag.AccountName = accountName;
 
-			//calculation of estimated datetime
-			int TrainingHoursPerWeek = 40; 
-            DateTime EndDate = new DateTime(DateTime.Now.Year, 12, 1); //december 1, end of summer
+            //calculation of estimated datetime
+            int TrainingHoursPerWeek = 40;
+            DateTime EndDate = new DateTime(DateTime.Now.Year, 9, 1); //month, date
 
             int totalCompletedSeconds =
-				(account.HoursCompleted.Value * 3600) +
-				(account.MinutesCompleted.Value * 60) +
-				account.SecondsCompleted.Value;
+                (account.HoursCompleted.Value * 3600) +
+                (account.MinutesCompleted.Value * 60) +
+                account.SecondsCompleted.Value;
 
-			// Calculate total required time in seconds
-			int totalRequiredSeconds = account.HoursRequired.Value * 3600;
+            // Calculate total required time in seconds
+            int totalRequiredSeconds = account.HoursRequired.Value * 3600;
 
-			int remainingSeconds = totalRequiredSeconds - totalCompletedSeconds;
+            int remainingSeconds = totalRequiredSeconds - totalCompletedSeconds;
 
-			int trainingHoursPerWeekInSeconds = TrainingHoursPerWeek * 3600;
+            int trainingHoursPerWeekInSeconds = TrainingHoursPerWeek * 3600;
 
-			double weeksNeeded = (double)remainingSeconds / trainingHoursPerWeekInSeconds;
+            double weeksNeeded = (double)remainingSeconds / trainingHoursPerWeekInSeconds;
 
-			DateTime startDate = DateTime.Now;
-			DateTime estimatedEndDate = startDate.AddDays(weeksNeeded * 7); //end date of training base on how many trainings per week.----------
-            //
+            DateTime startDate = DateTime.Now;
+            DateTime estimatedEndDate = startDate.AddDays(weeksNeeded * 7); //end date of training base on how many trainings per week.----------
 
-            int remainingDays = (EndDate - startDate).Days;
-            int remainingWeeks = remainingDays / 7;
+			//--overtime
+			int remainingDays = CountBusinessDays(startDate, EndDate);
+			int remainingWeeks = remainingDays / 7;
 
-            int totalAvailableTrainingSeconds = remainingWeeks * trainingHoursPerWeekInSeconds;
+			//int totalAvailableTrainingSeconds = remainingWeeks * trainingHoursPerWeekInSeconds;
 
-            double overtimeNeeded = 0;
+			int totalAvailableTrainingSeconds = (remainingDays * 8) * 3600;
+
+			double overtimeNeeded = 0;
             if (remainingSeconds > totalAvailableTrainingSeconds)
             {
                 int remainingSecondsAfterAvailable = remainingSeconds - totalAvailableTrainingSeconds;
                 overtimeNeeded = Math.Ceiling(remainingSecondsAfterAvailable / 3600.0);
             }
+            //--overtime
 
             ViewBag.OvertimeNeeded = overtimeNeeded;
             ViewBag.EstimateEndTraining = estimatedEndDate;
@@ -618,7 +621,7 @@ namespace ML_ASP.Controllers
             int hoursPerDay = 8;
             int daysPerWeek = 5;
             int hoursPerWeek = hoursPerDay * daysPerWeek;
-            
+
             ViewBag.RemainingReports = account.HoursRequired / hoursPerWeek;
 
             //remaining
@@ -696,6 +699,23 @@ namespace ML_ASP.Controllers
         new DateTime(2024, 12, 25), // Christmas Day
         new DateTime(2024, 12, 30)  // Rizal Day
     };
+
+		static int CountBusinessDays(DateTime start, DateTime end)
+		{
+			int businessDays = 0;
+			DateTime currentDate = start;
+
+			while (currentDate <= end)
+			{
+				if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+				{
+					businessDays++;
+				}
+				currentDate = currentDate.AddDays(1);
+			}
+
+			return businessDays;
+		}
 
 	}
 }

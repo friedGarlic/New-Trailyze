@@ -88,6 +88,25 @@
     color: #333;
 }
 
+.close-btn2 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+}
+
+
+.close-btn3 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+}
+
 h2 {
     margin-top: 0;
 }

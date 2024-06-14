@@ -1,0 +1,63 @@
+﻿<form method="post" asp-action="" asp-controller="Dashboard" enctype="multipart/form-data">
+    <div id="popup3" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-btn3">&times;</span>
+            <h2>Estimate Date Prediction Settings</h2>
+
+            <label>Desired hours per day settings.</label>
+
+            <div>
+                <label for="estimateDateRadio1">Use Trend Hour Per Day</label>
+                <input type="radio" id="estimateDateRadio1" name="endtime" value="semester" onclick="toggleDivs1()">
+
+                <label for="estimateDateRadio2">Customize Hour Per Day</label>
+                <input type="radio" id="estimateDateRadio2" name="endtime" value="estimatedDate" onclick="toggleDivs1()">
+            </div>
+
+            <div id="estimateDateDiv1" class="bordered-div hidden">
+                Uses Estimated date on analytic boxes, also uses trending hours per day based on user, or custom hours per day.
+
+                <button type="button" id="infoButton2">Trending Hours?</button>
+            </div>
+
+            <div id="estimateDateDiv2" class="bordered-div hidden">
+                Input the Hours Per Day:
+
+                <input type="number" id="customHoursPerDay" name="customHoursPerDay" min="1" max="24" placeholder="Enter hours per day">
+
+                <p>Recommended: 8hrs / Day (Usual).</p>
+                <button type="button" id="infoButton">Information!</button>
+            </div>
+
+            <button type="submit">Submit</button>
+        </div>
+    </div>
+</form>
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .bordered-div {
+        border: 1px solid black;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 10px;
+    }
+</style>
+
+<script>
+    function toggleDivs1() {
+        // Hide all divs initially
+        document.getElementById('estimateDateDiv1').classList.add('hidden');
+        document.getElementById('estimateDateDiv2').classList.add('hidden');
+
+        // Show the corresponding div based on the selected radio button
+        if (document.getElementById('estimateDateRadio1').checked) {
+            document.getElementById('estimateDateDiv1').classList.remove('hidden');
+        } else if (document.getElementById('estimateDateRadio2').checked) {
+            document.getElementById('estimateDateDiv2').classList.remove('hidden');
+        }
+    }
+</script>

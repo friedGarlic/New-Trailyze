@@ -382,6 +382,85 @@ namespace ML_ASP.Controllers
             return RedirectToAction(nameof(Dashboard));
         }
 
+		[HttpPost]
+		public ActionResult AnalyticSettings(int customHoursPerDay, DateTime customEndDate, string endtime, string hoursPerDay)
+        {
+
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+			var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value); //userid
+
+			var userId = claim.Value;
+			var accountName = account.FullName;
+
+			ViewBag.AccountName = accountName;
+			int TrainingHoursPerWeek = 40;
+			DateTime EndDate = DateTime.Now;
+
+			//calculation of estimated datetime
+			if (hoursPerDay == "hoursPerDay")
+            {
+				TrainingHoursPerWeek = customHoursPerDay * 5; //multiply by 5 so it goes with weekly calculation
+			}
+            if (endtime == "semester")
+            {
+                EndDate = new DateTime(DateTime.Now.Year, 6, 10); //month, date
+            }
+			if (endtime == "custom")
+			{
+                EndDate = customEndDate; //month, date
+			}
+
+			int totalCompletedSeconds =
+				(account.HoursCompleted.Value * 3600) +
+				(account.MinutesCompleted.Value * 60) +
+				account.SecondsCompleted.Value;
+
+			// Calculate total required time in seconds
+			int totalRequiredSeconds = account.HoursRequired.Value * 3600;
+
+			int remainingSeconds = totalRequiredSeconds - totalCompletedSeconds;
+
+			int trainingHoursPerWeekInSeconds = TrainingHoursPerWeek * 3600;
+
+			double weeksNeeded = (double)remainingSeconds / trainingHoursPerWeekInSeconds;
+
+			DateTime startDate = DateTime.Now;
+			DateTime estimatedEndDate = startDate.AddDays(weeksNeeded * 7); //end date of training base on how many trainings per week.----------
+
+			
+
+		    if (endtime == "estimatedDate")
+			{
+                EndDate = estimatedEndDate; //month, date
+			}
+
+			//--overtime
+			int remainingDays = CountBusinessDays(startDate, EndDate);
+			int remainingWeeks = remainingDays / 7;
+
+			//int totalAvailableTrainingSeconds = remainingWeeks * trainingHoursPerWeekInSeconds;
+
+			int totalAvailableTrainingSeconds = (remainingDays * 8) * 3600;
+
+			double overtimeNeeded = 0;
+			if (remainingSeconds > totalAvailableTrainingSeconds)
+			{
+				int remainingSecondsAfterAvailable = remainingSeconds - totalAvailableTrainingSeconds;
+				overtimeNeeded = Math.Ceiling(remainingSecondsAfterAvailable / 3600.0);
+			}
+			//--overtime
+
+			ViewBag.OvertimeNeeded = overtimeNeeded;
+			ViewBag.EstimateEndTraining = estimatedEndDate;
+
+            _unit.Account.UpdateEstimateSettings(userId, overtimeNeeded, estimatedEndDate);
+
+            _unit.Save();
+
+			return RedirectToAction(nameof(Dashboard));
+        }
+
         //for calculation in time duration between Timein/timout
         public void InputTimeDuration()
         {
@@ -506,24 +585,8 @@ namespace ML_ASP.Controllers
             DateTime startDate = DateTime.Now;
             DateTime estimatedEndDate = startDate.AddDays(weeksNeeded * 7); //end date of training base on how many trainings per week.----------
 
-			//--overtime
-			int remainingDays = CountBusinessDays(startDate, EndDate);
-			int remainingWeeks = remainingDays / 7;
-
-			//int totalAvailableTrainingSeconds = remainingWeeks * trainingHoursPerWeekInSeconds;
-
-			int totalAvailableTrainingSeconds = (remainingDays * 8) * 3600;
-
-			double overtimeNeeded = 0;
-            if (remainingSeconds > totalAvailableTrainingSeconds)
-            {
-                int remainingSecondsAfterAvailable = remainingSeconds - totalAvailableTrainingSeconds;
-                overtimeNeeded = Math.Ceiling(remainingSecondsAfterAvailable / 3600.0);
-            }
-            //--overtime
-
-            ViewBag.OvertimeNeeded = overtimeNeeded;
-            ViewBag.EstimateEndTraining = estimatedEndDate;
+            ViewBag.OvertimeNeeded = account.EstimatedOvertimeHours;
+            ViewBag.EstimateEndTraining = account.EstimatedEndDate;
 
 
 

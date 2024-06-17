@@ -14,7 +14,9 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 	{
         public void UpdateAccount(string course, int hrsRemain, int weeklyReport, string id, int requiredHours);
 
-        public void UpdateExit(string id, string filename);
+        public void UpdateEstimateSettings(string id, double overtime, DateTime endDate);
+
+		public void UpdateExit(string id, string filename);
 
         public void UpdateEvaluation(string id, string filename);
 

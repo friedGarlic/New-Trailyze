@@ -53,5 +53,8 @@ namespace ML_ASP.Models
         public string? CampusOption { get; set; }
         public string? CampusValue { get; set; }
 
+
+        public double? EstimatedOvertimeHours { get; set; }
+        public DateTime? EstimatedEndDate { get; set; }
     }
 }

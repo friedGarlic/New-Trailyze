@@ -1,4 +1,4 @@
-﻿<form method="post" asp-action="" asp-controller="Dashboard" enctype="multipart/form-data">
+﻿<form method="post" asp-action="AnalyticSettings" asp-controller="Dashboard">
     <div id="popup3" class="popup-overlay">
         <div class="popup-content">
             <span class="close-btn3">&times;</span>
@@ -8,16 +8,16 @@
 
             <div>
                 <label for="estimateDateRadio1">Use Trend Hour Per Day</label>
-                <input type="radio" id="estimateDateRadio1" name="endtime" value="semester" onclick="toggleDivs1()">
+                <input type="radio" id="estimateDateRadio1" name="hoursPerDay" value="trendHoursPerDay" onclick="toggleDivs1()">
 
                 <label for="estimateDateRadio2">Customize Hour Per Day</label>
-                <input type="radio" id="estimateDateRadio2" name="endtime" value="estimatedDate" onclick="toggleDivs1()">
+                <input type="radio" id="estimateDateRadio2" name="hoursPerDay" value="hoursPerDay" onclick="toggleDivs1()">
             </div>
 
             <div id="estimateDateDiv1" class="bordered-div hidden">
                 Uses Estimated date on analytic boxes, also uses trending hours per day based on user, or custom hours per day.
 
-                <button type="button" id="infoButton2">Trending Hours?</button>
+                <button type="button" id="hrsInfoButton2">Trending Hours?</button>
             </div>
 
             <div id="estimateDateDiv2" class="bordered-div hidden">
@@ -26,7 +26,7 @@
                 <input type="number" id="customHoursPerDay" name="customHoursPerDay" min="1" max="24" placeholder="Enter hours per day">
 
                 <p>Recommended: 8hrs / Day (Usual).</p>
-                <button type="button" id="infoButton">Information!</button>
+                <button type="button" id="hrsInfoButton">Information!</button>
             </div>
 
             <button type="submit">Submit</button>
@@ -59,5 +59,43 @@
         } else if (document.getElementById('estimateDateRadio2').checked) {
             document.getElementById('estimateDateDiv2').classList.remove('hidden');
         }
+    }
+</script>
+
+<script>
+    document.getElementById('hrsInfoButton').addEventListener('click', function () {
+        hrsInfoButton();
+    });
+
+    function hrsInfoButton() {
+        Swal.fire({
+            title: "Input Hours?",
+            text: "Input hours that the user can only have in a day on training, if not, select the trend settings.",
+            icon: "info",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = '/Dashboard/Dashboard';
+            }
+        });
+    }
+</script>
+
+<script>
+    document.getElementById('hrsInfoButton2').addEventListener('click', function () {
+        hrsInfoButton2();
+    });
+
+    function hrsInfoButton2() {
+        Swal.fire({
+            title: "What's the trending hours per day?",
+            text: "The trending hours per day, is hours per day datas from users thats inputted everyday and stored in account, its calculated everyweek(5 working days) and the uses as basis on calculation.",
+            icon: "info",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = '/Dashboard/Dashboard';
+            }
+        });
     }
 </script>

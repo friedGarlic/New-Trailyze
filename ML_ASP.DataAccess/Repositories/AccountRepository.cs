@@ -20,6 +20,15 @@ namespace ML_ASP.DataAccess.Repositories
 			_dbContext = dbContext;
         }
 
+        public void UpdateEstimateSettings(string id, double overtime, DateTime endDate)
+        {
+			var objFromDb = _dbContext.Accounts.FirstOrDefault(u => u.Id == id);
+			if (objFromDb != null)
+			{
+                objFromDb.EstimatedEndDate = endDate;
+                objFromDb.EstimatedOvertimeHours = overtime;
+			}
+		}
 
         public void UpdateExit(string id, string filename)
         {

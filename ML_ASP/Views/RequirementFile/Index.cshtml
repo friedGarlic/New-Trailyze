@@ -71,6 +71,12 @@
                         <!-- Options will be populated dynamically -->
                     </select>
                     <span class="text-danger" id="inCampusError"></span>
+
+                    <hr />
+                    <div id="additionalInfo">
+                        <!-- Additional information will be displayed here -->
+                    </div>
+                    <hr />
                 </div>
 
                 <div class="form-floating mb-2 py-1" id="offCampusSelect" style="display:none;">
@@ -305,6 +311,28 @@
     @{
         <script src="~/js/Popup/CustomPopup.js"></script>
     }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var listModel = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListModel));
+            var dropdown = document.getElementById('inCampusOffices');
+            var additionalInfo = document.getElementById('additionalInfo');
+
+            dropdown.addEventListener('change', function () {
+                var selectedValue = this.value;
+                additionalInfo.innerHTML = ''; // Clear previous info
+
+                if (selectedValue) {
+                    var selectedItem = listModel.find(item => item.id == selectedValue);
+                    if (selectedItem) {
+                        additionalInfo.innerHTML = `<p>TimeIn: ${selectedItem.TimeIn} TimeOut: ${selectedItem.TimeOut}</p>
+                                                            <p> Starts at: ${selectedItem.WorkingDaysStart} ends at: ${selectedItem.WorkingDaysEnds}`;
+                        // Add other properties as needed
+                    }
+                }
+            });
+        });
+    </script>
     <script>
         function infoPopup() {
             Swal.fire({

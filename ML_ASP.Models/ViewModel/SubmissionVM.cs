@@ -27,9 +27,15 @@ namespace ML_ASP.Models.ViewModel
 
 		public IEnumerable<Overtime_Model> OvertimeList { get; set; }
 
+		public IEnumerable<ListModel> ListModel { get; set; }
+
+		public IEnumerable<ListModel2> ListModel2 { get; set; }
+
 		public SelectList OptionList1 { get; set; }
 
 		public SelectList OptionList2 { get; set; }
+
+
 
 		public LogModel LogModel { get; set; }
 

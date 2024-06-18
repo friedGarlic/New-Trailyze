@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ML_ASP.Models.Models;
+using ML_ASP.Models.Models.UserDashboard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,9 @@ namespace ML_ASP.Models.ViewModel
 		public SelectList OptionList1 { get; set; }
 
 		public SelectList OptionList2 { get; set; }
+
+		public IEnumerable<ListModel> ListModel { get; set; }
+
+		public IEnumerable<ListModel2> ListModel2 { get; set; }
 	}
 }

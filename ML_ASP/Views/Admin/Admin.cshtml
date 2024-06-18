@@ -202,7 +202,52 @@
 									<!-- Options will be populated dynamically -->
 								</select>
 								<span id="officeError" class="text-danger"></span>
-								<button type="submit" class="btn btn-danger mb-2">Delete Option</button>
+								<hr />
+
+								<div id="additionalInfo">
+									<!-- Additional information will be displayed here -->
+								</div>
+								<hr />
+								<div style="display: flex; align-items: center;">
+									<select id="dropdown1" name="timestart" style="margin-right: 10px;">
+										<option value="6am">6am</option>
+										<option value="7am">7am</option>
+										<option value="8am">8am</option>
+										<option value="9am">9am</option>
+										<option value="10am">10am</option>
+									</select>
+									<p style="margin: 0 10px;">to</p>
+									<select id="dropdown2" name="timeends" style="margin-left: 10px;">
+										<option value="3pm">3pm</option>
+										<option value="4pm">4pm</option>
+										<option value="5pm">5pm</option>
+										<option value="6pm">6pm</option>
+										<option value="7pm">7pm</option>
+									</select>
+								</div>
+								<br />
+								<div style="display: flex; align-items: center;">
+									<select id="dropdown1" name="daystart" style="margin-right: 10px;">
+										<option value="Monday">Monday</option>
+										<option value="Tuesday">Tuesday</option>
+										<option value="Wednesday">Wednesday</option>
+										<option value="Thursday">Thursday</option>
+										<option value="Friday">Friday</option>
+										<option value="Saturday">Saturday</option>
+									</select>
+									<p style="margin: 0 10px;">to</p>
+									<select id="dropdown2" name="dayends" style="margin-left: 10px;">
+										<option value="Monday">Monday</option>
+										<option value="Tuesday">Tuesday</option>
+										<option value="Wednesday">Wednesday</option>
+										<option value="Thursday">Thursday</option>
+										<option value="Friday">Friday</option>
+										<option value="Saturday">Saturday</option>
+									</select>
+								</div>
+								<br />
+								<button type="submit" name="optionbuton" value="currentupdate" class="btn btn-danger mb-2">Update Option</button>
+								<button type="submit" name="optionbuton" value="currentdelete" class="btn btn-danger mb-2">Delete Option</button>
 							</form>
 						</div>
 
@@ -253,6 +298,27 @@
 	<script src="~/js/admin/submissiont_admin.js"></script>
 	<script src="~/js/adminScript.js"></script>
 	}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var listModel = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListModel));
+			var dropdown = document.getElementById('optionToDelete');
+			var additionalInfo = document.getElementById('additionalInfo');
+
+			dropdown.addEventListener('change', function () {
+				var selectedValue = this.value;
+				additionalInfo.innerHTML = ''; // Clear previous info
+
+				if (selectedValue) {
+					var selectedItem = listModel.find(item => item.id == selectedValue);
+					if (selectedItem) {
+						additionalInfo.innerHTML = `<p>TimeIn: ${selectedItem.TimeIn} TimeOut: ${selectedItem.TimeOut}</p>
+													<p> Starts at: ${selectedItem.WorkingDaysStart} ends at: ${selectedItem.WorkingDaysEnds}`;
+						// Add other properties as needed
+					}
+				}
+			});
+		});
+	</script>
 	<script>
 		document.getElementById('updateButton').addEventListener('click', function () {
 			confirmInput();

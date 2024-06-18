@@ -571,16 +571,26 @@ namespace ML_ASP.Controllers
 			return RedirectToAction(nameof(Admin));
 		}
 
-		public ActionResult DeleteOptionList(int optionToDelete)
+		[HttpPost]
+		public ActionResult DeleteOptionList(int optionToDelete, string optionbuton, string timestart, string timeends, string daystart, string dayends)
 		{
 			var model = _unit.ListItem.GetFirstOrDefault(u => u.id == optionToDelete);
 
-			_unit.ListItem.Remove(model);
+			if (optionbuton == "currentupdate")
+			{
+				_unit.ListItem.UpdateSettings(optionToDelete, timestart, timeends, daystart, dayends);
+			}
+
+			if (optionbuton == "currentdelete")
+			{
+				_unit.ListItem.Remove(model);
+			}
 			_unit.Save();
 
 			return RedirectToAction(nameof(Admin));
 		}
 
+		[HttpPost]
 		public ActionResult DeleteOptionList2(int optionToDelete)
 		{
 			var model = _unit.ListItem2.GetFirstOrDefault(u => u.id == optionToDelete);
@@ -728,6 +738,8 @@ namespace ML_ASP.Controllers
 				  .Select(u => u.Grade)
 				  .ToList();
 
+			
+
 
             submissionVM = new SubmissionVM()
 			{
@@ -735,7 +747,9 @@ namespace ML_ASP.Controllers
 				GradeList = sublist,
 				WorkloadList = _unit.Workload.GetAll(),
 				OptionList1 = new SelectList(_unit.ListItem.GetAll(), "id", "ListName"),
-				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName")
+				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName"),
+				ListModel = _unit.ListItem.GetAll(),
+				ListModel2 = _unit.ListItem2.GetAll(),
 			};
 
 			return submissionVM;

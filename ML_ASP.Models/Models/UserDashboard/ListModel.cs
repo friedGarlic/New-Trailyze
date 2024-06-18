@@ -13,5 +13,12 @@ namespace ML_ASP.Models.Models.UserDashboard
         public int id { get; set; }
 
         public string ListName { get; set; }
-    }
+
+        public string TimeIn { get; set; }
+
+		public string TimeOut { get; set; }
+
+		public string WorkingDaysStart { get; set; }
+		public string WorkingDaysEnds { get; set; }
+	}
 }

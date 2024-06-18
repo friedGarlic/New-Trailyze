@@ -385,7 +385,6 @@ namespace ML_ASP.Controllers
 		[HttpPost]
 		public ActionResult AnalyticSettings(int customHoursPerDay, DateTime customEndDate, string endtime, string hoursPerDay)
         {
-
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 			var account = _unit.Account.GetFirstOrDefault(u => u.Id == claim.Value); //userid

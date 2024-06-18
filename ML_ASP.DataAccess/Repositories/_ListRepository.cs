@@ -18,5 +18,17 @@ namespace ML_ASP.DataAccess.Repositories
             _dbContext = dbContext;
         }
 
-    }
+
+        public void UpdateSettings(int optionToDelete, string timestart, string timeends, string daystart, string dayends)
+        {
+            var objFromDb = _dbContext.ListName.FirstOrDefault(u => u.id == optionToDelete);
+            if (objFromDb != null)
+            {
+                objFromDb.TimeIn = timestart;
+                objFromDb.TimeOut = timeends;
+                objFromDb.WorkingDaysStart = daystart;
+                objFromDb.WorkingDaysEnds = dayends;
+            }
+        }
+	}
 }

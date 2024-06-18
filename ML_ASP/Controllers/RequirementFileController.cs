@@ -20,9 +20,7 @@ namespace ML_ASP.Controllers
         {
             _unit = unit;
             _environment = environment;
-
         }
-
 
         [Authorize(Roles = SD.Role_Unregistered)]
         public IActionResult Index()
@@ -415,7 +413,9 @@ namespace ML_ASP.Controllers
                 FileName4 = form1FileId4,
                 FileName5 = form1FileId5,
 				OptionList1 = new SelectList(_unit.ListItem.GetAll(), "id", "ListName"),
-				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName")
+				OptionList2 = new SelectList(_unit.ListItem2.GetAll(), "id", "ListName"),
+				ListModel = _unit.ListItem.GetAll(),
+				ListModel2 = _unit.ListItem2.GetAll(),
 			};
 
             return requirementVM;

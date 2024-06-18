@@ -1,4 +1,5 @@
-﻿using ML_ASP.Models;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using ML_ASP.Models;
 using ML_ASP.Models.Models.UserDashboard;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,7 @@ namespace ML_ASP.DataAccess.Repositories.IRepositories
 {
     public interface I_ListRepository : IRepository<ListModel>
     {
+
+        public void UpdateSettings(int optionToDelete, string timestart, string timeends, string daystart, string dayends);
     }
 }
